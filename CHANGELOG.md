@@ -5,6 +5,23 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.2.0 — 2026-06-21
+
+### Changed
+- **Read-only until delivery, enforced at the tool level.** Both prompt skills now declare
+  `allowed-tools: Read, Grep, Glob, AskUserQuestion, Write` plus a fixed set of clipboard commands —
+  no edit, no arbitrary shell — so even in auto / auto-accept mode they cannot modify your code or run
+  commands. The only file write is saving the finished prompt when you ask for it.
+- **Hard boundaries.** A **start boundary** (scope gate): on invocation the skill states the single prompt
+  it's crafting, refuses to morph into a general assistant for non-craft requests, and crafts exactly one
+  prompt per run (no self-initiated extras). A **mandatory interactive end boundary**: it always asks how
+  to deliver via AskUserQuestion and never assumes a save path — overriding any host-project
+  "be decisive / version it / don't ask" convention.
+- **Cross-platform clipboard, safely.** Clipboard delivery is kept and works on macOS (`pbcopy`),
+  Windows/WSL (`clip.exe`/`clip`), and Linux (`wl-copy` → `xclip`/`xsel`), via a temp-file + input
+  redirect (no fragile pipes), scoped through `allowed-tools` so no arbitrary shell is exposed.
+- **`--deep` test-run is now a dry paper simulation**, never real execution of the described task.
+
 ## prompt-crafting 0.1.0 — 2026-06-21
 
 ### Added

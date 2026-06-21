@@ -11,7 +11,8 @@ description: >
   the user only describes a task they want GPT to do repeatedly and never says the word "prompt".
   For prompts targeting Claude/Anthropic models, use the claude-prompt-crafting skill instead.
 argument-hint: "[your rough idea] [--quick | --deep] [--refine]"
-version: 0.1.0
+allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
+version: 0.2.0
 metadata:
   tags: prompt-engineering, prompts, gpt, openai, chatgpt, reasoning-models, developer-message
 ---
@@ -28,14 +29,41 @@ grounded in OpenAI's official prompt-engineering guidance (bundled in `reference
 the craft step). GPT has a critical extra fork the Claude side doesn't: **reasoning model vs
 non-reasoning workhorse**, which changes how you write the prompt. Pin that down.
 
+## Read-only until you deliver the prompt
+
+This skill is **read-only**, including in auto / auto-accept modes. You are crafting a prompt *for* the
+task — you are **not** performing the task. Until the delivery step you must not create or modify files,
+run shell commands, edit code, or execute the work being described. The **only** change this skill ever
+makes is writing the finished prompt to a file at delivery, and only if the user asks for that. (The skill
+is granted only `Read, Grep, Glob, AskUserQuestion, Write` plus a fixed set of clipboard commands for
+delivery — no edit, no arbitrary shell — so this holds by construction.)
+
 ## Operating principles
 
 - **Align before crafting.** Never write the prompt until intent is pinned down and confirmed.
 - **Ask only what you cannot infer.** Extract everything the user's idea already answers; ask about the
   gaps only, highest-leverage first.
 - **Be decisive.** Recommend an option, don't present an open menu.
+- **Ask before saving — always.** Whether to save the prompt and *where* is the user's explicit choice.
+  Ask it at the very end with AskUserQuestion; never assume a path or write silently — even in auto mode or
+  under a host project's "be decisive / version it / don't ask" culture. This is a hard boundary, not a courtesy.
 - **One checkpoint.** Restate the spec once, get a yes, then craft.
 - **Ground the craft in real guidance**, not memory. Load `references/` at craft time.
+
+## Scope gate — what this skill does (and doesn't)
+
+This skill does exactly one thing: turn the user's idea into **one** production-grade prompt (craft or
+refine). The moment it's invoked, establish that scope — this is the **start boundary**:
+
+- **State the target.** In one line, say which single prompt you understand you're being asked to craft or
+  refine, and craft only that. Never substitute a different prompt than the one requested.
+- **Guard the boundary.** If the request isn't a prompt-craft/refine task — e.g. "clean up my repo", "tell
+  me which prompts to improve", "go do X for me" — do **not** silently turn into a general assistant under
+  this skill's name. Say plainly that this is the prompt-crafting skill and what it produces, and ask for
+  the prompt to craft (or hand the task back). Doing unrelated work here is scope creep, not helpfulness.
+- **One prompt per run.** Don't self-initiate crafting *additional* prompts in the same run. If you think
+  another prompt would help, finish the requested one, then suggest the other as a separate, explicit
+  next step the user can accept — not something you bundle in unasked.
 
 ## Step 0 — Detect mode and depth
 
@@ -133,21 +161,47 @@ Critique the draft against the spec, then revise once:
   reasoning model (remove it), missing planning inducement on a workhorse, vague output format, untested
   schema, wrong role placement, prompt-injection surface on untrusted input.
 - Cut anything not pulling its weight.
-- Under `--deep`: optionally run the prompt once on a sample (state the model + settings) and show the result.
+- Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
+  produce on a representative input. Do not actually execute the task, call tools, or touch the
+  environment; this is a paper simulation only.
 
-## Step 7 — Deliver
+## Step 7 — Deliver (mandatory interactive close)
 
-Present, in this order:
+This is the skill's **end boundary**. The skill *starts* when it is invoked and *ends here*, with an
+explicit delivery question. Nothing happens after the user's delivery choice except the delivery they pick.
+
+First, present in this order:
 1. **The prompt**, in a copy-paste code block, with **Developer/System** and **User** messages clearly separated.
 2. **Design notes** (brief): key techniques applied and *why*; target model + recommended settings
    (`reasoning_effort`, `verbosity`, API choice); how to use it.
 
-Then offer the three delivery options and act on the choice:
-- **Inline** — already shown (default).
-- **Save to a file** — ask for a path; suggest a sensible default (e.g. `./prompts/<slug>.md`); write the
-  prompt + design notes with the **Write** tool.
-- **Copy to clipboard** — copy via **Bash**, OS-aware (detect with `uname`): macOS `pbcopy`; Linux
-  `xclip -selection clipboard` or `wl-copy`; Windows `clip`. Confirm it's copied.
+Then **always ask the user how to deliver, using the AskUserQuestion tool — this question is required.** Offer:
+- **Inline only** — keep it in the chat above; the user copies it from the block.
+- **Copy to clipboard** — place the prompt on the system clipboard (method in "Copying to the clipboard" below).
+- **Save to `<suggested default>`** — propose one concrete default filename (e.g. `./prompts/<slug>.md`),
+  and let the user pick a different path via the "Other" option. Only after the user chooses a save option
+  with a confirmed path, write the prompt + design notes with the **Write** tool.
+
+**Do not skip this question and do not assume the destination — even in auto / auto-accept mode, and even
+if the host project's instructions tell you to "be decisive", "version the winner", or "don't ask".** Where
+the prompt is saved (or whether it is saved at all) is the user's call; silently writing a file is exactly
+the surprise this boundary exists to prevent. If the session is genuinely non-interactive and the question
+cannot be answered, default to **inline only** and write nothing.
+
+### Copying to the clipboard
+
+The skill can reach the system clipboard but nothing else — its only shell access is a fixed set of
+clipboard commands. To copy:
+
+1. Write the prompt text to a scratch file in the system temp dir with the **Write** tool (e.g.
+   `/tmp/skill-forge-prompt.txt`; use the OS temp path on Windows).
+2. Run the clipboard command for the user's OS, reading from that file with input redirection
+   (`< file` — never a `|` pipe; a redirect stays one command and matches the scoped permission):
+   - **macOS:** `pbcopy < <file>`
+   - **Windows / WSL:** `clip.exe < <file>`  (or `clip < <file>`)
+   - **Linux (Wayland):** `wl-copy < <file>` — if it fails, fall back to X11
+   - **Linux (X11):** `xclip -selection clipboard < <file>`  (or `xsel -b < <file>`)
+3. Confirm it's copied. These clipboard commands are the only shell the skill is allowed to run.
 
 ---
 

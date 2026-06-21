@@ -108,6 +108,12 @@ A prompt spec is "ready to craft" once these **nine dimensions** are pinned — 
 
 Heavy technique libraries load **only at the craft step** (progressive disclosure), so the dialogue stays cheap.
 
+**Safe by construction — with hard boundaries.** Both skills are read-only: they read, ask, copy to your
+clipboard, and write exactly *one* file — the finished prompt, and only when you choose *save*. No edits to
+your code and no arbitrary shell, even in auto mode (enforced via scoped `allowed-tools`: read tools +
+`Write` + a fixed set of clipboard commands). Each run is bounded: it **opens** by confirming the single
+prompt it's crafting and **closes** by asking where you want it — it crafts that one prompt and nothing else.
+
 ## Flags & modes
 
 | Flag | Effect |
