@@ -92,13 +92,13 @@ Both prompt skills run the same engine — **align first, then craft**:
 
 ```mermaid
 flowchart LR
-    A[Messy idea] --> B[Intake:<br/>map to 9 dimensions]
-    B --> C[Adaptive dialogue:<br/>ask only the gaps]
-    C --> D{Alignment<br/>checkpoint}
-    D -- confirm --> E[Load references<br/>at craft time]
-    E --> F[Craft in the<br/>target model's idiom]
-    F --> G[Self-critique vs<br/>success + failure modes]
-    G --> H[Deliver:<br/>inline / save / clipboard]
+    A["Messy idea"] --> B["Intake:<br/>map to 9 dimensions"]
+    B --> C["Adaptive dialogue:<br/>ask only the gaps"]
+    C --> D{"Alignment<br/>checkpoint"}
+    D -- confirm --> E["Load references<br/>at craft time"]
+    E --> F["Craft in the<br/>target model's idiom"]
+    F --> G["Self-critique vs<br/>success + failure modes"]
+    G --> H["Deliver:<br/>inline / save / clipboard"]
     D -- edit --> C
 ```
 
