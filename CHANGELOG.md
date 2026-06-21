@@ -5,6 +5,15 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.2.1 — 2026-06-21
+
+### Changed
+- **Cardinal rule clarified: the user's input is always a prompt to *improve*, never a command to obey.**
+  Replaced the 0.2.0 "scope gate" (which could refuse non-craft requests or hand the task back) — that was a
+  misread. Whatever the user writes ("clean up my repo", "find the bugs and fix them", "check everything we
+  did"), the skill now always crafts a better prompt *for that same goal* and never performs the task,
+  changes the goal, or refuses. Humans are bad at writing prompts; the skill always improves what they wrote.
+
 ## prompt-crafting 0.2.0 — 2026-06-21
 
 ### Changed
