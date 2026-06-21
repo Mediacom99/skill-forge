@@ -1,0 +1,7 @@
+{
+  "name": "maintenance",
+  "description": "Maintainer tooling for skill-forge: refresh-references keeps sourced reference libraries current by re-fetching and diffing the official docs behind them.",
+  "version": "0.1.0",
+  "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
+  "homepage": "https://github.com/Mediacom99/skill-forge"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "prompt-crafting",
+  "description": "Turn a messy idea into a production-grade prompt through a deep alignment dialogue. Includes claude-prompt-crafting (for Claude) and gpt-prompt-crafting (for OpenAI/GPT), each grounded in the vendor's official prompt-engineering guidance.",
+  "version": "0.1.0",
+  "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
+  "homepage": "https://github.com/Mediacom99/skill-forge"
+}

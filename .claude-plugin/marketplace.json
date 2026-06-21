@@ -1,0 +1,27 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "skill-forge",
+  "description": "A growing collection of high-quality, installable Claude Code skills. First up: prompt-crafting — turn a rough idea into a production-grade prompt for Claude or GPT through a short alignment dialogue.",
+  "owner": {
+    "name": "Mediacom99",
+    "url": "https://github.com/Mediacom99"
+  },
+  "plugins": [
+    {
+      "name": "prompt-crafting",
+      "description": "Two skills that turn a messy idea into a production-grade prompt through a deep alignment dialogue, grounded in the target vendor's official prompt-engineering guidance: claude-prompt-crafting (for Claude/Anthropic models) and gpt-prompt-crafting (for OpenAI/GPT models).",
+      "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
+      "category": "productivity",
+      "source": "./plugins/prompt-crafting",
+      "homepage": "https://github.com/Mediacom99/skill-forge/tree/main/plugins/prompt-crafting"
+    },
+    {
+      "name": "maintenance",
+      "description": "Maintainer tooling for skill-forge. refresh-references re-fetches the official source docs behind any skill's reference library, diffs them, and proposes updates — keeping sourced references current.",
+      "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
+      "category": "productivity",
+      "source": "./plugins/maintenance",
+      "homepage": "https://github.com/Mediacom99/skill-forge/tree/main/plugins/maintenance"
+    }
+  ]
+}
