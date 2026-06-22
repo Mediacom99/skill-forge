@@ -5,6 +5,17 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.2.2 — 2026-06-22
+
+### Changed
+- **`claude-prompt-crafting` references refreshed against Anthropic's current docs** (drift issue #1).
+  Repositioned Claude Fable 5 from "creative writing" to its current long-horizon / agentic framing and
+  added Claude Mythos 5; documented the `reasoning_extraction` refusal category and Opus 4.8 fallback for
+  Fable 5 / Mythos 5; sharpened Opus 4.8 effort guidance (`xhigh` for coding/agentic, `high` minimum for
+  intelligence-sensitive tasks); clarified that prefill removal covers the 5-series. Bumped `last-verified`
+  to 2026-06-22. (Source hashes were already refreshed by the `check-sources` workflow.) The plugin version
+  bump applies to both skills; `gpt-prompt-crafting` content is unchanged.
+
 ## prompt-crafting 0.2.1 — 2026-06-21
 
 ### Changed

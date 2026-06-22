@@ -1,6 +1,6 @@
 # Sources — claude-prompt-crafting references
 
-**last-verified: 2026-06-21** · vendor: Anthropic · official docs only.
+**last-verified: 2026-06-22** · vendor: Anthropic · official docs only.
 
 The `refresh-references` skill and the `check-sources.yml` workflow read the URL list below.
 When updating, re-fetch each URL, reconcile `techniques.md` / `techniques-advanced.md`, then bump
@@ -15,10 +15,15 @@ the `last-verified` dates here and in those files.
 | 5 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools | Console prompt generator / improver, template variables |
 
 ## Volatile items to recheck each cycle
-- **Prefill removal** — applies to Claude 4.6+; confirm still current and which models.
-- **Effort levels & adaptive thinking** — parameter names, levels (low…max), defaults move per model.
-- **Per-model pages** — model names (Opus/Sonnet/Haiku/Fable + versions) and their specific tips change;
-  the doc set was consolidated once already (old per-technique pages now redirect).
+- **Prefill removal** — applies to Claude 4.6 and newer, incl. the 5-series (Fable 5 / Mythos 5); confirm.
+- **Effort levels & adaptive thinking** — parameter names, levels (low…max), defaults move per model
+  (Opus 4.8: `xhigh` for coding/agentic, `high` min for intelligence-sensitive).
+- **Per-model pages** — model names (Opus / Sonnet / Haiku / Fable / Mythos + versions) and their tips
+  change; current set: Fable 5, Mythos 5, Opus 4.8 / 4.7 / 4.6, Sonnet 4.6, Haiku 4.5. The doc set was
+  consolidated once already (old per-technique pages now redirect).
+- **Refusal categories & fallback (Fable 5 / Mythos 5)** — `reasoning_extraction` (don't ask the model to
+  reproduce its reasoning as text), offensive-cyber, bio/life-sciences; declined requests fall back to
+  Opus 4.8. New since the 0.1.0 distillation.
 - **Structured Outputs / API surface** — verify the current way to force formats.
 
 > NOTE: Anthropic docs are also served from `docs.anthropic.com` / `docs.claude.com`; the

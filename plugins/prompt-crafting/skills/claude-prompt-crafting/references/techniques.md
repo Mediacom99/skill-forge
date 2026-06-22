@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-06-21
+last-verified: 2026-06-22
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: LEAN CORE — the high-leverage techniques that apply to most Claude prompts.
 For agentic/tool-use/long-context/RAG/eval/model-specific guidance, see techniques-advanced.md.
@@ -10,7 +10,7 @@ For agentic/tool-use/long-context/RAG/eval/model-specific guidance, see techniqu
 The ~15 highest-leverage techniques for crafting prompts that target Claude. Apply the few that
 fit the spec; do not apply all of them. Each entry: **what · when · how**.
 
-> **VOLATILE (recheck on update):** prefill removal applies to Claude 4.6+; reasoning/`effort`
+> **VOLATILE (recheck on update):** prefill removal applies to Claude 4.6 and newer; reasoning/`effort`
 > parameters and model-specific tips change per model. See the flagged items below and `_sources.md`.
 
 ## Structure & roles
@@ -83,9 +83,10 @@ fit the spec; do not apply all of them. Each entry: **what · when · how**.
 
 ## VOLATILE / model mechanics
 
-15. **No prefill on 4.6+.** *What:* prefilling the assistant turn is unsupported on Claude 4.6+ (returns
-    400). *Instead:* force format via Structured Outputs or a direct instruction ("Respond directly, no
-    preamble; do not start with 'Here is…'"); put continuations in the user turn.
+15. **No prefill on 4.6 and newer.** *What:* prefilling the assistant turn is unsupported on Claude 4.6
+    and newer, including the 5-series (Fable 5 / Mythos 5) — returns 400. *Instead:* force format via
+    Structured Outputs or a direct instruction ("Respond directly, no preamble; do not start with
+    'Here is…'"); put continuations in the user turn.
 
 16. **Effort & output budget (current models).** *What:* harder tasks want more reasoning effort and a
     bigger output budget. *When:* complex or long generations. *How:* raise `effort` (e.g. high/xhigh)

@@ -13,7 +13,7 @@ description: >
   models, use the gpt-prompt-crafting skill instead.
 argument-hint: "[your rough idea] [--quick | --deep] [--refine]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.2.1
+version: 0.2.2
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---

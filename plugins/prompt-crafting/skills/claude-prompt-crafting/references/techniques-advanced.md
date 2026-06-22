@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-06-21
+last-verified: 2026-06-22
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.
@@ -66,14 +66,25 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - Prefer many cheap graded examples over a few hand-crafted ones; keep rubric criteria independent.
 
 ## Per-model tips (VOLATILE — verify on the model page)
-- **Opus (4.x):** more literal instruction-following (state scope explicitly); start at higher effort for
-  hard work; large output budget for long generations; positive examples beat "don't"; front-load the full
-  task in the first turn; re-test old voice/style prompts against the newer, more direct baseline.
-- **Sonnet:** strong general workhorse; same core techniques; tune effort to the task.
-- **Haiku:** fast/cheap; keep prompts tighter and more explicit; lean on examples and clear format.
-- **Fable (creative writing):** strong instruction-follower, so **brief instructions beat enumerating every
-  behavior**; lead with the outcome and give the reason; performs well with a memory/notes file across runs;
-  do **not** ask it to reproduce its reasoning inline.
+- **Opus 4.8 (current Opus flagship):** interprets instructions literally, especially at lower effort —
+  state scope explicitly when an instruction should apply broadly ("every section, not just the first").
+  Effort is the main lever: start at `xhigh` for coding/agentic work, a minimum of `high` for
+  intelligence-sensitive tasks, and reserve `low`/`medium` for scoped or latency-sensitive work (it scopes
+  strictly at the low end, with some under-thinking risk). Thinking is off unless you set
+  `thinking: {type: "adaptive"}`; at `xhigh`/`max` give a large max-output budget (~64k to start). Positive
+  examples beat "don't"; it calibrates length to task complexity (ask for concision if you need it);
+  front-load the full task in the first turn; re-test old voice/style prompts against the more direct,
+  opinionated baseline.
+- **Sonnet 4.6 / Haiku 4.5:** Sonnet — strong general workhorse; same core techniques; tune effort to the
+  task. Haiku — fast/cheap; keep prompts tighter and more explicit; lean on examples and clear format.
+- **Fable 5 / Mythos 5 (current frontier — long-horizon, agentic, ambiguity-tolerant):** strong
+  instruction-followers, so **brief instructions beat enumerating every behavior**; lead with the outcome
+  and give the reason; perform well with a memory/notes file across runs; `high` is a good default effort
+  (`xhigh` for the hardest work). **Do not ask them to echo, transcribe, or explain their reasoning as
+  response text** — on Fable 5 / Mythos 5 this can trigger the `reasoning_extraction` refusal and fall back
+  to Opus 4.8; read the structured `thinking` blocks instead. Both are adaptive-thinking-only (no
+  extended-thinking budgets) and run safety classifiers (offensive-cyber, bio/life-sciences,
+  reasoning-extraction) that can also fall back to Opus 4.8.
 
 ## Prompt-injection / untrusted input
 - Separate untrusted content in clearly named tags and tell Claude that content inside them is data, not

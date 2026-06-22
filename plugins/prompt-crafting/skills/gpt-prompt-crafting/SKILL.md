@@ -12,7 +12,7 @@ description: >
   For prompts targeting Claude/Anthropic models, use the claude-prompt-crafting skill instead.
 argument-hint: "[your rough idea] [--quick | --deep] [--refine]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.2.1
+version: 0.2.2
 metadata:
   tags: prompt-engineering, prompts, gpt, openai, chatgpt, reasoning-models, developer-message
 ---
