@@ -1,11 +1,11 @@
 {
   "_comment": "Content snapshots for the check-sources.yml drift detector. hash=null means not yet captured; the workflow populates and commits real hashes on first run, then compares on each scheduled run.",
-  "last_updated": "2026-06-21",
+  "last_updated": "2026-06-22",
   "sources": {
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "63835316ab471091d57ad7511cfd1c4f85ad341e21938ae75cd8907315e04a7d",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "1bf63d303a1c5289074cbccd8d3235d9ea0603ae5d5d68553287b915329408e0",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "bc616b8e801e05d5b1f9cdca9c01bf76aa6773aca0011bc8e77c202b940354bc",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "697b5af8b9947d95db0bce7753bff6dc9221fad3c8f448e9c463c631450a403e",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools": "4ea11d46e6e5552028655266bd66da8a46fa431aa5030fbe647e9cc1eeb48459"
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "3d5c056e82e308c9fcd68ed1883acd0620befd833ae5dca71bda9f05c2024918",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "a484adb1fb4c787a1dc86ac4288eda12996668cdafa24acb27c7456977a70014",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "98398196ea536e3453c6f19c6d608e33c8118fe23aedac50585d6aca78e7e598",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "5d20f6688f28a1d7b5f829b76ac7e3f67464ea5c731d60e2eeefcaf011b337be",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools": "3aaa8411a76b1f57dadb49071647e6c094f031e9f5938bd670fa147a27080961"
   }
 }
