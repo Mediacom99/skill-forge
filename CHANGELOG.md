@@ -5,6 +5,19 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.3.0 — 2026-06-22
+
+### Added
+- **`--template` flag + an "improve" default (output-shape split).** By default both skills now return a
+  single, concrete, **ready-to-use** prompt brought up to current guideline standard — no forced
+  system/user split or `{{variables}}`. Pass `--template` (or let the skill auto-detect clear reuse intent)
+  to get the previous behavior: a **reusable, parameterized template**. Output shape is orthogonal to
+  `--refine` and `--quick`/`--deep`, is stated at the alignment checkpoint, and is checked in self-critique.
+
+### Fixed
+- Corrected stale "real test-run" wording in `--deep` (Step 0 and README) to the **dry paper simulation**
+  that 0.2.0 actually introduced — the skill never executes the described task.
+
 ## prompt-crafting 0.2.2 — 2026-06-22
 
 ### Changed

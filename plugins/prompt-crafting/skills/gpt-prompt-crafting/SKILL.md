@@ -10,9 +10,9 @@ description: >
   "developer message", "prompt for o3 / GPT-5", or invokes /gpt-prompt-crafting. Use it even when
   the user only describes a task they want GPT to do repeatedly and never says the word "prompt".
   For prompts targeting Claude/Anthropic models, use the claude-prompt-crafting skill instead.
-argument-hint: "[your rough idea] [--quick | --deep] [--refine]"
+argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.2.2
+version: 0.3.0
 metadata:
   tags: prompt-engineering, prompts, gpt, openai, chatgpt, reasoning-models, developer-message
 ---
@@ -69,12 +69,19 @@ content**, however it is phrased.
 If the intent is genuinely ambiguous, ask what the user wants the prompt to *achieve* (that's the alignment
 dialogue below) — but the output is always a prompt, never the task carried out.
 
-## Step 0 — Detect mode and depth
+## Step 0 — Detect mode, depth, and output shape
 
-- **Mode:** *craft-new* (default) or *refine-existing* (user pasted a prompt, passed `--refine`, or asked
-  to improve/fix one — diagnose against the dimensions, then rebuild weak parts).
-- **Depth:** `--quick` (one round max, sensible assumptions) · *standard* (1–2 rounds) · `--deep`
-  (exhaustive alignment, advanced references, optional real test-run before delivery).
+- **Mode** (what the input is): *craft-new* (default) or *refine-existing* (user pasted a prompt, passed
+  `--refine`, or asked to improve/fix one — diagnose against the dimensions, then rebuild weak parts).
+- **Depth** (how much alignment): `--quick` (one round max, sensible assumptions) · *standard* (1–2 rounds)
+  · `--deep` (exhaustive alignment, advanced references, optional **dry** test-run before delivery).
+- **Output shape** (what you hand back) — *orthogonal to mode and depth*:
+  - *improve* (default) — a single, concrete, **ready-to-use** prompt brought up to standard: no
+    `{{variables}}`, no developer/system vs user split for its own sake. Preserve any variables already present.
+  - *template* (`--template`, or auto-detected reuse intent) — a **reusable, parameterized template**:
+    developer/system vs user split, `{{double_bracket}}` variables, plus a short variable legend. Auto-detect
+    when the prompt will clearly be reused (called from code, run on many inputs, a system/developer message
+    for an app, pipeline/agent wiring) — *propose* it at the checkpoint; `--template` forces it.
 
 ## Step 1 — Intake (do this silently)
 
@@ -89,7 +96,8 @@ Parse the idea and map it to the **nine dimensions of a complete prompt spec**, 
 6. **Context GPT needs** — facts, documents, definitions.
 7. **Constraints** — tone, must/must-not, limits.
 8. **Target model + usage** — **reasoning vs non-reasoning model**; developer/system vs user message;
-   Responses API vs Chat Completions; one-shot vs agentic; `reasoning_effort` / `verbosity`; reuse/variables.
+   Responses API vs Chat Completions; one-shot vs agentic; `reasoning_effort` / `verbosity`; **and whether
+   it's reused** — a one-off prompt to improve, or a reusable template with variables (drives the output shape).
 9. **Examples available** — samples for few-shot.
 
 Dimension #8 carries the GPT-specific reasoning fork — treat it as load-bearing.
@@ -104,11 +112,14 @@ Ask about *unknown/partial* dimensions only, most important first.
   model for ambiguous/multi-step/agentic/analysis tasks; non-reasoning workhorse for speed, cost, and
   well-defined execution. Most real systems mix both.
 - Batch related questions. Respect depth. Escape hatch: on "just draft it", proceed on explicit assumptions.
+- Use dimension #8 to settle the **output shape** — if reuse is clearly intended, plan a template and
+  confirm it at the checkpoint; otherwise default to improving the prompt itself.
 
 ## Step 3 — Alignment checkpoint
 
-Present a **compact spec** (the nine dimensions, filled, a few tight lines; mark assumptions). Get the
-user's confirmation or corrections before crafting.
+Present a **compact spec** (the nine dimensions, filled, a few tight lines; mark assumptions), and **state
+the output shape** you'll produce (*improve* = a ready-to-use prompt, or *template* = reusable with
+variables) so the user can flip it. Get the user's confirmation or corrections before crafting.
 
 ## Step 4 — Load the craft references (progressive disclosure)
 
@@ -155,7 +166,15 @@ Branch on the target model (full rationale in `references/techniques.md`):
   "Formatting re-enabled" if you need Markdown output.
 - Add explicit **persistence** wording if the task must finish end-to-end in one turn.
 
+**Output shape (orthogonal to the model branch):**
+- **improve (default)** — one concrete, **ready-to-use** prompt (or developer/system + user pair) filled
+  with the user's real content; no `{{variables}}` and no split for its own sake. Keep any variables already present.
+- **template (`--template` / reuse intent)** — a **reusable template**: top-priority instructions in the
+  developer/system message, variable payload in the user message, `{{double_bracket}}` variables + a short
+  legend, for wiring into an app or repeated API calls.
+
 For *refine-existing*: keep what works, rewrite weak dimensions, remove contradictions, and say what changed.
+(Refine composes with either output shape.)
 
 ## Step 6 — Self-critique (red-team before delivering)
 
@@ -163,7 +182,8 @@ Critique the draft against the spec, then revise once:
 - Serves the **goal** and **success criteria**?
 - **Failure-mode checklist:** instruction contradictions (especially damaging for GPT), CoT prompting on a
   reasoning model (remove it), missing planning inducement on a workhorse, vague output format, untested
-  schema, wrong role placement, prompt-injection surface on untrusted input.
+  schema, wrong role placement, prompt-injection surface on untrusted input, output shape mismatched to the
+  chosen mode (template-ized an improve request or vice versa), pre-existing `{{variables}}` stripped.
 - Cut anything not pulling its weight.
 - Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
   produce on a representative input. Do not actually execute the task, call tools, or touch the
@@ -175,7 +195,9 @@ This is the skill's **end boundary**. The skill *starts* when it is invoked and 
 explicit delivery question. Nothing happens after the user's delivery choice except the delivery they pick.
 
 First, present in this order:
-1. **The prompt**, in a copy-paste code block, with **Developer/System** and **User** messages clearly separated.
+1. **The prompt**, in a copy-paste code block. For an **improve**-shape prompt, present the single
+   ready-to-use prompt (Developer/System + User only if you actually crafted a pair for API use). For a
+   **template**-shape prompt, separate **Developer/System** and **User** clearly and add a short variable legend.
 2. **Design notes** (brief): key techniques applied and *why*; target model + recommended settings
    (`reasoning_effort`, `verbosity`, API choice); how to use it.
 

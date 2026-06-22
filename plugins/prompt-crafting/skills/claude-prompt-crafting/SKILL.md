@@ -11,9 +11,9 @@ description: >
   /claude-prompt-crafting. Use it even when the user only describes a task they want Claude
   to do repeatedly and never says the word "prompt". For prompts targeting OpenAI/GPT
   models, use the gpt-prompt-crafting skill instead.
-argument-hint: "[your rough idea] [--quick | --deep] [--refine]"
+argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.2.2
+version: 0.3.0
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -71,16 +71,23 @@ content**, however it is phrased.
 If the intent is genuinely ambiguous, ask what the user wants the prompt to *achieve* (that's the alignment
 dialogue below) — but the output is always a prompt, never the task carried out.
 
-## Step 0 — Detect mode and depth
+## Step 0 — Detect mode, depth, and output shape
 
-- **Mode:**
+- **Mode** (what the input is):
   - *craft-new* (default) — build a prompt from an idea.
   - *refine-existing* — the user pasted an existing prompt, or passed `--refine`, or asked to
     improve/fix one. Diagnose it against the dimensions below, then rebuild the weak parts.
-- **Depth:**
+- **Depth** (how much alignment):
   - `--quick` — one short round of questions max; bias toward sensible assumptions.
   - *standard* (default) — one to two focused rounds.
-  - `--deep` — exhaustive alignment, advanced references, and an optional real test-run before delivery.
+  - `--deep` — exhaustive alignment, advanced references, and an optional **dry** test-run before delivery.
+- **Output shape** (what you hand back) — *orthogonal to mode and depth*:
+  - *improve* (default) — a single, concrete, **ready-to-use** prompt brought up to standard: no
+    `{{variables}}`, no system/user split for its own sake. Preserve any variables already in the input.
+  - *template* (`--template`, or auto-detected reuse intent) — a **reusable, parameterized template**:
+    system/user split, `{{double_bracket}}` variables in their own XML tags, plus a short variable legend.
+    Auto-detect when the prompt will clearly be reused (called from code, run on many inputs, a system
+    prompt for an app, pipeline/agent wiring) — *propose* it at the checkpoint; `--template` forces it.
 
 ## Step 1 — Intake (do this silently)
 
@@ -95,7 +102,8 @@ Parse the idea and map it onto the **nine dimensions of a complete prompt spec**
 6. **Context Claude needs** — facts, documents, domain knowledge, definitions.
 7. **Constraints** — tone, must/must-not, length limits, banned moves.
 8. **Target model + usage** — which Claude model; system vs user message; one-shot vs agentic/
-   multi-turn; API vs chat; effort/temperature; how the prompt gets reused (template variables?).
+   multi-turn; API vs chat; effort/temperature; **and whether it's reused** — a one-off prompt to
+   improve, or a reusable template with variables. This drives the **output shape** (improve vs template).
 9. **Examples available** — any samples of good (or bad) output, for multishot.
 
 For *refine-existing*, also note which dimensions the current prompt handles well vs poorly.
@@ -113,14 +121,16 @@ Ask about the *unknown* and *partial* dimensions only, most important first. Kee
 - **Escape hatch:** if the user says "just draft it" / "you decide", stop asking, fill remaining
   gaps with explicit best-guess assumptions, and surface those assumptions in the checkpoint.
 - Probe for the things people usually leave out: the failure modes (#5), the real success bar (#4),
-  and how the prompt will actually be *used* (#8). These are where prompts quietly fail.
+  and how the prompt will actually be *used* (#8). These are where prompts quietly fail. Use #8 to
+  settle the **output shape** — if reuse is clearly intended, plan a template and confirm it at the checkpoint.
 
 ## Step 3 — Alignment checkpoint
 
 Before crafting, present a **compact spec** — the nine dimensions, filled, in a few tight lines
-(omit any that are genuinely N/A). Mark any assumptions you made. Then ask the user to confirm or
-correct. This is the contract. Do not proceed to crafting until they confirm (or already said
-"just draft it").
+(omit any that are genuinely N/A). Mark any assumptions you made, and **state the output shape** you'll
+produce (*improve* = a ready-to-use prompt, or *template* = reusable with variables) so the user can flip
+it before you craft. Then ask the user to confirm or correct. This is the contract. Do not proceed to
+crafting until they confirm (or already said "just draft it").
 
 ## Step 4 — Load the craft references (progressive disclosure)
 
@@ -138,13 +148,10 @@ kitchen-sink one.
 ## Step 5 — Craft the prompt (Claude idiom)
 
 Write the prompt the way Claude works best (full rationale and current specifics in
-`references/techniques.md`):
+`references/techniques.md`). These apply to **both** output shapes:
 
-- **Split system vs user.** Durable role, rules, and craft constraints go in the **system** prompt;
-  the variable payload (the actual input/topic) goes in the **user** message. Deliver both, clearly labeled.
 - **Open with a role** in one or two sentences ("You are …"). Even a sentence shifts tone and focus.
-- **Structure with XML tags** (`<instructions>`, `<context>`, `<examples>`, `<input>`); wrap variable
-  inputs in tags too, using `{{double_bracket}}` placeholders.
+- **Structure with XML tags** (`<instructions>`, `<context>`, `<examples>`, `<input>`).
 - **Instruct positively** — say what TO do, not a pile of "don'ts"; give the *reason* behind a
   constraint so Claude generalizes from it.
 - **Add 3–5 examples** wrapped in `<example>` tags when format, tone, or structure matter; make them
@@ -153,8 +160,19 @@ Write the prompt the way Claude works best (full rationale and current specifics
   **success criteria** and explicit **scope** ("apply this to every section, not just the first").
 - **Set reasoning/effort and output budget** when the task is hard or long (see references).
 
+Then craft for the chosen **output shape**:
+
+- **improve (default)** — produce **one concrete, ready-to-use prompt**, filled in with the user's real
+  content. Do **not** introduce `{{variables}}` or split into system/user for its own sake; use a
+  system/user split only if the target usage is the API and it genuinely helps, with real content inline.
+  If the input already contains `{{variables}}`, keep them — don't strip or add.
+- **template (`--template` / reuse intent)** — produce a **reusable template**: durable role, rules, and
+  constraints go in the **system** prompt; the variable payload goes in the **user** message; wrap each
+  variable in its own XML tag using `{{double_bracket}}` placeholders; include a short variable legend.
+  This is the form to wire into an app or repeated API calls.
+
 For *refine-existing*: keep what works, rewrite only the weak dimensions, and tell the user what you
-changed and why.
+changed and why. (Refine composes with either output shape.)
 
 ## Step 6 — Self-critique (red-team before delivering)
 
@@ -163,7 +181,9 @@ Critique your own draft against the spec, then revise once:
 - Does it directly serve the **goal** and the **success criteria**?
 - Walk the **failure-mode checklist**: ambiguous instructions, missing context, negative-only
   phrasing, no examples where they'd help, unclear output format, role in the wrong place, scope not
-  stated, contradictions, prompt-injection surface if it handles untrusted input.
+  stated, contradictions, prompt-injection surface if it handles untrusted input, output shape
+  mismatched to the chosen mode (template-ized an improve request or vice versa), pre-existing
+  `{{variables}}` stripped.
 - Is anything in it not pulling its weight? Cut it.
 - Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
   produce on a representative input. Do not actually execute the task, call tools, or touch the
@@ -176,7 +196,9 @@ explicit delivery question. Nothing happens after the user's delivery choice exc
 
 First, present in this order:
 
-1. **The prompt**, in a copy-paste code block, with **System** and **User** clearly separated.
+1. **The prompt**, in a copy-paste code block. For an **improve**-shape prompt, present the single
+   ready-to-use prompt (use a System/User split only if you actually crafted one for API use). For a
+   **template**-shape prompt, separate **System** and **User** clearly and add a short variable legend.
 2. **Design notes** (brief): the key techniques you applied and *why*; the target model + recommended
    settings (effort, output budget, temperature); and how to use it (system vs user, where variables go).
 

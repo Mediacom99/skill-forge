@@ -70,7 +70,7 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 | **gpt-prompt-crafting** | `/gpt-prompt-crafting` | Crafts a prompt **for OpenAI/GPT** (developer/system+user, Markdown structure, Structured Outputs) with a built-in **reasoning-vs-workhorse** branch, grounded in OpenAI's official docs. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 
-Both prompt skills also **refine existing prompts** — paste one and ask to improve it.
+Both prompt skills also **refine existing prompts** — paste one and ask to improve it. By default they return an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
 
 ## See it work
 
@@ -118,10 +118,11 @@ prompt it's crafting and **closes** by asking where you want it — it crafts th
 
 | Flag | Effect |
 |------|--------|
-| *(none)* | Standard: one to two focused rounds of questions. |
+| *(none)* | Standard: one to two focused rounds of questions. Returns an **improved, ready-to-use prompt** by default. |
 | `--quick` | One short round max; fills gaps with sensible, stated assumptions. |
-| `--deep` | Exhaustive alignment, loads the advanced reference appendix, and offers a real test-run before delivery. |
+| `--deep` | Exhaustive alignment, loads the advanced reference appendix, and offers a dry test-run (paper simulation) before delivery. |
 | `--refine` | Treat the input as an existing prompt to diagnose and upgrade (also auto-detected when you paste one). |
+| `--template` | Output a **reusable, parameterized template** (system/user split + `{{variables}}`) instead of a one-off prompt — also auto-detected when reuse is clearly intended. |
 
 ## Provenance & freshness
 
