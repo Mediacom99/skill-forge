@@ -74,17 +74,19 @@ def main():
     for line in drift:
         print(line)
 
-    if drift:
+    if drift or failed:
         report = ROOT / "drift.md"
         body = [
             "## 📡 Source docs changed",
             "",
-            "The official docs behind one or more reference libraries changed since the last check.",
+            "The official docs behind one or more reference libraries changed — or could not be fetched — "
+            "since the last check.",
             "Run `/refresh-references` on the affected skill(s) to reconcile, then bump the "
             "`last-verified` dates and update `CHANGELOG.md`.",
             "",
-            *drift,
         ]
+        if drift:
+            body += drift
         if failed:
             body += ["", "### Fetch failures (may be moved/removed URLs — verify)", *failed]
         report.write_text("\n".join(body) + "\n")
@@ -92,7 +94,7 @@ def main():
     out = os.environ.get("GITHUB_OUTPUT")
     if out:
         with open(out, "a") as fh:
-            fh.write(f"has_drift={'true' if drift else 'false'}\n")
+            fh.write(f"has_drift={'true' if (drift or failed) else 'false'}\n")
 
     print(f"\nsummary: {len(drift)} changed, {len(baselined)} baselined, {len(failed)} failed")
 

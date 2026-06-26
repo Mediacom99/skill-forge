@@ -24,6 +24,15 @@ ROOT = Path(__file__).resolve().parents[2]
 KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 errors = []
 
+# Prompt-crafting skills are read-only by contract (see their SKILL.md): they may declare only these
+# tools. A regression that adds Edit or an unscoped Bash would silently break that guarantee, so the
+# install-safety gate enforces it here.
+READONLY_PROMPT_TOOLS = {
+    "Read", "Grep", "Glob", "AskUserQuestion", "Write",
+    "Bash(pbcopy:*)", "Bash(wl-copy:*)", "Bash(xclip:*)", "Bash(xsel:*)",
+    "Bash(clip.exe:*)", "Bash(clip:*)",
+}
+
 
 def load_json(path):
     try:
@@ -105,6 +114,14 @@ def check_plugins():
                 )
         if not fm.get("description"):
             errors.append(f"{skill_md.relative_to(ROOT)}: frontmatter missing 'description'")
+        if name and str(name).endswith("-prompt-crafting"):
+            declared = {t.strip() for t in str(fm.get("allowed-tools", "")).split(",") if t.strip()}
+            extra = declared - READONLY_PROMPT_TOOLS
+            if extra:
+                errors.append(
+                    f"{skill_md.relative_to(ROOT)}: read-only contract violated — "
+                    f"allowed-tools grants {sorted(extra)} beyond the permitted set"
+                )
         check_links(skill_md)
 
 
