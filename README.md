@@ -84,17 +84,15 @@ Both prompt skills also **refine existing prompts** — paste one and ask to imp
 
 ## See it work
 
-```text
-You:    /claude-prompt-crafting  write a blog post about our new feature, don't make it boring
-Claude: A few quick things so I craft the right prompt, not a generic one:
-        • Who's the reader — technical or not?
-        • What does "works" look like — sign-ups, comprehension, shares?
-        • Any facts about the feature I should hand the model?
-        …
-        [alignment checkpoint — a compact spec you confirm]
-        [crafts an improved, ready-to-use prompt, in Claude's idiom, with design notes]
-        How do you want it? (1) shown here  (2) saved to a file  (3) copied to clipboard
-```
+A real run — paste a rough prompt, and it diagnoses the gaps, crafts a better one, and hands it over.
+
+**1. Align** — it maps your prompt onto the nine dimensions and asks only what's missing (including whether you want a one-off prompt or a reusable template):
+
+![Alignment: the skill diagnoses an existing prompt and asks only the gaps](assets/refine-align.png)
+
+**2. Craft & deliver** — it rebuilds the prompt, explains every change, and always asks how you want it — it never saves silently:
+
+![Craft: the rebuilt prompt with a variable legend, a "what changed" rationale, and the delivery menu](assets/refine-deliver.png)
 
 ## How it works
 
