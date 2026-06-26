@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-06-22
+last-verified: 2026-06-26
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.

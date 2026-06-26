@@ -79,4 +79,8 @@ _Shared engine — changes here usually apply to both skills._
 
 ## maintenance — `refresh-references`
 
-- _(nothing queued)_
+- [ ] **Reduce `check-sources` false positives — hash normalized content, not raw bytes** · proposed 2026-06-26
+  - Both drift issues were partly cosmetic: #2 (06-22) flipped all 5 hashes at once from a site-wide
+    re-render with **no content change**. `check_sources.py` hashes raw response bytes, so any docs-site
+    rebuild trips it. Normalize before hashing (extract main content / strip boilerplate + whitespace) to cut
+    false-positive issues. Pairs well with the `/schedule` auto-reconcile routine (fewer no-op runs).

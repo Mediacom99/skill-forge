@@ -5,6 +5,12 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+### Maintenance
+- Re-verified `claude-prompt-crafting` references against the live Anthropic docs (drift issue #2,
+  2026-06-26): the flagged change was a **cosmetic site-wide re-render** — all volatile facts (model IDs
+  incl. Mythos 5, effort levels/defaults, prefill removal, refusal categories, adaptive thinking) unchanged.
+  Bumped `last-verified` to 2026-06-26; no content or version change.
+
 ## prompt-crafting 0.3.1 — 2026-06-26
 
 ### Fixed
