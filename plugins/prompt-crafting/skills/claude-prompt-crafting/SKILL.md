@@ -1,19 +1,15 @@
 ---
 name: claude-prompt-crafting
 description: >
-  Turn a rough, messy, or half-formed idea into a production-grade prompt FOR CLAUDE
-  (Anthropic) models, through a short, sharp alignment dialogue that nails down intent
-  before writing a single line of the prompt. Use this whenever the user wants to write,
-  design, build, improve, refine, fix, or debug a prompt, system prompt, developer
-  instructions, or agent instructions aimed at Claude / Anthropic / Opus / Sonnet / Haiku /
-  Fable — or says things like "help me write a prompt", "make this prompt better",
-  "prompt for Claude", "craft a system prompt", "my prompt isn't working", or invokes
-  /claude-prompt-crafting. Use it even when the user only describes a task they want Claude
-  to do repeatedly and never says the word "prompt". For prompts targeting OpenAI/GPT
-  models, use the gpt-prompt-crafting skill instead.
+  Craft or improve a production-grade prompt for Claude (Anthropic) models — for chat, the
+  API, or programmatic / agent use — through a short alignment dialogue, then `--template`
+  for a reusable, parameterized version. Use whenever the user wants to write, improve,
+  refine, fix, or debug a prompt, system prompt, or agent instructions for Claude / Opus /
+  Sonnet / Haiku / Fable (even if they only describe a task for Claude and never say
+  "prompt"). For OpenAI / GPT prompts, use the gpt-prompt-crafting skill instead.
 argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.3.0
+version: 0.3.1
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -83,11 +79,15 @@ dialogue below) — but the output is always a prompt, never the task carried ou
   - `--deep` — exhaustive alignment, advanced references, and an optional **dry** test-run before delivery.
 - **Output shape** (what you hand back) — *orthogonal to mode and depth*:
   - *improve* (default) — a single, concrete, **ready-to-use** prompt brought up to standard: no
-    `{{variables}}`, no system/user split for its own sake. Preserve any variables already in the input.
-  - *template* (`--template`, or auto-detected reuse intent) — a **reusable, parameterized template**:
+    `{{variables}}`, no system/user split for its own sake. **This is the default; use it unless there is
+    an explicit reuse signal (below).**
+  - *template* (`--template`, or an explicit reuse signal) — a **reusable, parameterized template**:
     system/user split, `{{double_bracket}}` variables in their own XML tags, plus a short variable legend.
-    Auto-detect when the prompt will clearly be reused (called from code, run on many inputs, a system
-    prompt for an app, pipeline/agent wiring) — *propose* it at the checkpoint; `--template` forces it.
+    Auto-detect template **only from an explicit, durable reuse signal**: the input already contains
+    `{{variables}}`, or the user says it will run repeatedly / on many inputs / called from code or an API /
+    wired into a pipeline or agent. **Do NOT infer template from the task domain alone** (e.g. "contract
+    review / release notes are usually recurring" is not a signal). When unsure, default to *improve* and
+    present it as the default rather than recommending template. `--template` always forces it.
 
 ## Step 1 — Intake (do this silently)
 
@@ -122,7 +122,9 @@ Ask about the *unknown* and *partial* dimensions only, most important first. Kee
   gaps with explicit best-guess assumptions, and surface those assumptions in the checkpoint.
 - Probe for the things people usually leave out: the failure modes (#5), the real success bar (#4),
   and how the prompt will actually be *used* (#8). These are where prompts quietly fail. Use #8 to
-  settle the **output shape** — if reuse is clearly intended, plan a template and confirm it at the checkpoint.
+  settle the **output shape**: default to *improve* unless there's an **explicit reuse signal** (existing
+  variables, or "I'll run this repeatedly / from code or an API / on many inputs") — only then plan a
+  template, and confirm it at the checkpoint. Don't infer a template from the task domain alone.
 
 ## Step 3 — Alignment checkpoint
 
@@ -165,7 +167,8 @@ Then craft for the chosen **output shape**:
 - **improve (default)** — produce **one concrete, ready-to-use prompt**, filled in with the user's real
   content. Do **not** introduce `{{variables}}` or split into system/user for its own sake; use a
   system/user split only if the target usage is the API and it genuinely helps, with real content inline.
-  If the input already contains `{{variables}}`, keep them — don't strip or add.
+  If the input already contains placeholders in any syntax (`{{var}}`, `{var}`, `${var}`, `<var>`), keep
+  them as-is — don't strip, rename, or add new ones.
 - **template (`--template` / reuse intent)** — produce a **reusable template**: durable role, rules, and
   constraints go in the **system** prompt; the variable payload goes in the **user** message; wrap each
   variable in its own XML tag using `{{double_bracket}}` placeholders; include a short variable legend.
@@ -183,7 +186,7 @@ Critique your own draft against the spec, then revise once:
   phrasing, no examples where they'd help, unclear output format, role in the wrong place, scope not
   stated, contradictions, prompt-injection surface if it handles untrusted input, output shape
   mismatched to the chosen mode (template-ized an improve request or vice versa), pre-existing
-  `{{variables}}` stripped.
+  placeholders stripped or renamed.
 - Is anything in it not pulling its weight? Cut it.
 - Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
   produce on a representative input. Do not actually execute the task, call tools, or touch the

@@ -66,8 +66,8 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 
 | Skill | Invoke | What it does |
 |-------|--------|--------------|
-| **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts a production-grade prompt **for Claude** (system+user split, XML structure, multishot, effort/budget), grounded in Anthropic's official docs. |
-| **gpt-prompt-crafting** | `/gpt-prompt-crafting` | Crafts a prompt **for OpenAI/GPT** (developer/system+user, Markdown structure, Structured Outputs) with a built-in **reasoning-vs-workhorse** branch, grounded in OpenAI's official docs. |
+| **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget); `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
+| **gpt-prompt-crafting** | `/gpt-prompt-crafting` | Crafts or improves a prompt **for OpenAI/GPT** (Markdown structure, Structured Outputs) with a built-in **reasoning-vs-workhorse** branch; `--template` adds a reusable developer/system+user template. Grounded in OpenAI's official docs. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 
 Both prompt skills also **refine existing prompts** — paste one and ask to improve it. By default they return an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
@@ -82,7 +82,7 @@ Claude: A few quick things so I craft the right prompt, not a generic one:
         • Any facts about the feature I should hand the model?
         …
         [alignment checkpoint — a compact spec you confirm]
-        [crafts a system + user prompt, in Claude's idiom, with design notes]
+        [crafts an improved, ready-to-use prompt, in Claude's idiom, with design notes]
         How do you want it? (1) shown here  (2) saved to a file  (3) copied to clipboard
 ```
 

@@ -5,6 +5,24 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.3.1 — 2026-06-26
+
+### Fixed
+- **`--template` auto-detect calibration (F2).** No longer infers a reusable template from the task
+  *domain* alone (e.g. "contract review / release notes are usually recurring"). Template is auto-detected
+  only from an explicit, durable reuse signal — an existing `{{variable}}` in the input, or the user saying
+  it will run repeatedly / on many inputs / from code or an API / in a pipeline. *Improve* is framed as the
+  default; `--template` still forces a template. Surfaced by the test suite (T7 over-triggered; T11/T12 correct).
+- **GPT skill internal contradiction (F1).** The shared "Roles" rule no longer mandates a developer/user
+  split as universal — splitting is governed by the output shape, so it no longer contradicts improve mode.
+- **Preserve existing placeholders in any syntax (F6).** Improve/refine keeps `{{var}}`, `{var}`, `${var}`,
+  and `<var>` placeholders as-is, not only `{{double_bracket}}`.
+- **Tighter skill descriptions.** Trimmed both `description:` frontmatter blocks so they fit the default
+  skill-listing budget (the GPT skill's description was being dropped, hurting auto-triggering) and added
+  API / programmatic-use framing.
+- **README:** the "What you get" table and "See it work" example now describe the default as an *improved,
+  ready-to-use prompt* rather than a template.
+
 ## prompt-crafting 0.3.0 — 2026-06-22
 
 ### Added

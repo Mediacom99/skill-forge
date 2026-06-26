@@ -1,18 +1,16 @@
 ---
 name: gpt-prompt-crafting
 description: >
-  Turn a rough, messy, or half-formed idea into a production-grade prompt FOR OPENAI / GPT
-  models (GPT-5.x, the reasoning family, GPT-4.1), through a short, sharp alignment dialogue
-  that nails down intent before writing a single line of the prompt. Use this whenever the user
-  wants to write, design, build, improve, refine, fix, or debug a prompt, system/developer
-  message, or agent instructions aimed at GPT / OpenAI / ChatGPT / o-series / "the OpenAI API" —
-  or says things like "help me write a prompt for GPT", "make this OpenAI prompt better",
-  "developer message", "prompt for o3 / GPT-5", or invokes /gpt-prompt-crafting. Use it even when
-  the user only describes a task they want GPT to do repeatedly and never says the word "prompt".
-  For prompts targeting Claude/Anthropic models, use the claude-prompt-crafting skill instead.
+  Craft or improve a production-grade prompt for OpenAI / GPT models (GPT-5.x, the reasoning
+  family, GPT-4.1) — for chat, the API, or programmatic / agent use — through a short alignment
+  dialogue, with a reasoning-vs-workhorse branch and `--template` for a reusable, parameterized
+  version. Use whenever the user wants to write, improve, refine, fix, or debug a prompt,
+  system / developer message, or agent instructions for GPT / ChatGPT / o-series / the OpenAI API
+  (even if they only describe a task for GPT and never say "prompt"). For Claude / Anthropic
+  prompts, use the claude-prompt-crafting skill instead.
 argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.3.0
+version: 0.3.1
 metadata:
   tags: prompt-engineering, prompts, gpt, openai, chatgpt, reasoning-models, developer-message
 ---
@@ -77,11 +75,14 @@ dialogue below) — but the output is always a prompt, never the task carried ou
   · `--deep` (exhaustive alignment, advanced references, optional **dry** test-run before delivery).
 - **Output shape** (what you hand back) — *orthogonal to mode and depth*:
   - *improve* (default) — a single, concrete, **ready-to-use** prompt brought up to standard: no
-    `{{variables}}`, no developer/system vs user split for its own sake. Preserve any variables already present.
-  - *template* (`--template`, or auto-detected reuse intent) — a **reusable, parameterized template**:
+    `{{variables}}`, no developer/system vs user split for its own sake. **This is the default; use it
+    unless there is an explicit reuse signal (below).**
+  - *template* (`--template`, or an explicit reuse signal) — a **reusable, parameterized template**:
     developer/system vs user split, `{{double_bracket}}` variables, plus a short variable legend. Auto-detect
-    when the prompt will clearly be reused (called from code, run on many inputs, a system/developer message
-    for an app, pipeline/agent wiring) — *propose* it at the checkpoint; `--template` forces it.
+    template **only from an explicit, durable reuse signal**: the input already contains `{{variables}}`, or
+    the user says it will run repeatedly / on many inputs / called from code or an API / wired into a pipeline
+    or agent. **Do NOT infer template from the task domain alone** (e.g. "contract review is usually
+    recurring" is not a signal). When unsure, default to *improve*; `--template` always forces a template.
 
 ## Step 1 — Intake (do this silently)
 
@@ -112,8 +113,9 @@ Ask about *unknown/partial* dimensions only, most important first.
   model for ambiguous/multi-step/agentic/analysis tasks; non-reasoning workhorse for speed, cost, and
   well-defined execution. Most real systems mix both.
 - Batch related questions. Respect depth. Escape hatch: on "just draft it", proceed on explicit assumptions.
-- Use dimension #8 to settle the **output shape** — if reuse is clearly intended, plan a template and
-  confirm it at the checkpoint; otherwise default to improving the prompt itself.
+- Use dimension #8 to settle the **output shape**: default to *improve* unless there's an **explicit reuse
+  signal** (existing variables, or "I'll run this repeatedly / from code or an API / on many inputs") — only
+  then plan a template and confirm it at the checkpoint. Don't infer a template from the task domain alone.
 
 ## Step 3 — Alignment checkpoint
 
@@ -138,9 +140,10 @@ Pick the few techniques that fit; don't apply everything.
 Branch on the target model (full rationale in `references/techniques.md`):
 
 **Shared (both kinds):**
-- **Roles:** put top-priority instructions in the **developer** message (Responses API) or **system**
-  message (Chat Completions) — they outrank the user. The **user** message holds the variable input.
-  Deliver the messages clearly labeled.
+- **Roles:** top-priority instructions outrank the user, so **when you split messages**, put them in the
+  **developer** message (Responses API) or **system** message (Chat Completions), with the variable input
+  in the **user** message; deliver the messages clearly labeled. Whether to split at all is set by the
+  **output shape** below.
 - **Structure with Markdown** — headers and short sections. For embedded documents use XML-ish or
   key-value delimiters (`<doc id="1">…</doc>` or `ID:1 | TITLE:… | CONTENT:…`); avoid wrapping large
   doc sets in JSON.
@@ -168,7 +171,8 @@ Branch on the target model (full rationale in `references/techniques.md`):
 
 **Output shape (orthogonal to the model branch):**
 - **improve (default)** — one concrete, **ready-to-use** prompt (or developer/system + user pair) filled
-  with the user's real content; no `{{variables}}` and no split for its own sake. Keep any variables already present.
+  with the user's real content; no `{{variables}}` and no split for its own sake. Keep any placeholders
+  already present in any syntax (`{{var}}`, `{var}`, `${var}`, `<var>`) as-is — don't strip, rename, or add new ones.
 - **template (`--template` / reuse intent)** — a **reusable template**: top-priority instructions in the
   developer/system message, variable payload in the user message, `{{double_bracket}}` variables + a short
   legend, for wiring into an app or repeated API calls.
@@ -183,7 +187,7 @@ Critique the draft against the spec, then revise once:
 - **Failure-mode checklist:** instruction contradictions (especially damaging for GPT), CoT prompting on a
   reasoning model (remove it), missing planning inducement on a workhorse, vague output format, untested
   schema, wrong role placement, prompt-injection surface on untrusted input, output shape mismatched to the
-  chosen mode (template-ized an improve request or vice versa), pre-existing `{{variables}}` stripped.
+  chosen mode (template-ized an improve request or vice versa), pre-existing placeholders stripped or renamed.
 - Cut anything not pulling its weight.
 - Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
   produce on a representative input. Do not actually execute the task, call tools, or touch the
