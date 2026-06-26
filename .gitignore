@@ -4,6 +4,9 @@ SESSION-NOTES.md
 # Drift report produced by check-sources (ephemeral; never committed)
 drift.md
 
+# Prompts saved by the skill's "save to file" delivery (the default ./prompts/ dir) — user output, not repo content
+prompts/
+
 # OS / editor cruft
 .DS_Store
 *.swp

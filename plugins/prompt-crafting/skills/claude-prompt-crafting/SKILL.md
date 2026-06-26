@@ -6,10 +6,10 @@ description: >
   for a reusable, parameterized version. Use whenever the user wants to write, improve,
   refine, fix, or debug a prompt, system prompt, or agent instructions for Claude / Opus /
   Sonnet / Haiku / Fable (even if they only describe a task for Claude and never say
-  "prompt"). For OpenAI / GPT prompts, use the gpt-prompt-crafting skill instead.
+  "prompt").
 argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.3.1
+version: 0.4.0
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -236,6 +236,6 @@ clipboard commands. To copy:
 
 ---
 
-This skill targets **Claude**. For OpenAI/GPT prompts, use `gpt-prompt-crafting`.
+This skill targets **Claude**.
 The technique libraries are sourced and dated in
 [references/_sources.md](references/_sources.md); keep them fresh with the `refresh-references` skill.

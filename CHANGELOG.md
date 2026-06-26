@@ -5,11 +5,21 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.4.0 — 2026-06-26
+
+### Removed
+- **Dropped the `gpt-prompt-crafting` skill — skill-forge is now Claude-only.** A GPT prompt skill is
+  off-audience for a Claude Code marketplace, couldn't be dogfooded by the maintainer, doubled reference
+  maintenance, and its description was being dropped from the skill listing (so it under-triggered). It
+  remains recoverable from git history if there's demand.
+
+### Changed
+- README, `marketplace.json`, and `plugin.json` refocused on Claude; added a hero screenshot and an
+  API/programmatic-use angle.
+
 ### Maintenance
 - Re-verified `claude-prompt-crafting` references against the live Anthropic docs (drift issue #2,
-  2026-06-26): the flagged change was a **cosmetic site-wide re-render** — all volatile facts (model IDs
-  incl. Mythos 5, effort levels/defaults, prefill removal, refusal categories, adaptive thinking) unchanged.
-  Bumped `last-verified` to 2026-06-26; no content or version change.
+  2026-06-26): a cosmetic site-wide re-render — all volatile facts unchanged; bumped `last-verified` to 2026-06-26.
 
 ## prompt-crafting 0.3.1 — 2026-06-26
 

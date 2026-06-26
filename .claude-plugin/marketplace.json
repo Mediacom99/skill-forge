@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "skill-forge",
-  "description": "A growing collection of high-quality, installable Claude Code skills. First up: prompt-crafting — turn a rough idea into a production-grade prompt for Claude or GPT through a short alignment dialogue.",
+  "description": "A growing collection of high-quality, installable Claude Code skills. First up: prompt-crafting — turn a rough idea into a production-grade prompt for Claude through a short alignment dialogue.",
   "owner": {
     "name": "Mediacom99",
     "url": "https://github.com/Mediacom99"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "prompt-crafting",
-      "description": "Two skills that turn a messy idea into a production-grade prompt through a deep alignment dialogue, grounded in the target vendor's official prompt-engineering guidance: claude-prompt-crafting (for Claude/Anthropic models) and gpt-prompt-crafting (for OpenAI/GPT models).",
+      "description": "A skill that turns a messy idea into a production-grade prompt for Claude through a deep alignment dialogue, grounded in Anthropic's official prompt-engineering guidance — a ready-to-use prompt by default, or a reusable --template for API use.",
       "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
       "category": "productivity",
       "source": "./plugins/prompt-crafting",

@@ -5,9 +5,9 @@ section; move an item to `CHANGELOG.md` once it ships.
 
 > Status keys: `[ ]` idea · `[~]` in progress · `[x]` shipped (then move to CHANGELOG)
 
-## prompt-crafting — `claude-prompt-crafting` + `gpt-prompt-crafting`
+## prompt-crafting — `claude-prompt-crafting`
 
-_Shared engine — changes here usually apply to both skills._
+_Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
 
 - [x] ~~**Trim the skill `description:` frontmatter — it's over the listing budget**~~ · **done in 0.3.1** (trimmed both + added API framing; re-check the listing warning after install)
   - Claude Code warns the skill descriptions exceed `skillListingBudgetFraction` (1.1% / 1% of context), so

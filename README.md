@@ -4,7 +4,7 @@
 
 **A growing collection of high-quality, installable [Claude Code](https://claude.com/claude-code) skills.**
 
-First plugin: **prompt-crafting** — turn a rough idea into a production-grade prompt for **Claude** or **GPT**, through a short alignment dialogue, grounded in each vendor's official prompt-engineering guidance.
+First plugin: **prompt-crafting** — turn a rough idea into a production-grade prompt for **Claude**, through a short alignment dialogue, grounded in Anthropic's official prompt-engineering guidance.
 
 [![validate](https://github.com/Mediacom99/skill-forge/actions/workflows/validate.yml/badge.svg)](https://github.com/Mediacom99/skill-forge/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -13,21 +13,27 @@ First plugin: **prompt-crafting** — turn a rough idea into a production-grade 
 
 </div>
 
+<p align="center">
+  <img src="assets/hero.png" alt="skill-forge turning a 'delete my files' request into a crafted prompt instead of running it" width="760">
+  <br>
+  <em>Ask it to delete your files and it won't — it crafts you a prompt for that goal instead, then aligns on the details.</em>
+</p>
+
 ---
 
 ## Why
 
-The quality of any LLM output is overwhelmingly determined by the prompt — yet most prompts are written cold, in one shot, from a half-formed idea. **skill-forge** packages a better workflow as installable skills: a sharp **alignment dialogue** that nails down what you actually want *before* a single line is written, then a **craft step** grounded in the target model's official guidance.
+The quality of any LLM output is overwhelmingly determined by the prompt — yet most prompts are written cold, in one shot, from a half-formed idea. **skill-forge** packages a better workflow as installable skills: a sharp **alignment dialogue** that nails down what you actually want *before* a single line is written, then a **craft step** grounded in Anthropic's official guidance.
 
 You bring a messy idea; you leave with a prompt that works — either a clean, ready-to-use prompt, or (with `--template`) a reusable, parameterized version you can wire straight into your API calls.
 
 **What makes it different:**
 
 - **Align first, then craft** — it pins down your intent before writing, so you don't get a confident prompt for the wrong goal.
-- **Grounded in official docs** — every technique is distilled from Anthropic's and OpenAI's own prompt-engineering guides, each claim **sourced, dated, and kept current** as the docs change.
+- **Grounded in official docs** — every technique is distilled from Anthropic's own prompt-engineering guides, each claim **sourced, dated, and kept current** as the docs change.
 - **Safe by construction** — read-only: it crafts a prompt *for* your task and never runs the task, edits your code, or touches your shell.
 - **Two outputs, one workflow** — improve a one-off prompt, or `--template` a reusable, API-ready template.
-- **Claude *and* GPT** — each in its own idiom (XML vs Markdown, `effort` vs `reasoning_effort`, prefill-free vs Structured Outputs).
+- **Built for current Claude** — applies the latest official guidance across the lineup (Opus 4.8 · Sonnet 4.6 · Haiku 4.5 · Fable 5): system/user split, XML structure, multishot, `effort` + output budget, prefill-free formatting.
 
 ## Table of contents
 
@@ -50,11 +56,11 @@ Inside Claude Code:
 /plugin install prompt-crafting@skill-forge
 ```
 
-That's it — now invoke either skill:
+That's it — now invoke it:
 
 ```text
 /claude-prompt-crafting   I want something that reads support emails and tells me how angry the customer is
-/gpt-prompt-crafting      an agent that fixes failing tests in our repo
+/claude-prompt-crafting   --template a system prompt for an agent that triages our failing tests
 ```
 
 > Maintainers can also install the upkeep tooling: `/plugin install maintenance@skill-forge`
@@ -77,10 +83,9 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 | Skill | Invoke | What it does |
 |-------|--------|--------------|
 | **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget); `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
-| **gpt-prompt-crafting** | `/gpt-prompt-crafting` | Crafts or improves a prompt **for OpenAI/GPT** (Markdown structure, Structured Outputs) with a built-in **reasoning-vs-workhorse** branch; `--template` adds a reusable developer/system+user template. Grounded in OpenAI's official docs. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 
-Both prompt skills also **refine existing prompts** — paste one and ask to improve it. By default they return an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
+It also **refines existing prompts** — paste one and ask to improve it. By default it returns an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
 
 ## See it work
 
@@ -96,7 +101,7 @@ A real run — paste a rough prompt, and it diagnoses the gaps, crafts a better 
 
 ## How it works
 
-Both prompt skills run the same engine — **align first, then craft**:
+The skill runs an **align first, then craft** engine:
 
 ```mermaid
 flowchart LR
@@ -104,7 +109,7 @@ flowchart LR
     B --> C["Adaptive dialogue:<br/>ask only the gaps"]
     C --> D{"Alignment<br/>checkpoint"}
     D -- confirm --> E["Load references<br/>at craft time"]
-    E --> F["Craft in the<br/>target model's idiom"]
+    E --> F["Craft in<br/>Claude's idiom"]
     F --> G["Self-critique vs<br/>success + failure modes"]
     G --> H["Deliver:<br/>inline / save / clipboard"]
     D -- edit --> C
@@ -116,8 +121,8 @@ A prompt spec is "ready to craft" once these **nine dimensions** are pinned — 
 
 Heavy technique libraries load **only at the craft step** (progressive disclosure), so the dialogue stays cheap.
 
-**Safe by construction — with hard boundaries.** Both skills are read-only: they read, ask, copy to your
-clipboard, and write exactly *one* file — the finished prompt, and only when you choose *save*. No edits to
+**Safe by construction — with hard boundaries.** The skill is read-only: it reads, asks, copies to your
+clipboard, and writes exactly *one* file — the finished prompt, and only when you choose *save*. No edits to
 your code and no arbitrary shell, even in auto mode (enforced via scoped `allowed-tools`: read tools +
 `Write` + a fixed set of clipboard commands). Each run is bounded: it **opens** by confirming the single
 prompt it's crafting and **closes** by asking where you want it — it crafts that one prompt and nothing else.
@@ -134,7 +139,7 @@ prompt it's crafting and **closes** by asking where you want it — it crafts th
 
 ## Provenance & freshness
 
-Every technique in the references is **sourced and dated**. Each skill's `references/_sources.md` lists the exact official URLs it was distilled from, a `last-verified` date, and a "volatile items" list (model IDs, reasoning settings — the things that change). Three layers keep it current:
+Every technique in the references is **sourced and dated**. The skill's `references/_sources.md` lists the exact official URLs it was distilled from, a `last-verified` date, and a "volatile items" list (model IDs, reasoning settings — the things that change). Three layers keep it current:
 
 1. **Sourced + dated** references, with stable principles separated from clearly-flagged volatile facts.
 2. **`/refresh-references`** — one command re-fetches the sources, diffs them, and proposes updates.
@@ -148,8 +153,8 @@ This is a prompt-engineering tool, so trustworthiness matters: you can always se
 skill-forge/                         # this repo IS the marketplace
 ├── .claude-plugin/marketplace.json  # lists the plugins
 ├── plugins/
-│   ├── prompt-crafting/             # the two prompt skills
-│   │   └── skills/{claude,gpt}-prompt-crafting/{SKILL.md, references/}
+│   ├── prompt-crafting/             # the prompt-crafting skill
+│   │   └── skills/claude-prompt-crafting/{SKILL.md, references/}
 │   └── maintenance/                 # refresh-references
 ├── .github/
 │   ├── workflows/{validate,check-sources}.yml
@@ -165,6 +170,5 @@ New skills are welcome — the repo is built to grow. See **[MAINTAINING.md](MAI
 ## License
 
 [MIT](LICENSE) © Mediacom99. Built on the official prompt-engineering guidance of
-**[Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)** and
-**[OpenAI](https://developers.openai.com/api/docs/guides/prompt-engineering)** — see each skill's
+**[Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)** — see the skill's
 `references/_sources.md` for exact citations.
