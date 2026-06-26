@@ -17,7 +17,17 @@ First plugin: **prompt-crafting** — turn a rough idea into a production-grade 
 
 ## Why
 
-The quality of any LLM output is overwhelmingly determined by the prompt — yet most prompts are written cold, in one shot, from a half-formed idea. **skill-forge** packages a better workflow as installable skills: a sharp **alignment dialogue** that fully understands what you want *before* a single line of prompt is written, then a **craft step** grounded in the target model's official guidance. You bring a messy idea; you leave with a prompt that actually works.
+The quality of any LLM output is overwhelmingly determined by the prompt — yet most prompts are written cold, in one shot, from a half-formed idea. **skill-forge** packages a better workflow as installable skills: a sharp **alignment dialogue** that nails down what you actually want *before* a single line is written, then a **craft step** grounded in the target model's official guidance.
+
+You bring a messy idea; you leave with a prompt that works — either a clean, ready-to-use prompt, or (with `--template`) a reusable, parameterized version you can wire straight into your API calls.
+
+**What makes it different:**
+
+- **Align first, then craft** — it pins down your intent before writing, so you don't get a confident prompt for the wrong goal.
+- **Grounded in official docs** — every technique is distilled from Anthropic's and OpenAI's own prompt-engineering guides, each claim **sourced, dated, and kept current** as the docs change.
+- **Safe by construction** — read-only: it crafts a prompt *for* your task and never runs the task, edits your code, or touches your shell.
+- **Two outputs, one workflow** — improve a one-off prompt, or `--template` a reusable, API-ready template.
+- **Claude *and* GPT** — each in its own idiom (XML vs Markdown, `effort` vs `reasoning_effort`, prefill-free vs Structured Outputs).
 
 ## Table of contents
 

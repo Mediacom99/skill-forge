@@ -20,7 +20,7 @@ _Shared engine — changes here usually apply to both skills._
     key trigger phrases + the claude-vs-gpt disambiguation. **Do this in the same pass as the
     API/programmatic item below** — add those terms *while* trimming, so it nets shorter, not longer.
 
-- [~] **Position the skill for API / programmatic prompt creation (marketing + discovery)** · proposed 2026-06-25 · descriptions done in 0.3.1; README "Why" marketing copy still pending
+- [x] ~~**Position the skill for API / programmatic prompt creation (marketing + discovery)**~~ · descriptions done in 0.3.1; **README "Why" + differentiators added 2026-06-26**
   - Make explicit that this crafts **production-ready prompts for API / programmatic use**, not just chat:
     `--template` yields a parameterized system/user template with `{{variables}}` you drop straight into code
     (validated by T10), and the craft already applies API-aware guidance (effort/output budget, Structured
