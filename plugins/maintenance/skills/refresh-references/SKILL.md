@@ -3,8 +3,8 @@ name: refresh-references
 description: >
   Refresh a sourced reference library against its official source docs. Use this when the user wants to
   update, refresh, re-verify, or check a skill's references for staleness — e.g. "refresh the prompt
-  references", "the OpenAI docs changed, update the gpt skill", "re-verify the claude techniques", "check
-  if my skill's sources are out of date", or invokes /refresh-references. This is a MAINTAINER tool for
+  references", "the Anthropic docs changed, re-verify the claude techniques", "check if my skill's sources
+  are out of date", or invokes /refresh-references. This is a MAINTAINER tool for
   skills that follow the _sources.md convention (a reference/ folder with a _sources.md manifest of URLs
   and a last-verified date). It re-fetches each source, diffs it against the distilled reference, proposes
   targeted edits, and updates the verification dates and CHANGELOG.
@@ -57,8 +57,8 @@ file's structure and its lean/advanced split; don't bloat the core.
 
 - Bump `last-verified` in `_sources.md` and in the header comment of each reference file you touched.
 - Update any moved URLs and the volatile-items notes in `_sources.md`.
-- Append a dated entry to the repo's `CHANGELOG.md` describing what changed (e.g. "gpt: updated flagship to
-  gpt-5.6; reasoning_effort default changed").
+- Append a dated entry to the repo's `CHANGELOG.md` describing what changed (e.g. "claude: updated flagship
+  to Opus 4.8; effort guidance sharpened").
 - If the repo uses `check-sources.yml`, note that the committed `.source-hashes.json` will update on the next
   scheduled run (or refresh it if you have a local script for it).
 

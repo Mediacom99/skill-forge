@@ -1,8 +1,7 @@
 # Spec — output modes (`--template`) + delivery options
 
 > **Status:** DRAFT / scoping — *not yet implemented*. Target release: **prompt-crafting 0.3.0**
-> (changes the default behavior → minor bump, not patch). Applies to **both** `claude-prompt-crafting`
-> and `gpt-prompt-crafting` (shared engine — keep them in lockstep).
+> (changes the default behavior → minor bump, not patch). Applies to `claude-prompt-crafting`.
 
 ## Motivation
 
@@ -15,7 +14,7 @@ collapsed into one. Split them.
 
 ### `improve` — the new default
 
-- Produce a **single, concrete, ready-to-use** prompt for the user's goal, brought up to the target vendor's
+- Produce a **single, concrete, ready-to-use** prompt for the user's goal, brought up to Claude's
   current guideline standard.
 - **Still fully technique-grounded** — loads `references/` and applies the right techniques (role, clarity,
   positive instruction, give-the-reason, examples, scope, reasoning/effort) exactly as today.
@@ -55,7 +54,7 @@ Output-shape is independent of **mode** and **depth**:
 
 ## File-by-file changes (when implemented)
 
-Both `SKILL.md` files:
+The `SKILL.md` file:
 
 - **Frontmatter `argument-hint`:** add `--template`.
 - **Step 0 (mode/depth):** add output-mode detection (`--template`; default improve).

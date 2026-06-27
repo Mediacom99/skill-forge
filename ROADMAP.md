@@ -9,22 +9,22 @@ section; move an item to `CHANGELOG.md` once it ships.
 
 _Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
 
-- [x] ~~**Trim the skill `description:` frontmatter — it's over the listing budget**~~ · **done in 0.3.1** (trimmed both + added API framing; re-check the listing warning after install)
-  - Claude Code warns the skill descriptions exceed `skillListingBudgetFraction` (1.1% / 1% of context), so
-    `gpt-prompt-crafting`'s description gets **dropped from the listing** → weaker/no auto-triggering for
-    GPT-prompt requests. Real discoverability bug.
+- [x] ~~**Trim the skill `description:` frontmatter — it's over the listing budget**~~ · **done in 0.3.1** (trimmed it + added API framing; re-check the listing warning after install)
+  - Claude Code warns when a skill description exceeds `skillListingBudgetFraction` (1.1% / 1% of context), so
+    an over-budget description gets **dropped from the listing** → weaker/no auto-triggering. Real
+    discoverability bug.
   - **Fix on our side, not the user's:** ship a **tighter description**, do NOT tell users to raise
     `skillListingBudgetFraction` (costs them ~2k tokens every session + faster rate limits). A good
     marketplace skill fits the default budget.
-  - Both descriptions are ~10 verbose lines now. Rewrite each to a tight 3–4 lines: what it does + when +
-    key trigger phrases + the claude-vs-gpt disambiguation. **Do this in the same pass as the
+  - The description is ~10 verbose lines now. Rewrite to a tight 3–4 lines: what it does + when +
+    key trigger phrases. **Do this in the same pass as the
     API/programmatic item below** — add those terms *while* trimming, so it nets shorter, not longer.
 
 - [x] ~~**Position the skill for API / programmatic prompt creation (marketing + discovery)**~~ · descriptions done in 0.3.1; **README "Why" + differentiators added 2026-06-26**
   - Make explicit that this crafts **production-ready prompts for API / programmatic use**, not just chat:
     `--template` yields a parameterized system/user template with `{{variables}}` you drop straight into code
     (validated by T10), and the craft already applies API-aware guidance (effort/output budget, Structured
-    Outputs, role split; the GPT skill is API-native — developer message, Responses API, `reasoning_effort`).
+    Outputs, role split).
   - **Where:** README "Why" / "What you get"; consider adding "API / programmatic / production" terms to the
     skill `description:` frontmatter (also improves auto-triggering for those users) and `marketplace.json`.
   - **Guardrail:** claim "production-ready prompt *templates* for your API calls," NOT "builds your
