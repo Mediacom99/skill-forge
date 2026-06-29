@@ -30,16 +30,11 @@ _Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
   - **Guardrail:** claim "production-ready prompt *templates* for your API calls," NOT "builds your
     integration" — it crafts the prompt, not the code. Keep the claim accurate.
 
-- [ ] **Clean up the clipboard scratch file after a successful copy** · proposed 2026-06-25
-  - Clipboard delivery writes the prompt to a scratch file (`/tmp/skill-forge-prompt.txt`) then `pbcopy < file`;
-    the file is left behind. Currently no removal step.
-  - **Constraint:** the read-only safety model scopes shell to clipboard commands only — **no `rm`** — so we
-    can't delete it via shell without widening `allowed-tools` (which we won't). Safe options:
-    - Keep the **fixed filename** (already the case) so scratch files never accumulate — only one stale file.
-    - **Overwrite it with empty content** via Write right after the copy, so the prompt text doesn't linger
-      (the only cleanup the current `allowed-tools` actually permit).
-    - Rely on OS temp-dir cleanup as a backstop.
-  - Pick one, add the step to Step 7 "Copying to the clipboard" in **both** skills.
+- [x] ~~**Clean up the clipboard scratch file after a successful copy**~~ · **done in 0.4.1**
+  - Scratch file now lives in the **cwd** (`./.skill-forge-clipboard.txt`, fixed hidden name, gitignored) and is
+    **overwritten to empty after a successful copy** so the prompt text doesn't linger. True `rm` was rejected —
+    it needs arbitrary shell and would break the read-only `allowed-tools` guarantee (and the `validate.py` F4
+    guard) — so emptying is the cleanup; a harmless 0-byte file remains.
 
 - [ ] **Adaptive depth for the alignment dialogue — go deeper when the task warrants it** · proposed 2026-06-25
   - Today depth is mostly flag-driven (`--quick` / standard / `--deep`). The standard path can stay too

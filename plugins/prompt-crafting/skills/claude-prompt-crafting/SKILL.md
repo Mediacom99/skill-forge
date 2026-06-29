@@ -9,7 +9,7 @@ description: >
   "prompt").
 argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.4.0
+version: 0.4.1
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -222,17 +222,22 @@ cannot be answered, default to **inline only** and write nothing.
 ### Copying to the clipboard
 
 The skill can reach the system clipboard but nothing else — its only shell access is a fixed set of
-clipboard commands. To copy:
+clipboard commands (no `rm`, no arbitrary shell). To copy:
 
-1. Write the prompt text to a scratch file in the system temp dir with the **Write** tool (e.g.
-   `/tmp/skill-forge-prompt.txt`; use the OS temp path on Windows).
+1. **Write the prompt to a scratch file in the current working directory** (where Claude Code was opened),
+   using a fixed, hidden name so it never accumulates: `./.skill-forge-clipboard.txt`. Use the cwd — *not*
+   the system temp dir — so the **Write** stays inside the project and doesn't trip a path-approval prompt.
 2. Run the clipboard command for the user's OS, reading from that file with input redirection
    (`< file` — never a `|` pipe; a redirect stays one command and matches the scoped permission):
-   - **macOS:** `pbcopy < <file>`
-   - **Windows / WSL:** `clip.exe < <file>`  (or `clip < <file>`)
-   - **Linux (Wayland):** `wl-copy < <file>` — if it fails, fall back to X11
-   - **Linux (X11):** `xclip -selection clipboard < <file>`  (or `xsel -b < <file>`)
-3. Confirm it's copied. These clipboard commands are the only shell the skill is allowed to run.
+   - **macOS:** `pbcopy < ./.skill-forge-clipboard.txt`
+   - **Windows / WSL:** `clip.exe < .skill-forge-clipboard.txt`  (or `clip < .skill-forge-clipboard.txt`)
+   - **Linux (Wayland):** `wl-copy < ./.skill-forge-clipboard.txt` — if it fails, fall back to X11
+   - **Linux (X11):** `xclip -selection clipboard < ./.skill-forge-clipboard.txt`  (or `xsel -b < ./.skill-forge-clipboard.txt`)
+3. **Auto-clean once the copy succeeds:** overwrite the scratch file with a single newline using the
+   **Write** tool, so the prompt text doesn't linger in the project. The skill cannot `rm` (that would need
+   arbitrary shell and break the read-only guarantee), so emptying the file *is* the cleanup — the 0-byte
+   hidden file is harmless and is reused next time.
+4. Confirm it's copied. These clipboard commands are the only shell the skill is allowed to run.
 
 ---
 

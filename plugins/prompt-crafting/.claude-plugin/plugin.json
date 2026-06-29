@@ -1,7 +1,7 @@
 {
   "name": "prompt-crafting",
   "description": "Turn a messy idea into a production-grade prompt for Claude through a deep alignment dialogue, grounded in Anthropic's official prompt-engineering guidance — a ready-to-use prompt by default, or a reusable --template for API/programmatic use.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
   "homepage": "https://github.com/Mediacom99/skill-forge"
 }

@@ -7,6 +7,9 @@ drift.md
 # Prompts saved by the skill's "save to file" delivery (the default ./prompts/ dir) — user output, not repo content
 prompts/
 
+# Clipboard scratch file from the skill's copy-to-clipboard delivery (emptied after copy; never committed)
+.skill-forge-clipboard.txt
+
 # OS / editor cruft
 .DS_Store
 *.swp
