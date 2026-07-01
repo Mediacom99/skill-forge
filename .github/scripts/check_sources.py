@@ -17,6 +17,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -28,10 +29,21 @@ baselined = []
 failed = []
 
 
+def normalize(raw):
+    """Reduce a page to its visible text before hashing, so cosmetic re-renders
+    (markup churn, changed asset-hash URLs, whitespace) don't trip the detector.
+    Stdlib only — imperfect HTML stripping, but far less flappy than raw bytes."""
+    text = raw.decode("utf-8", "ignore")
+    text = re.sub(r"(?is)<(script|style)\b[^>]*>.*?</\1>", " ", text)  # drop scripts/styles
+    text = re.sub(r"(?s)<[^>]+>", " ", text)                           # strip remaining tags
+    text = re.sub(r"\s+", " ", text).strip()                           # collapse whitespace
+    return text
+
+
 def fetch_hash(url):
     req = urllib.request.Request(url, headers=UA)
     with urllib.request.urlopen(req, timeout=45) as r:  # noqa: S310 (trusted, owner-curated URLs)
-        return hashlib.sha256(r.read()).hexdigest()
+        return hashlib.sha256(normalize(r.read()).encode("utf-8")).hexdigest()
 
 
 def process(hashes_file):

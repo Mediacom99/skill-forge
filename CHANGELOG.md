@@ -5,6 +5,13 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+### Maintenance
+- Re-verified `claude-prompt-crafting` references against the live docs (drift issue #3, 2026-07-01): another
+  cosmetic site re-render — all volatile facts unchanged; bumped `last-verified` to 2026-07-01.
+- **`check-sources` now hashes *normalized* page text** (scripts/styles/tags stripped, whitespace collapsed)
+  instead of raw bytes, so cosmetic docs-site re-renders stop tripping false drift. Existing snapshots reset to
+  `null` so the next run re-baselines with the new hashing.
+
 ## prompt-crafting 0.4.2 — 2026-07-01
 
 ### Changed

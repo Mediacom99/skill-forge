@@ -74,7 +74,7 @@ _Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
 
 ## maintenance — `refresh-references`
 
-- [ ] **Reduce `check-sources` false positives — hash normalized content, not raw bytes** · proposed 2026-06-26
+- [x] ~~**Reduce `check-sources` false positives — hash normalized content, not raw bytes**~~ · **done 2026-07-01** (normalize: strip scripts/styles/tags + collapse whitespace before hashing; snapshots reset to re-baseline)
   - Both drift issues were partly cosmetic: #2 (06-22) flipped all 5 hashes at once from a site-wide
     re-render with **no content change**. `check_sources.py` hashes raw response bytes, so any docs-site
     rebuild trips it. Normalize before hashing (extract main content / strip boilerplate + whitespace) to cut

@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-06-26
+last-verified: 2026-07-01
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: LEAN CORE — the high-leverage techniques that apply to most Claude prompts.
 For agentic/tool-use/long-context/RAG/eval/model-specific guidance, see techniques-advanced.md.
