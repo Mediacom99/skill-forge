@@ -5,6 +5,15 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.4.2 — 2026-07-01
+
+### Changed
+- **Clipboard delivery no longer writes a file at all.** It pipes the prompt to the clipboard command via a
+  here-doc (`pbcopy << 'EOF' … EOF`) on stdin — still a single scoped clipboard command, but nothing touches
+  disk, so there's no scratch file to leave behind or clean up. Supersedes 0.4.1's write-to-cwd + empty-after
+  approach (which left a harmless 0-byte file). A documented file fallback remains for shells without here-doc
+  support. Stays fully read-only — no `rm`, no `allowed-tools` change.
+
 ## prompt-crafting 0.4.1 — 2026-06-29
 
 ### Changed
