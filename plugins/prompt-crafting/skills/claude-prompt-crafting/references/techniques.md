@@ -2,7 +2,8 @@
 last-verified: 2026-07-01
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: LEAN CORE — the high-leverage techniques that apply to most Claude prompts.
-For agentic/tool-use/long-context/RAG/eval/model-specific guidance, see techniques-advanced.md.
+For agentic/tool-use/long-context/RAG/eval guidance, see techniques-advanced.md;
+for per-model tuning, load the target model's file in models/.
 -->
 
 # Claude prompt techniques — lean core
@@ -94,5 +95,7 @@ fit the spec; do not apply all of them. Each entry: **what · when · how**.
     *(VOLATILE: exact effort levels and defaults are model-specific — see techniques-advanced.md + _sources.md.)*
 
 ---
-For tool use, agents, long context, RAG, evals, prompt chaining, and per-model tips
-(Opus / Sonnet / Haiku / Fable), see [techniques-advanced.md](techniques-advanced.md).
+For tool use, agents, long context, RAG, evals, prompt chaining, and self-correction, see
+[techniques-advanced.md](techniques-advanced.md). For **per-model tuning**, load the target model's file:
+[opus](models/opus.md) · [sonnet](models/sonnet.md) · [haiku](models/haiku.md) · [fable](models/fable.md)
+(Fable 5 + Mythos 5).

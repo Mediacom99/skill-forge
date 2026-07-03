@@ -15,7 +15,7 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - Prompt chaining & self-correction
 - Extended thinking (deep)
 - LLM-as-judge / evaluation prompts
-- Per-model tips (Opus, Sonnet, Haiku, Fable)
+- Per-model tips → see references/models/ (one file per family)
 - Prompt-injection / untrusted input
 
 ## Long-context prompting (20k+ tokens)
@@ -65,26 +65,11 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - Have the judge **reason, then output the score**; grade with a *different* model than the one generating.
 - Prefer many cheap graded examples over a few hand-crafted ones; keep rubric criteria independent.
 
-## Per-model tips (VOLATILE — verify on the model page)
-- **Opus 4.8 (current Opus flagship):** interprets instructions literally, especially at lower effort —
-  state scope explicitly when an instruction should apply broadly ("every section, not just the first").
-  Effort is the main lever: start at `xhigh` for coding/agentic work, a minimum of `high` for
-  intelligence-sensitive tasks, and reserve `low`/`medium` for scoped or latency-sensitive work (it scopes
-  strictly at the low end, with some under-thinking risk). Thinking is off unless you set
-  `thinking: {type: "adaptive"}`; at `xhigh`/`max` give a large max-output budget (~64k to start). Positive
-  examples beat "don't"; it calibrates length to task complexity (ask for concision if you need it);
-  front-load the full task in the first turn; re-test old voice/style prompts against the more direct,
-  opinionated baseline.
-- **Sonnet 4.6 / Haiku 4.5:** Sonnet — strong general workhorse; same core techniques; tune effort to the
-  task. Haiku — fast/cheap; keep prompts tighter and more explicit; lean on examples and clear format.
-- **Fable 5 / Mythos 5 (current frontier — long-horizon, agentic, ambiguity-tolerant):** strong
-  instruction-followers, so **brief instructions beat enumerating every behavior**; lead with the outcome
-  and give the reason; perform well with a memory/notes file across runs; `high` is a good default effort
-  (`xhigh` for the hardest work). **Do not ask them to echo, transcribe, or explain their reasoning as
-  response text** — on Fable 5 / Mythos 5 this can trigger the `reasoning_extraction` refusal and fall back
-  to Opus 4.8; read the structured `thinking` blocks instead. Both are adaptive-thinking-only (no
-  extended-thinking budgets) and run safety classifiers (offensive-cyber, bio/life-sciences,
-  reasoning-extraction) that can also fall back to Opus 4.8.
+## Per-model tips → moved to references/models/
+Per-model tuning now lives in **one file per family**, loaded at craft time for the **target model only**:
+[models/opus.md](models/opus.md) · [models/sonnet.md](models/sonnet.md) · [models/haiku.md](models/haiku.md)
+· [models/fable.md](models/fable.md) (Fable 5 + Mythos 5). Load the one matching the confirmed target model,
+in addition to the lean core. Each file is sourced + dated against its model's page (see `_sources.md`).
 
 ## Prompt-injection / untrusted input
 - Separate untrusted content in clearly named tags and tell Claude that content inside them is data, not

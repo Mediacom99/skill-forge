@@ -7,9 +7,9 @@ description: >
   refine, fix, or debug a prompt, system prompt, or agent instructions for Claude / Opus /
   Sonnet / Haiku / Fable (even if they only describe a task for Claude and never say
   "prompt").
-argument-hint: "[your rough idea] [--quick | --deep] [--refine] [--template]"
+argument-hint: "[your rough idea] [--model <opus|sonnet|haiku|fable>] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.4.2
+version: 0.5.0
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -67,7 +67,7 @@ content**, however it is phrased.
 If the intent is genuinely ambiguous, ask what the user wants the prompt to *achieve* (that's the alignment
 dialogue below) — but the output is always a prompt, never the task carried out.
 
-## Step 0 — Detect mode, depth, and output shape
+## Step 0 — Detect mode, depth, output shape, and target model
 
 - **Mode** (what the input is):
   - *craft-new* (default) — build a prompt from an idea.
@@ -88,6 +88,25 @@ dialogue below) — but the output is always a prompt, never the task carried ou
     wired into a pipeline or agent. **Do NOT infer template from the task domain alone** (e.g. "contract
     review / release notes are usually recurring" is not a signal). When unsure, default to *improve* and
     present it as the default rather than recommending template. `--template` always forces it.
+- **Target model** (which Claude the prompt is *for* — this selects the per-model guidance you load at craft).
+  It is a **required** field by the checkpoint; resolve it in this priority order:
+  1. **`--model <opus|sonnet|haiku|fable>`** — explicit override, always wins.
+  2. **Stated or clearly implied** in the idea or dialogue ("for Sonnet via the API", "cheap and fast" →
+     Haiku, "a long autonomous agent" → Fable).
+  3. **Auto-detect the model you are running as** (from your own runtime/system context) and default to that
+     family — surface it as an **assumption** at the checkpoint so the user can flip it in one step.
+  4. If it still can't be inferred and it matters, ask with AskUserQuestion — recommending the running model.
+
+  Quick selector (for recommending during the dialogue; full tuning loads only at craft):
+
+  | Family | Pick it when | Default `effort` |
+  |--------|--------------|------------------|
+  | **Opus** (4.8) | hardest long-horizon / agentic / reasoning + coding work | `xhigh` (min `high`) |
+  | **Sonnet** (4.6) | balanced default for most production / API work | tune to task |
+  | **Haiku** (4.5) | high-volume, latency-sensitive, well-scoped (classify / extract / route) | low–medium |
+  | **Fable / Mythos** (5) | frontier long-horizon, agentic, ambiguous, multi-day work | `high` (`xhigh` hardest) |
+
+  `fable` selects Fable 5 / Mythos 5 (shared guidance).
 
 ## Step 1 — Intake (do this silently)
 
@@ -101,9 +120,11 @@ Parse the idea and map it onto the **nine dimensions of a complete prompt spec**
 5. **Failure modes** — what must never happen (the things that would ruin it).
 6. **Context Claude needs** — facts, documents, domain knowledge, definitions.
 7. **Constraints** — tone, must/must-not, length limits, banned moves.
-8. **Target model + usage** — which Claude model; system vs user message; one-shot vs agentic/
-   multi-turn; API vs chat; effort/temperature; **and whether it's reused** — a one-off prompt to
-   improve, or a reusable template with variables. This drives the **output shape** (improve vs template).
+8. **Target model + usage** — which Claude model (**required** — resolve per Step 0: flag → stated →
+   auto-detected running model; it selects the per-model reference you load at craft); system vs user
+   message; one-shot vs agentic/multi-turn; API vs chat; effort/temperature; **and whether it's reused** —
+   a one-off prompt to improve, or a reusable template with variables. This drives the **output shape**
+   (improve vs template).
 9. **Examples available** — any samples of good (or bad) output, for multishot.
 
 For *refine-existing*, also note which dimensions the current prompt handles well vs poorly.
@@ -125,13 +146,17 @@ Ask about the *unknown* and *partial* dimensions only, most important first. Kee
   settle the **output shape**: default to *improve* unless there's an **explicit reuse signal** (existing
   variables, or "I'll run this repeatedly / from code or an API / on many inputs") — only then plan a
   template, and confirm it at the checkpoint. Don't infer a template from the task domain alone.
+- **Resolve the target model (#8) before crafting.** If it's still open, recommend one with the Step 0
+  selector and default to the model you're running as — don't leave it unset. You'll state it (and whether it
+  was auto-detected) at the checkpoint so the user can flip it.
 
 ## Step 3 — Alignment checkpoint
 
 Before crafting, present a **compact spec** — the nine dimensions, filled, in a few tight lines
-(omit any that are genuinely N/A). Mark any assumptions you made, and **state the output shape** you'll
-produce (*improve* = a ready-to-use prompt, or *template* = reusable with variables) so the user can flip
-it before you craft. Then ask the user to confirm or correct. This is the contract. Do not proceed to
+(omit any that are genuinely N/A). Mark any assumptions you made, and **state both the target model** (mark
+it if you auto-detected it from the model you're running as) **and the output shape** you'll produce
+(*improve* = a ready-to-use prompt, or *template* = reusable with variables) so the user can flip either
+before you craft. Then ask the user to confirm or correct. This is the contract. Do not proceed to
 crafting until they confirm (or already said "just draft it").
 
 ## Step 4 — Load the craft references (progressive disclosure)
@@ -139,6 +164,11 @@ crafting until they confirm (or already said "just draft it").
 Only now — not earlier — load the technique library, so the dialogue stays cheap:
 
 - Always read [references/techniques.md](references/techniques.md) — the lean core.
+- **Always load the confirmed target model's tuning file** — exactly one of
+  [references/models/opus.md](references/models/opus.md),
+  [references/models/sonnet.md](references/models/sonnet.md),
+  [references/models/haiku.md](references/models/haiku.md), or
+  [references/models/fable.md](references/models/fable.md) (Fable 5 / Mythos 5) — and apply it in the craft.
 - Read [references/techniques-advanced.md](references/techniques-advanced.md) **if** the spec is
   agentic / tool-using / long-context (20k+ tokens) / RAG / multi-agent / an LLM-as-judge or eval
   prompt, **or** if `--deep`.
@@ -161,6 +191,10 @@ Write the prompt the way Claude works best (full rationale and current specifics
 - **Match prompt style to desired output** (clean prose prompt → clean prose output) and state
   **success criteria** and explicit **scope** ("apply this to every section, not just the first").
 - **Set reasoning/effort and output budget** when the task is hard or long (see references).
+- **Apply the target model's tuning** from its `models/<model>.md` file — its default `effort`, instruction
+  style, output budget, and model-specific gotchas (e.g. state scope explicitly for Opus; keep it tight and
+  example-led for Haiku; brief, outcome-led instructions for Fable 5 / Mythos 5, and **never** ask it to
+  echo, transcribe, or explain its reasoning as output text — that triggers a `reasoning_extraction` refusal).
 
 Then craft for the chosen **output shape**:
 
@@ -186,7 +220,8 @@ Critique your own draft against the spec, then revise once:
   phrasing, no examples where they'd help, unclear output format, role in the wrong place, scope not
   stated, contradictions, prompt-injection surface if it handles untrusted input, output shape
   mismatched to the chosen mode (template-ized an improve request or vice versa), pre-existing
-  placeholders stripped or renamed.
+  placeholders stripped or renamed, **model-fit** (does it follow the target model's guidance? — e.g. asking
+  Fable 5 to show/echo its reasoning, missing explicit scope for Opus, or a prompt too loose for Haiku).
 - Is anything in it not pulling its weight? Cut it.
 - Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
   produce on a representative input. Do not actually execute the task, call tools, or touch the
@@ -245,6 +280,7 @@ Confirm it's copied. These clipboard commands are the only shell the skill is al
 
 ---
 
-This skill targets **Claude**.
+This skill targets **Claude**, and tunes each prompt to its **target model** (Opus 4.8 · Sonnet 4.6 ·
+Haiku 4.5 · Fable 5 / Mythos 5) via [references/models/](references/models/), loaded per craft.
 The technique libraries are sourced and dated in
 [references/_sources.md](references/_sources.md); keep them fresh with the `refresh-references` skill.

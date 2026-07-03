@@ -12,6 +12,34 @@ All notable changes to skill-forge are documented here. Format follows
   instead of raw bytes, so cosmetic docs-site re-renders stop tripping false drift. Existing snapshots reset to
   `null` so the next run re-baselines with the new hashing.
 
+## prompt-crafting 0.5.0 — 2026-07-03
+
+### Added
+- **Per-model prompt tuning — one reference file per Claude family, loaded on demand.** The craft step now
+  loads guidance for the **target model only** (`references/models/{opus,sonnet,haiku,fable}.md`) and applies
+  it, so a prompt for Haiku, Sonnet, Opus 4.8, or Fable 5 / Mythos 5 is tuned to that model instead of getting
+  one-size-fits-all advice. Previously all per-model tips were ~3 bullets in the advanced appendix, which a
+  *standard* craft never loaded at all.
+- **`--model <opus|sonnet|haiku|fable>` flag + auto-detect.** Target model is now a **required** field at the
+  alignment checkpoint, resolved in order: `--model` flag → stated/implied in the dialogue → **auto-detected
+  from the model the skill is running as** (surfaced as a flippable assumption) → ask. A compact model-selector
+  table in Step 0 lets the dialogue recommend a model without loading references.
+- **Dedicated Claude Fable 5 / Mythos 5 guidance** (`models/fable.md`), verified against Anthropic's
+  now-released Fable 5 prompting page: `high`-default effort, brief outcome-led instructions over enumeration,
+  give-the-reason, stating boundaries, grounding progress claims, the memory-file / parallel-subagent /
+  `send_to_user` agentic scaffolding, and the **`reasoning_extraction` refusal** (never ask Fable 5 to
+  echo/transcribe/explain its reasoning as output → Opus 4.8 fallback). Far richer than the prior 2-bullet distill.
+
+### Changed
+- Moved per-model tips out of `techniques-advanced.md` into `references/models/`; `techniques.md` and the
+  advanced appendix now point there. Self-critique gains a **model-fit** check.
+- `_sources.md` now maps each reference file to its backing source and records that Sonnet 4.6 / Haiku 4.5
+  have **no dedicated prompting page** (confirmed 404) — those two files derive from the cross-model
+  best-practices page (#2) + model overviews. No new hash-tracked URLs.
+
+### Verified
+- Opus 4.8 and Fable 5 / Mythos 5 guidance re-grounded against their live dedicated pages (2026-07-03).
+
 ## prompt-crafting 0.4.2 — 2026-07-01
 
 ### Changed

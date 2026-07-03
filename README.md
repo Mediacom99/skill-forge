@@ -33,7 +33,7 @@ You bring a messy idea; you leave with a prompt that works — either a clean, r
 - **Grounded in official docs** — every technique is distilled from Anthropic's own prompt-engineering guides, each claim **sourced, dated, and kept current** as the docs change.
 - **Safe by construction** — read-only: it crafts a prompt *for* your task and never runs the task, edits your code, or touches your shell.
 - **Two outputs, one workflow** — improve a one-off prompt, or `--template` a reusable, API-ready template.
-- **Built for current Claude** — applies the latest official guidance across the lineup (Opus 4.8 · Sonnet 4.6 · Haiku 4.5 · Fable 5): system/user split, XML structure, multishot, `effort` + output budget, prefill-free formatting.
+- **Tuned per model** — pick the target with `--model` or let it auto-detect the model it's running as, then it loads that family's official guidance (Opus 4.8 · Sonnet 4.6 · Haiku 4.5 · Fable 5 / Mythos 5) — effort defaults, instruction style, and model-specific gotchas — on top of the shared craft (system/user split, XML structure, multishot, `effort` + output budget, prefill-free formatting).
 
 ## Table of contents
 
@@ -136,6 +136,7 @@ prompt it's crafting and **closes** by asking where you want it — it crafts th
 | `--deep` | Exhaustive alignment, loads the advanced reference appendix, and offers a dry test-run (paper simulation) before delivery. |
 | `--refine` | Treat the input as an existing prompt to diagnose and upgrade (also auto-detected when you paste one). |
 | `--template` | Output a **reusable, parameterized template** (system/user split + `{{variables}}`) instead of a one-off prompt — also auto-detected when reuse is clearly intended. |
+| `--model <opus\|sonnet\|haiku\|fable>` | Target a specific Claude family; loads that model's tuning at craft. If omitted, the skill auto-detects the model it's running as and confirms it at the checkpoint (you can flip it there). |
 
 ## Provenance & freshness
 
