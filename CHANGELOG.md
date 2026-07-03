@@ -5,6 +5,14 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.5.2 — 2026-07-03
+
+### Changed
+- **Clarified that `--model` sets the *target* model — the model the crafted prompt will *run on* — not the
+  runtime session.** Sharpened the flag description (Step 0 + README) and made the alignment checkpoint state
+  both when they differ (e.g. "crafting on Opus 4.8 · tuned for **Fable 5**"). No behavior change — the flag
+  always meant the destination model (you craft *on* Opus but *for* Fable); the wording just invited confusion.
+
 ## prompt-crafting 0.5.1 — 2026-07-03
 
 ### Added

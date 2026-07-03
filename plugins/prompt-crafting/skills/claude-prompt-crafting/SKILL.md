@@ -9,7 +9,7 @@ description: >
   "prompt").
 argument-hint: "[your rough idea] [--model <opus|sonnet|haiku|fable>] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.5.1
+version: 0.5.2
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -88,8 +88,10 @@ dialogue below) — but the output is always a prompt, never the task carried ou
     wired into a pipeline or agent. **Do NOT infer template from the task domain alone** (e.g. "contract
     review / release notes are usually recurring" is not a signal). When unsure, default to *improve* and
     present it as the default rather than recommending template. `--template` always forces it.
-- **Target model** (which Claude the prompt is *for* — this selects the per-model guidance you load at craft).
-  It is a **required** field by the checkpoint; resolve it in this priority order:
+- **Target model** — the model your finished prompt will *run on* (its **destination** — e.g. a Fable 5 agent
+  via the API), **not** the model you're currently running as. `--model` never changes your running session;
+  it only selects the per-model guidance you load at craft (you can craft a Fable/Haiku/Sonnet prompt while
+  running on Opus). It is a **required** field by the checkpoint; resolve it in this priority order:
   1. **`--model <opus|sonnet|haiku|fable>`** — explicit override, always wins.
   2. **Stated or clearly implied** in the idea or dialogue ("for Sonnet via the API", "cheap and fast" →
      Haiku, "a long autonomous agent" → Fable).
@@ -154,7 +156,9 @@ Ask about the *unknown* and *partial* dimensions only, most important first. Kee
 
 Before crafting, present a **compact spec** — the nine dimensions, filled, in a few tight lines
 (omit any that are genuinely N/A). Mark any assumptions you made, and **state both the target model** (mark
-it if you auto-detected it from the model you're running as) **and the output shape** you'll produce
+it if you auto-detected it; and when the target differs from the model you're running as, say both — e.g.
+"crafting on Opus 4.8 · tuned for **Fable 5**" — so it's clear the flag sets the destination, not your session)
+**and the output shape** you'll produce
 (*improve* = a ready-to-use prompt, or *template* = reusable with variables) so the user can flip either
 before you craft. Then ask the user to confirm or correct. This is the contract. Do not proceed to
 crafting until they confirm (or already said "just draft it").

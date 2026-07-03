@@ -1,7 +1,7 @@
 {
   "name": "prompt-crafting",
   "description": "Interviews you to nail the spec, then crafts a production-grade prompt for Claude tuned to the target model — grounded in Anthropic's official, sourced-and-dated docs. Ready-to-use by default; --template for a reusable, parameterized version.",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
   "homepage": "https://github.com/Mediacom99/skill-forge"
 }

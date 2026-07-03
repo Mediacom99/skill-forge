@@ -136,7 +136,7 @@ prompt it's crafting and **closes** by asking where you want it — it crafts th
 | `--deep` | Exhaustive alignment, loads the advanced reference appendix, and offers a dry test-run (paper simulation) before delivery. |
 | `--refine` | Treat the input as an existing prompt to diagnose and upgrade (also auto-detected when you paste one). |
 | `--template` | Output a **reusable, parameterized template** (system/user split + `{{variables}}`) instead of a one-off prompt — also auto-detected when reuse is clearly intended. |
-| `--model <opus\|sonnet\|haiku\|fable>` | Target a specific Claude family; loads that model's tuning at craft. If omitted, the skill auto-detects the model it's running as and confirms it at the checkpoint (you can flip it there). |
+| `--model <opus\|sonnet\|haiku\|fable>` | Set the **target** model your prompt will *run on* (its destination — e.g. a Fable 5 agent), **not** your current session — so you can craft a Fable/Haiku/Sonnet prompt while running on Opus. Loads that model's tuning at craft. If omitted, it defaults the target to the model you're running as and shows it as a flippable assumption at the checkpoint. |
 
 ## Provenance & freshness
 
