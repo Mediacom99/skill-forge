@@ -9,7 +9,7 @@ description: >
   "prompt").
 argument-hint: "[your rough idea] [--model <opus|sonnet|haiku|fable>] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.5.0
+version: 0.5.1
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---

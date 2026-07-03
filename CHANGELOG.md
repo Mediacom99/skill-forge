@@ -5,6 +5,15 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.5.1 — 2026-07-03
+
+### Added
+- **Automated reference reconcile.** A scheduled [claude.ai routine](docs/auto-reconcile-routine.md) re-verifies
+  the sources weekly and, when they've drifted, reconciles the references and opens a **pull request** for review
+  (subscription-billed, no API key; the PR is the review gate). Adds `.github/workflows/notify-pr.yml` (emails the
+  maintainer on `auto/refresh*` PRs, inert until SMTP secrets are set) and `docs/auto-reconcile-routine.md` (routine
+  prompt + setup). Its first run (PR #4) autonomously shipped the Sonnet 5 refresh below.
+
 ### Maintenance
 - **Refreshed `claude-prompt-crafting` references against the live docs (2026-07-03): Anthropic shipped a
   dedicated Claude Sonnet 5 prompting page** (`prompting-claude-sonnet-5`) since the last cycle, replacing the

@@ -82,7 +82,7 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 
 | Skill | Invoke | What it does |
 |-------|--------|--------------|
-| **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget); `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
+| **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget), **tuned to the target model** (Opus 4.8 / Sonnet 5 / Haiku 4.5 / Fable 5 · Mythos 5) via `--model` or auto-detect; `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 
 It also **refines existing prompts** — paste one and ask to improve it. By default it returns an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
@@ -108,7 +108,7 @@ flowchart LR
     A["Messy idea"] --> B["Intake:<br/>map to 9 dimensions"]
     B --> C["Adaptive dialogue:<br/>ask only the gaps"]
     C --> D{"Alignment<br/>checkpoint"}
-    D -- confirm --> E["Load references<br/>at craft time"]
+    D -- confirm --> E["Load references +<br/>target-model guide"]
     E --> F["Craft in<br/>Claude's idiom"]
     F --> G["Self-critique vs<br/>success + failure modes"]
     G --> H["Deliver:<br/>inline / save / clipboard"]
@@ -119,7 +119,7 @@ A prompt spec is "ready to craft" once these **nine dimensions** are pinned — 
 
 > **goal** · **output** · **audience** · **success criteria** · **failure modes** · **context the model needs** · **constraints** · **target model + how it's used** · **examples available**
 
-Heavy technique libraries load **only at the craft step** (progressive disclosure), so the dialogue stays cheap.
+Heavy technique libraries — plus **the target model's own tuning file** (`models/opus.md`, `sonnet.md`, `haiku.md`, or `fable.md`) — load **only at the craft step** (progressive disclosure), so the dialogue stays cheap.
 
 **Safe by construction — with hard boundaries.** The skill is read-only: it reads, asks, copies to your
 clipboard, and writes exactly *one* file — the finished prompt, and only when you choose *save*. No edits to
@@ -140,11 +140,12 @@ prompt it's crafting and **closes** by asking where you want it — it crafts th
 
 ## Provenance & freshness
 
-Every technique in the references is **sourced and dated**. The skill's `references/_sources.md` lists the exact official URLs it was distilled from, a `last-verified` date, and a "volatile items" list (model IDs, reasoning settings — the things that change). Three layers keep it current:
+Every technique in the references is **sourced and dated**. The skill's `references/_sources.md` lists the exact official URLs it was distilled from, a `last-verified` date, and a "volatile items" list (model IDs, reasoning settings — the things that change). Four layers keep it current:
 
 1. **Sourced + dated** references, with stable principles separated from clearly-flagged volatile facts.
 2. **`/refresh-references`** — one command re-fetches the sources, diffs them, and proposes updates.
 3. **`check-sources.yml`** — a weekly GitHub Action that detects when a source doc changes and opens an issue telling the maintainer to refresh. No LLM, no secrets — just fetch + hash.
+4. **Automated reconcile** *(optional)* — a scheduled [claude.ai routine](docs/auto-reconcile-routine.md) re-checks the sources and, when they've drifted, reconciles the references and opens a **pull request** for review (subscription-billed; the PR is the review gate). The update that added Sonnet 5 landed exactly this way.
 
 This is a prompt-engineering tool, so trustworthiness matters: you can always see *where every claim came from* and *how fresh it is*.
 
@@ -155,11 +156,14 @@ skill-forge/                         # this repo IS the marketplace
 ├── .claude-plugin/marketplace.json  # lists the plugins
 ├── plugins/
 │   ├── prompt-crafting/             # the prompt-crafting skill
-│   │   └── skills/claude-prompt-crafting/{SKILL.md, references/}
-│   └── maintenance/                 # refresh-references
+│   │   └── skills/claude-prompt-crafting/
+│   │       ├── SKILL.md             # the align-then-craft engine
+│   │       └── references/          # techniques + per-model tuning (models/) + _sources
+│   └── maintenance/                 # refresh-references (upkeep)
 ├── .github/
-│   ├── workflows/{validate,check-sources}.yml
+│   ├── workflows/{validate,check-sources,notify-pr}.yml
 │   └── scripts/{validate,check_sources}.py
+├── docs/                            # template spec + auto-reconcile routine setup
 ├── README.md · MAINTAINING.md · CHANGELOG.md · LICENSE
 ```
 
