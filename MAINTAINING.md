@@ -50,7 +50,11 @@ Any skill whose content distills external docs should be **sourced**:
    diffs against the distilled reference, proposes targeted edits, and bumps the dates.
 2. **`check-sources.yml`** — runs weekly (and on demand via *Run workflow*). It hashes each source and, on
    change, opens/updates an issue. Then you run `/refresh-references` to reconcile.
-3. After any reference change: bump `last-verified` in `_sources.md` and the file headers, and add a
+3. **Automated reconcile (optional)** — a claude.ai scheduled routine can run the reconcile weekly and
+   deliver it as a **PR** for review (subscription-billed, no API key; opening a PR sidesteps the
+   push-to-`main` permission that blocked the earlier attempt). See
+   [`docs/auto-reconcile-routine.md`](docs/auto-reconcile-routine.md).
+4. After any reference change: bump `last-verified` in `_sources.md` and the file headers, and add a
    `CHANGELOG.md` entry.
 
 ## Run the checks locally

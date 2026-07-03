@@ -1,0 +1,40 @@
+name: notify-pr
+
+# Emails the maintainer when the auto-reconcile routine opens a reference-refresh PR
+# (head branch auto/refresh*). Independent of GitHub's own notification rules, so it works
+# even if the PR is authored under the maintainer's own identity. No ANTHROPIC_API_KEY — just SMTP.
+# Stays inert (green, no email) until the MAIL_* secrets are added, so it's safe to commit now.
+# See docs/auto-reconcile-routine.md.
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  email:
+    if: startsWith(github.head_ref, 'auto/refresh')
+    runs-on: ubuntu-latest
+    env:
+      MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+    steps:
+      - name: Note if SMTP not configured
+        if: ${{ env.MAIL_SERVER == '' }}
+        run: echo "::notice::SMTP secrets not set — skipping email. Add MAIL_SERVER / MAIL_USERNAME / MAIL_PASSWORD / MAIL_TO to enable."
+
+      - name: Email the maintainer
+        if: ${{ env.MAIL_SERVER != '' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}   # e.g. smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}        # Gmail: an app password, not your login
+          subject: "skill-forge: reference-refresh PR opened — #${{ github.event.pull_request.number }}"
+          to: ${{ secrets.MAIL_TO }}
+          from: skill-forge bot <${{ secrets.MAIL_USERNAME }}>
+          body: |
+            Claude opened a reference-refresh PR for review:
+            ${{ github.event.pull_request.html_url }}
+
+            ${{ github.event.pull_request.title }}
