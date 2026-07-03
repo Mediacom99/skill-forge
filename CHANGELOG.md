@@ -6,6 +6,24 @@ All notable changes to skill-forge are documented here. Format follows
 ## [Unreleased]
 
 ### Maintenance
+- **Refreshed `claude-prompt-crafting` references against the live docs (2026-07-03): Anthropic shipped a
+  dedicated Claude Sonnet 5 prompting page** (`prompting-claude-sonnet-5`) since the last cycle, replacing the
+  "no dedicated Sonnet page" note from 0.5.0. Rewrote `models/sonnet.md` off that page: effort defaults to
+  `high` (same as 4.6) with `xhigh` for the hardest coding/agentic work and a cross-model effort mapping
+  (Sonnet 5 `medium` ≈ 4.6 `high`; Sonnet 5 `high` ≈ 4.6 `max`); **adaptive thinking is now on by default**
+  (a flip from 4.6, where it was off unless requested — disable via `thinking: {type: "disabled"}`); manual
+  extended thinking (`budget_tokens`) is fully removed (400 error); `temperature`/`top_p`/`top_k` at
+  non-default values now 400 (new for Sonnet-class models — breaks any prompt relying on `temperature` for
+  output variety, replaced with "propose N directions first"); a new tokenizer produces \~30% more tokens for
+  the same text, so `max_tokens` budgets ported from 4.6 may need raising; added `computer_20251124` tool-version
+  note. Added source #6 (`prompting-claude-sonnet-5`) to `_sources.md` and repointed `models/sonnet.md`'s
+  backing source at it. All other tracked sources (#1–#5) were re-fetched and reconciled with no drift: prefill
+  removal, the Opus 4.8 effort ladder, the Fable 5 / Mythos 5 refusal categories (`reasoning_extraction`,
+  offensive-cyber, bio/life-sciences) and Opus 4.8 fallback, and the prompt-generator/template-variable docs are
+  all unchanged. Also fixed a now-stale blanket claim in `techniques-advanced.md` ("[adaptive thinking is] off
+  by default") — no longer true across the board now that Sonnet 5 defaults it on and Fable 5 / Mythos 5 run
+  it always-on; the line now flags this as model-specific and points at each model's file. Bumped
+  `last-verified` to 2026-07-03 in `_sources.md`, `models/sonnet.md`, and `techniques-advanced.md`.
 - Re-verified `claude-prompt-crafting` references against the live docs (drift issue #3, 2026-07-01): another
   cosmetic site re-render — all volatile facts unchanged; bumped `last-verified` to 2026-07-01.
 - **`check-sources` now hashes *normalized* page text** (scripts/styles/tags stripped, whitespace collapsed)
