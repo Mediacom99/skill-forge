@@ -4,7 +4,7 @@
 
 **A growing collection of high-quality, installable [Claude Code](https://claude.com/claude-code) skills.**
 
-First plugin: **prompt-crafting** — turn a rough idea into a production-grade prompt for **Claude**, through a short alignment dialogue, grounded in Anthropic's official prompt-engineering guidance.
+First plugin: **prompt-crafting** — it **interviews you to nail the spec**, then crafts a production-grade prompt for **Claude**, grounded in Anthropic's official, sourced-and-dated guidance.
 
 [![validate](https://github.com/Mediacom99/skill-forge/actions/workflows/validate.yml/badge.svg)](https://github.com/Mediacom99/skill-forge/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -23,17 +23,17 @@ First plugin: **prompt-crafting** — turn a rough idea into a production-grade 
 
 ## Why
 
-The quality of any LLM output is overwhelmingly determined by the prompt — yet most prompts are written cold, in one shot, from a half-formed idea. **skill-forge** packages a better workflow as installable skills: a sharp **alignment dialogue** that nails down what you actually want *before* a single line is written, then a **craft step** grounded in Anthropic's official guidance.
+Most prompts fail before a word is written — not because people can't phrase things, but because they haven't pinned down *what they actually want*. Tools that **generate** a prompt from a one-line idea skip that step. **skill-forge** is built around it: it **interviews you first**.
 
-You bring a messy idea; you leave with a prompt that works — either a clean, ready-to-use prompt, or (with `--template`) a reusable, parameterized version you can wire straight into your API calls.
+A short, sharp **alignment dialogue** nails the spec — goal, output, success bar, failure modes, target model — and *only then* does it craft the prompt, in Claude's idiom, grounded in Anthropic's official guidance. You bring a messy idea; you leave with a prompt that works.
 
-**What makes it different:**
+**What makes it different — and hard to copy:**
 
-- **Align first, then craft** — it pins down your intent before writing, so you don't get a confident prompt for the wrong goal.
-- **Grounded in official docs** — every technique is distilled from Anthropic's own prompt-engineering guides, each claim **sourced, dated, and kept current** as the docs change.
-- **Safe by construction** — read-only: it crafts a prompt *for* your task and never runs the task, edits your code, or touches your shell.
-- **Two outputs, one workflow** — improve a one-off prompt, or `--template` a reusable, API-ready template.
-- **Tuned per model** — pick the target with `--model` or let it auto-detect the model it's running as, then it loads that family's official guidance (Opus 4.8 · Sonnet 5 · Haiku 4.5 · Fable 5 / Mythos 5) — effort defaults, instruction style, and model-specific gotchas — on top of the shared craft (system/user split, XML structure, multishot, `effort` + output budget, prefill-free formatting).
+- **It nails the spec first.** The align-first interview targets the real failure point — a confident prompt for the *wrong goal* — instead of dressing up an under-specified idea. That's the wedge a one-shot generator structurally can't cover.
+- **Sourced, dated, and kept current.** Every technique traces to an official Anthropic doc with a `last-verified` date, and an automated job re-checks those docs and opens a PR when they change (that's how it picked up **Sonnet 5**). You always see *where each claim came from* and *how fresh it is*.
+- **Runs where your code lives.** It's a Claude Code skill — in-repo and read-only — and it can drop the finished prompt straight into your project as a file you version like any other. It never runs your task, edits your code, or touches your shell.
+- **Tuned per model.** Loads the target model's own official guidance (Opus 4.8 · Sonnet 5 · Haiku 4.5 · Fable 5 · Mythos 5) via `--model` or auto-detect — effort defaults, instruction style, model-specific gotchas.
+- **One-off or reusable.** A clean, ready-to-use prompt by default; add `--template` for a parameterized system/user template with `{{variables}}` for your app or pipeline.
 
 ## Table of contents
 
