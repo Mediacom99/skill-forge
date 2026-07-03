@@ -102,7 +102,7 @@ dialogue below) — but the output is always a prompt, never the task carried ou
   | Family | Pick it when | Default `effort` |
   |--------|--------------|------------------|
   | **Opus** (4.8) | hardest long-horizon / agentic / reasoning + coding work | `xhigh` (min `high`) |
-  | **Sonnet** (4.6) | balanced default for most production / API work | tune to task |
+  | **Sonnet** (5) | balanced default for most production / API + coding/agentic work | `high` (`xhigh` hardest) |
   | **Haiku** (4.5) | high-volume, latency-sensitive, well-scoped (classify / extract / route) | low–medium |
   | **Fable / Mythos** (5) | frontier long-horizon, agentic, ambiguous, multi-day work | `high` (`xhigh` hardest) |
 
@@ -280,7 +280,7 @@ Confirm it's copied. These clipboard commands are the only shell the skill is al
 
 ---
 
-This skill targets **Claude**, and tunes each prompt to its **target model** (Opus 4.8 · Sonnet 4.6 ·
+This skill targets **Claude**, and tunes each prompt to its **target model** (Opus 4.8 · Sonnet 5 ·
 Haiku 4.5 · Fable 5 / Mythos 5) via [references/models/](references/models/), loaded per craft.
 The technique libraries are sourced and dated in
 [references/_sources.md](references/_sources.md); keep them fresh with the `refresh-references` skill.

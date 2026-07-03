@@ -24,6 +24,11 @@ All notable changes to skill-forge are documented here. Format follows
   by default") — no longer true across the board now that Sonnet 5 defaults it on and Fable 5 / Mythos 5 run
   it always-on; the line now flags this as model-specific and points at each model's file. Bumped
   `last-verified` to 2026-07-03 in `_sources.md`, `models/sonnet.md`, and `techniques-advanced.md`.
+- Follow-up to the Sonnet 5 refresh: aligned the `SKILL.md` model-selector row + README bullet from "Sonnet 4.6"
+  to **Sonnet 5** (skill files, outside the routine's references-only scope), and seeded the new
+  `prompting-claude-sonnet-5` URL to `null` in `.source-hashes.json` so `check-sources` captures its baseline
+  hash on the next run. This whole reference refresh was produced autonomously by the claude.ai reconcile
+  routine (PR #4) and merged after human review.
 - Re-verified `claude-prompt-crafting` references against the live docs (drift issue #3, 2026-07-01): another
   cosmetic site re-render — all volatile facts unchanged; bumped `last-verified` to 2026-07-01.
 - **`check-sources` now hashes *normalized* page text** (scripts/styles/tags stripped, whitespace collapsed)
