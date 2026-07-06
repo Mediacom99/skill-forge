@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-03
+last-verified: 2026-07-06
 source: _sources.md #4 — prompting-claude-fable-5 (dedicated Fable 5 / Mythos 5 page)
 scope: Per-model tuning for Claude Fable 5 and Claude Mythos 5 (current frontier — long-horizon, agentic,
 ambiguity-tolerant). Loaded at craft time only when the target model is Fable/Mythos. Applies on top of
@@ -78,6 +78,12 @@ Over-prescriptive prompts (especially ones ported from older models) can *degrad
   avoid surfacing counts, or add *"You have ample context remaining; do not stop or suggest a new session."*
 - **Communication style:** in long tool-heavy runs its final summary can be dense shorthand — instruct it to
   drop working shorthand, write complete sentences, and open with the outcome for a reader who saw none of it.
+- **Aim higher than you would for prior models.** Pick a task at the top of your difficulty range and let it
+  scope, ask clarifying questions, and execute — testing it only on simpler workloads undersells its range.
+- **Self-verification beats self-critique:** for long-running tasks, prefer separate, fresh-context verifier
+  subagents over asking it to check its own work: *"Establish a method for checking your own work at an
+  interval of [X] as you build. Run this every [X interval], verifying your work with subagents against the
+  specification."*
 
 ## Migration note
 - Skills/prompts tuned for prior models are often **too prescriptive** for Fable 5 and can hurt quality.
