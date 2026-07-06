@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-03
+last-verified: 2026-07-06
 source: _sources.md #3 — prompting-claude-opus-4-8 (dedicated Opus 4.8 page)
 scope: Per-model tuning for Claude Opus 4.8 (current Opus flagship). Loaded at craft time only when the
 target model is Opus. Applies on top of techniques.md; note 4.7/4.6 deltas inline.
@@ -55,6 +55,24 @@ instructions **literally** and calibrates its own length and depth to the task �
 - **Code-review harnesses:** it follows "only report high-severity / be conservative" faithfully and may
   report fewer low-severity bugs. For coverage, instruct it to report every finding with a confidence +
   severity and let a downstream step filter.
+
+## Design and frontend defaults
+- Has a **persistent default house style** on open-ended briefs: warm cream/off-white backgrounds
+  (~`#F4F1EA`), serif display type (Georgia, Fraunces, Playfair), italic word-accents, terracotta/amber
+  accent. Reads well for editorial/hospitality/portfolio work; feels off for dashboards, dev tools, fintech,
+  healthcare, or enterprise apps.
+- Generic pushback ("don't use cream," "make it clean and minimal") just shifts the model to a *different*
+  fixed palette, not variety. Two things reliably work instead: **(1)** give a concrete, fully-specified
+  alternative spec (colors, type, layout) — it follows explicit specs precisely; or **(2)** have it **propose
+  3–4 distinct visual directions first**, then implement the one picked — this is also the substitute for
+  `temperature`-based variety.
+- Needs **less frontend-aesthetics scaffolding** than earlier models to avoid the generic "AI slop" look;
+  a short `<frontend_aesthetics>` steer (avoid Inter/Roboto/Arial, purple-gradient clichés, cookie-cutter
+  layouts) is enough — no need for a lengthy prompt snippet.
+
+## Computer use
+- Supports resolutions **up to 2576px / 3.75MP**. **1080p** is the good performance/cost balance for testing;
+  **720p / 1366×768** for cost-sensitive workloads.
 
 ## Version deltas
 - **Opus 4.7 / 4.6:** 4.8 performs well out of the box on existing 4.7 prompts; sampling params, the `effort`

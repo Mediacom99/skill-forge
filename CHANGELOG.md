@@ -5,6 +5,29 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+### Maintenance
+- **Scheduled reference-freshness check (routine run, 2026-07-06):** re-fetched all 6 tracked source URLs
+  in `_sources.md` and reconciled `claude-prompt-crafting`'s reference library.
+  - **`models/opus.md` was missing two sections that exist on the live Opus 4.8 prompting page** and were
+    already distilled for Sonnet 5 in `models/sonnet.md`: **Design and frontend defaults** (Opus 4.8's
+    persistent default house style — warm cream/off-white ~`#F4F1EA` backgrounds, serif display type,
+    terracotta/amber accent — and the two reliable ways to break it) and **Computer use** (resolution support
+    up to 2576px / 3.75MP; 1080p as the performance/cost balance, 720p/1366×768 for cost-sensitive work).
+    Added both, matching the depth already given to Sonnet.
+  - **`models/fable.md`:** added two scaffolding tips from the live Fable 5 page's "Recommended scaffolding
+    changes" section that weren't yet distilled — aiming at the top of one's difficulty range (testing Fable 5
+    only on simpler workloads undersells it), and preferring fresh-context verifier subagents over self-critique
+    for long-running tasks.
+  - All other tracked facts were re-verified with **no drift**: prefill removal (4.6+ and the 5-series),
+    the Opus 4.8 and Sonnet 5 effort ladders and defaults, Sonnet 5's adaptive-thinking-on-by-default /
+    removed `budget_tokens` / rejected sampling params / new tokenizer, the Fable 5 / Mythos 5 refusal
+    categories (`reasoning_extraction`, offensive-cyber, bio/life-sciences) and Opus 4.8 fallback, and the
+    prompt-generator/template-variable docs (`prompting-tools`). Reconfirmed `prompting-claude-haiku-4-5`
+    still 404s — no dedicated Haiku prompting page yet.
+  - Bumped `last-verified` to 2026-07-06 in `_sources.md`, `models/opus.md`, and `models/fable.md`.
+    `techniques.md`, `techniques-advanced.md`, `models/sonnet.md`, `models/haiku.md`, and `examples.md` were
+    checked against their sources and found current; their `last-verified` headers are unchanged.
+
 ## prompt-crafting 0.5.2 — 2026-07-03
 
 ### Changed

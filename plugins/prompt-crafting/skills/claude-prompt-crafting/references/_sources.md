@@ -1,6 +1,6 @@
 # Sources — claude-prompt-crafting references
 
-**last-verified: 2026-07-03** · vendor: Anthropic · official docs only.
+**last-verified: 2026-07-06** · vendor: Anthropic · official docs only.
 
 The `refresh-references` skill and the `check-sources.yml` workflow read the URL list below.
 When updating, re-fetch each URL, reconcile `techniques.md` / `techniques-advanced.md`, then bump
@@ -25,7 +25,7 @@ file also carries its own `last-verified` header.
 | `models/opus.md` | **#3** — dedicated Opus 4.8 prompting page |
 | `models/fable.md` (Fable 5 + Mythos 5) | **#4** — dedicated Fable 5 / Mythos 5 prompting page |
 | `models/sonnet.md` | **#6** — dedicated Sonnet 5 prompting page (Anthropic shipped this since last cycle; Sonnet 4.6 had none) |
-| `models/haiku.md` | **#2** + the Haiku 4.5 model overview — **no dedicated prompting page** exists as of last-verified (confirmed 404 on `prompting-claude-haiku-4-5`) |
+| `models/haiku.md` | **#2** + the Haiku 4.5 model overview — **no dedicated prompting page** exists as of last-verified (reconfirmed 404 on `prompting-claude-haiku-4-5` this cycle) |
 
 > Six prompting URLs are now tracked in `.source-hashes.json` (the check-sources workflow owns adding #6's
 > hash on its next run — do not hand-edit that file). The Haiku overview page is not tracked — it churns on
