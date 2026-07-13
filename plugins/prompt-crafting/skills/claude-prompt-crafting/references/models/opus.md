@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-06
+last-verified: 2026-07-13
 source: _sources.md #3 — prompting-claude-opus-4-8 (dedicated Opus 4.8 page)
 scope: Per-model tuning for Claude Opus 4.8 (current Opus flagship). Loaded at craft time only when the
 target model is Opus. Applies on top of techniques.md; note 4.7/4.6 deltas inline.
@@ -64,7 +64,7 @@ instructions **literally** and calibrates its own length and depth to the task �
 - Generic pushback ("don't use cream," "make it clean and minimal") just shifts the model to a *different*
   fixed palette, not variety. Two things reliably work instead: **(1)** give a concrete, fully-specified
   alternative spec (colors, type, layout) — it follows explicit specs precisely; or **(2)** have it **propose
-  3–4 distinct visual directions first**, then implement the one picked — this is also the substitute for
+  4 distinct visual directions first**, then implement the one picked — this is also the substitute for
   `temperature`-based variety.
 - Needs **less frontend-aesthetics scaffolding** than earlier models to avoid the generic "AI slop" look;
   a short `<frontend_aesthetics>` steer (avoid Inter/Roboto/Arial, purple-gradient clichés, cookie-cutter
@@ -76,5 +76,5 @@ instructions **literally** and calibrates its own length and depth to the task �
 
 ## Version deltas
 - **Opus 4.7 / 4.6:** 4.8 performs well out of the box on existing 4.7 prompts; sampling params, the `effort`
-  default, 1M-context default, and refusal details changed across the migration — verify against the current
-  migration guide if targeting an older Opus.
+  default, 1M-context default, mid-conversation system messages, and refusal details changed across the
+  migration — verify against the current migration guide if targeting an older Opus.

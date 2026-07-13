@@ -6,6 +6,25 @@ All notable changes to skill-forge are documented here. Format follows
 ## [Unreleased]
 
 ### Maintenance
+- **Scheduled reference-freshness check (routine run, 2026-07-13):** re-fetched all 6 tracked source URLs in
+  `_sources.md` (`overview`, `claude-prompting-best-practices`, `prompting-claude-opus-4-8`,
+  `prompting-claude-fable-5`, `prompting-tools`, `prompting-claude-sonnet-5`) and reconciled
+  `claude-prompt-crafting`'s reference library — triggered by issue #6 flagging the best-practices and Opus 4.8
+  pages as changed.
+  - **`models/opus.md`:** the live Opus 4.8 page asks for **4** (not "3–4") distinct visual directions before
+    building — corrected the design/frontend-defaults bullet to match. Also added **mid-conversation system
+    messages** to the Opus 4.7→4.8 migration-delta list; the live page's migration note now names it alongside
+    sampling params, the `effort` default, and the 1M-context default.
+  - All other tracked facts were re-verified with **no drift**: prefill removal (4.6+ and the 5-series), the
+    core techniques in `techniques.md`/`techniques-advanced.md` (clarity, XML tags, examples, thinking/effort
+    guidance, self-check), the Opus 4.8 effort ladder and design/computer-use specifics, the Sonnet 5 effort
+    ladder/adaptive-thinking-on-by-default/rejected sampling params/new tokenizer, the Fable 5 / Mythos 5
+    refusal categories (`reasoning_extraction`, offensive-cyber, bio/life-sciences) and Opus 4.8 fallback, and
+    the prompt-generator/template-variable docs (`prompting-tools`). No URLs moved or 404'd.
+  - Bumped `last-verified` to 2026-07-13 in `_sources.md` and `models/opus.md`. `techniques.md`,
+    `techniques-advanced.md`, `models/sonnet.md`, `models/haiku.md`, `models/fable.md`, and `examples.md` were
+    checked against their sources and found current; their `last-verified` headers are unchanged.
+
 - **Scheduled reference-freshness check (routine run, 2026-07-06):** re-fetched all 6 tracked source URLs
   in `_sources.md` and reconciled `claude-prompt-crafting`'s reference library.
   - **`models/opus.md` was missing two sections that exist on the live Opus 4.8 prompting page** and were
