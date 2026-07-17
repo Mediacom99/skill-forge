@@ -14,6 +14,10 @@ prompts/
 # Clipboard scratch file from the skill's copy-to-clipboard delivery (emptied after copy; never committed)
 .skill-forge-clipboard.txt
 
+# Claude Code local state (personal; not repo content)
+.claude/settings.local.json
+.claude/memory/
+
 # OS / editor cruft
 .DS_Store
 *.swp

@@ -1,0 +1,7 @@
+{
+  "name": "mac-cleanup",
+  "description": "Safely reclaim SSD/disk space on an Apple Silicon Mac. reclaim-disk-space scans read-only for reclaimable space (caches, build artifacts, dev/package caches, Xcode, Docker), then removes only what you approve — batch by batch, Trash-first, with zero data-loss surprises.",
+  "version": "0.1.0",
+  "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
+  "homepage": "https://github.com/Mediacom99/skill-forge"
+}

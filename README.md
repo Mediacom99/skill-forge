@@ -4,7 +4,7 @@
 
 **A growing collection of high-quality, installable [Claude Code](https://claude.com/claude-code) skills.**
 
-First plugin: **prompt-crafting** — it **interviews you to nail the spec**, then crafts a production-grade prompt for **Claude**, grounded in Anthropic's official, sourced-and-dated guidance.
+Flagship plugin: **prompt-crafting** — it **interviews you to nail the spec**, then crafts a production-grade prompt for **Claude**, grounded in Anthropic's official, sourced-and-dated guidance. Newest: **mac-cleanup** — safely reclaim SSD space on an Apple Silicon Mac (read-only scan → per-batch approval, **zero data-loss surprises**).
 
 [![validate](https://github.com/Mediacom99/skill-forge/actions/workflows/validate.yml/badge.svg)](https://github.com/Mediacom99/skill-forge/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -63,7 +63,9 @@ That's it — now invoke it:
 /claude-prompt-crafting   --template a system prompt for an agent that triages our failing tests
 ```
 
-> Maintainers can also install the upkeep tooling: `/plugin install maintenance@skill-forge`
+> Also available: `/plugin install mac-cleanup@skill-forge` — safely reclaim SSD space on an Apple
+> Silicon Mac (scans read-only, then removes only what you approve). Maintainers can install the
+> upkeep tooling: `/plugin install maintenance@skill-forge`
 
 <details>
 <summary><b>Alternative: install without the plugin marketplace (git clone)</b></summary>
@@ -83,6 +85,7 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 | Skill | Invoke | What it does |
 |-------|--------|--------------|
 | **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget), **tuned to the target model** (Opus 4.8 / Sonnet 5 / Haiku 4.5 / Fable 5 · Mythos 5) via `--model` or auto-detect; `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
+| **reclaim-disk-space** *(mac-cleanup)* | `/reclaim-disk-space` | Safely frees SSD space on an **Apple Silicon Mac**: scans **read-only** for reclaimable space (caches, build artifacts, dev/package caches, Xcode, Docker), presents a ranked report, then removes **only what you approve — batch by batch, Trash-first**. Built for **zero data-loss surprises**. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 
 It also **refines existing prompts** — paste one and ask to improve it. By default it returns an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
@@ -159,6 +162,10 @@ skill-forge/                         # this repo IS the marketplace
 │   │   └── skills/claude-prompt-crafting/
 │   │       ├── SKILL.md             # the align-then-craft engine
 │   │       └── references/          # techniques + per-model tuning (models/) + _sources
+│   ├── mac-cleanup/                  # the reclaim-disk-space skill (Apple Silicon)
+│   │   └── skills/reclaim-disk-space/
+│   │       ├── SKILL.md             # two-phase safety spine (scan → per-batch approval)
+│   │       └── references/          # scan-catalog + report-format + reclaim-commands
 │   └── maintenance/                 # refresh-references (upkeep)
 ├── .github/
 │   ├── workflows/{validate,check-sources,notify-pr}.yml

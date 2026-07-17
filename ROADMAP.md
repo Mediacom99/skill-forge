@@ -72,6 +72,24 @@ _Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
     inline/clipboard. See [`docs/template-and-delivery-spec.md`](docs/template-and-delivery-spec.md); revisit
     only if a turn-queuing primitive appears.
 
+## mac-cleanup — `reclaim-disk-space`
+
+_Backlog for the disk-cleanup skill (Apple Silicon macOS; shipped 0.1.0, 2026-07-17)._
+
+- [ ] **Fresh-install smoke test** — from a clean account: `/plugin install mac-cleanup@skill-forge`
+  → invoke `/reclaim-disk-space` → confirm it scans read-only and stops for approval (agent can't do
+  this itself). The one real pre-promotion gate.
+- [ ] **Intel-Mac path variant** — currently Apple-Silicon-only (asserted in the description + SKILL).
+  Either add an `/usr/local` Homebrew + Intel-path branch, or keep it scoped and detect+refuse on
+  Intel. Decide before broadening the trigger.
+- [ ] **Re-verify references on major macOS updates** — the `references/` files are dated and verified
+  against macOS 26.3; cache locations and tool flags drift across releases. Not wired into
+  `check-sources` (that convention is for vendor **doc URLs**, not OS paths) — this is a manual
+  re-verify. Consider a lightweight self-probe checklist the skill can run to flag drift.
+- [ ] **Optional dedupe depth (Tier C)** — the catalog describes hash-based dedupe excluding
+  APFS clones/hardlinks; consider a bounded, opt-in implementation with a clear "true bytes freed"
+  accounting, only if users ask.
+
 ## maintenance — `refresh-references`
 
 - [x] ~~**Reduce `check-sources` false positives — hash normalized content, not raw bytes**~~ · **done 2026-07-01** (normalize: strip scripts/styles/tags + collapse whitespace before hashing; snapshots reset to re-baseline)

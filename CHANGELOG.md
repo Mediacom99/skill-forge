@@ -28,6 +28,33 @@ All notable changes to skill-forge are documented here. Format follows
     `techniques.md`, `techniques-advanced.md`, `models/sonnet.md`, `models/haiku.md`, and `examples.md` were
     checked against their sources and found current; their `last-verified` headers are unchanged.
 
+## mac-cleanup 0.1.0 — 2026-07-17
+
+### Added
+- **New plugin `mac-cleanup` with the `reclaim-disk-space` skill** — safely reclaim SSD/disk space
+  on an **Apple Silicon (M-series) Mac**. It runs a strict two-phase flow whose #1 requirement is
+  **zero irreversible data loss**: **Phase 1** scans **read-only** (never mutating) and produces a
+  ranked report of reclaimable space; **Phase 2** removes **only what the user approves, batch by
+  batch**, Trash-first, blocking after every batch. Registered in `marketplace.json`; installs via
+  `/plugin install mac-cleanup@skill-forge`.
+- **Packaged from a fact-checked, red-teamed source prompt** (developed with the `prompt-crafting`
+  skill), with its full safety architecture preserved: the 10 absolute safety rules (Trash-first + confirm
+  moved; VM/container images report-only; account for APFS snapshots / purgeable / iCloud stubs;
+  never `sudo`; app-quit-vs-daemon-running; FDA-denied ≠ empty), Phase-1 command safety, and the
+  per-batch authorization protocol (empty-Trash is a dedicated final PERMANENT batch) all live in
+  `SKILL.md` and load every invocation.
+- **Progressive-disclosure references** loaded at the step that needs them: `references/scan-catalog.md`
+  (Tier A/B/C candidates + exact sizing commands + verify-before-listing predicates),
+  `references/report-format.md` (report spec + a worked example), and `references/reclaim-commands.md`
+  (argv-safe Trash / `tmutil` / `brew` / `docker` / `simctl` / `pnpm` / `go` recipes).
+- **Verified against live macOS 26.3 (Apple Silicon) on 2026-07-17** (each reference carries a
+  verification header). Findings folded in: resolve the pnpm store via `pnpm config get store-dir`
+  (plain `pnpm store path` can trigger a Corepack download) and the Go module cache via
+  `go env GOMODCACHE`; `xcrun simctl` can provision CoreSimulator components on first run even with
+  Xcode installed, so `xcode-select -p` guarding is necessary but not sufficient; read used/free from
+  the `/System/Volumes/Data` volume, not the sealed `/`. Uses broad `Bash` (a cleanup skill needs it
+  in both phases) — CI's read-only `allowed-tools` guard only applies to `*-prompt-crafting` skills.
+
 ## prompt-crafting 0.5.2 — 2026-07-03
 
 ### Changed
