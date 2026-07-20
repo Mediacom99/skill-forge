@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-03
+last-verified: 2026-07-20
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.
@@ -39,6 +39,11 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - **Restore post-tool summaries** if you want them ("after using tools, give a quick summary") — newer models
   are terse by default.
 - **Grounding rule:** "never speculate about content you have not opened/seen."
+- **Optimize parallel tool calling.** Current models already run independent tool calls in parallel (parallel
+  reads, speculative searches) at a high success rate; a short instruction pushes this close to 100% —
+  "if there are no dependencies between tool calls, make them in parallel rather than sequentially; if some
+  calls depend on a previous call's output, run those sequentially instead." Use the inverse instruction
+  ("execute sequentially, with brief pauses") when parallel execution would destabilize a shared resource.
 
 ## Multi-context / long-horizon work
 - Use a different prompt for the first window (sets the framework) vs continuation windows.

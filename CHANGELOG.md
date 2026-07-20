@@ -6,6 +6,27 @@ All notable changes to skill-forge are documented here. Format follows
 ## [Unreleased]
 
 ### Maintenance
+- **Scheduled reference-freshness check (routine run, 2026-07-20):** re-fetched all 6 tracked source URLs in
+  `_sources.md` and reconfirmed `prompting-claude-haiku-4-5` still 404s (no dedicated Haiku prompting page).
+  No URLs moved; no factual drift found in any per-model page beyond what the 2026-07-13 cycle already fixed
+  (Opus 4.8's "4 distinct visual directions" wording and its mid-conversation-system-messages migration note
+  — both still accurate against the live page).
+  - **Added one genuinely new technique to `techniques-advanced.md`:** an **"Optimize parallel tool calling"**
+    bullet under Tool use & agentic systems, distilled from `claude-prompting-best-practices`'s
+    "Optimize parallel tool calling" subsection — current models already parallelize independent tool calls at
+    a high success rate, and a short instruction pushes this close to 100% (with the inverse instruction for
+    when parallel execution would destabilize a shared resource). This subsection had been flagged as
+    unreviewed in the 2026-07-13 PR; resolved it now since it's a concrete, high-leverage, already-official
+    technique directly backing this file. Bumped `techniques-advanced.md`'s `last-verified` to 2026-07-20.
+  - **Left out, flagging for a human:** the same source page's "Reduce file creation in agentic coding"
+    subsection (narrower scratch-file scaffolding tip) and the "context awareness" capability mentioned for
+    Sonnet 5 / Sonnet 4.6 / Sonnet 4.5 / Haiku 4.5 (tracking remaining context window) — both plausibly
+    genuinely new, but narrower/more judgment-call than the parallel-tool-calling addition, so kept out to
+    keep the core lean. Worth a deliberate look if a maintainer wants either folded in.
+  - Bumped `last-verified` to 2026-07-20 in `_sources.md`. `techniques.md`, `models/opus.md`, `models/sonnet.md`,
+    `models/haiku.md`, `models/fable.md`, and `examples.md` were checked against their sources and found
+    current; their headers are unchanged.
+
 - **Scheduled reference-freshness check (routine run, 2026-07-13):** re-fetched all 6 tracked source URLs in
   `_sources.md` (`overview`, `claude-prompting-best-practices`, `prompting-claude-opus-4-8`,
   `prompting-claude-fable-5`, `prompting-tools`, `prompting-claude-sonnet-5`) and reconciled
