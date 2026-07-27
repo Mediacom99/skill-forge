@@ -6,6 +6,43 @@ All notable changes to skill-forge are documented here. Format follows
 ## [Unreleased]
 
 ### Maintenance
+- **Scheduled reference-freshness check (routine run, 2026-07-27):** re-fetched all 6 previously-tracked source
+  URLs plus the newly-discovered Opus 5 prompting page in `_sources.md`.
+  - **Claude Opus 5 has shipped and is now the current Opus flagship**, with its own dedicated prompting page
+    (`prompting-claude-opus-5`, added as source **#7**). Rewrote `models/opus.md` off that page — the same
+    treatment `models/sonnet.md` got when Sonnet 5 shipped — with the prior Opus 4.8 content kept as a
+    "Migration deltas" section rather than dropped. Biggest behavioral changes distilled: **thinking is on by
+    default and disabling it is only accepted at effort `high` or below** (400 error at `xhigh`/`max`);
+    **effort no longer controls visible response length** (prompt for conciseness explicitly instead); Opus 5
+    **verifies and self-corrects its own work without being told**, so explicit verification/double-check
+    scaffolding carried over from Opus 4.8 prompts now causes over-verification and should be removed rather
+    than rewritten; it narrates more before tool calls and delegates to subagents more readily; running with
+    thinking disabled can leak a tool call as plain text or leak internal XML tags into visible output. Also
+    carried the still-applicable 4.8-era Design/frontend-defaults and Computer-use sections forward with a note
+    that Opus 5's own page doesn't yet restate them. Updated `techniques-advanced.md`'s adaptive-thinking-default
+    volatile note to include Opus 5 alongside Sonnet 5.
+  - **`prompting-tools` (source #5) has been retired**: it now 307-redirects to `claude-prompting-best-practices`
+    (#2), and the destination no longer carries the Console prompt-generator/-improver/template-variable content
+    it used to cover. This matches Anthropic's own notice that the experimental Console prompt-tools APIs and
+    the Workbench are sunsetting **2026-08-17**. No reference file cited #5 in prose — only `_sources.md`'s
+    backing-source table did, for `techniques.md`'s "Template variables" technique — and that technique remains
+    valid on general prompting grounds (`{{var}}`-style placeholders are still demonstrated directly on #2's
+    live page), so nothing was removed; only the citation was repointed to #2 and #5's row was marked dead so
+    `check-sources` won't re-flag it as fresh drift.
+  - Minor accuracy fix in `techniques.md`: "especially on Opus 4.x" (technique 7, positive framing) was
+    version-pinned to a superseded model; reworded to "current Opus/Sonnet models." Also double-checked that
+    Fable 5's Opus-fallback target is still **Opus 4.8**, not Opus 5 — reconfirmed unchanged. Reconfirmed
+    `prompting-claude-haiku-4-5` still 404s (no dedicated Haiku page).
+  - **Left out again, still flagging for a human** (carried over from the 2026-07-20 cycle, unchanged): the
+    best-practices page's "Reduce file creation in agentic coding" subsection, and the "context awareness"
+    capability for Sonnet 5 / Sonnet 4.6 / Sonnet 4.5 / Haiku 4.5 (tracking remaining context window). Both
+    still look like genuine, narrower additions rather than corrections — a deliberate maintainer call, not
+    something to guess at inside an automated cycle.
+  - Bumped `last-verified` to 2026-07-27 in `_sources.md`, `models/opus.md`, `models/haiku.md` (comment-only
+    fix — its "per-model pages" note was stale now that Opus 5 and Sonnet 5 both have dedicated pages),
+    `techniques.md`, and `techniques-advanced.md`. `models/sonnet.md`, `models/fable.md`, and `examples.md`
+    were checked against their sources and found current; their headers are unchanged.
+
 - **Scheduled reference-freshness check (routine run, 2026-07-20):** re-fetched all 6 tracked source URLs in
   `_sources.md` and reconfirmed `prompting-claude-haiku-4-5` still 404s (no dedicated Haiku prompting page).
   No URLs moved; no factual drift found in any per-model page beyond what the 2026-07-13 cycle already fixed
