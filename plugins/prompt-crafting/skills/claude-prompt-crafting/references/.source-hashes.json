@@ -1,12 +1,12 @@
 {
   "_comment": "Content snapshots for the check-sources.yml drift detector. hash=null means not yet captured; the workflow populates and commits real hashes on first run, then compares on each scheduled run.",
-  "last_updated": "2026-07-20",
+  "last_updated": "2026-07-27",
   "sources": {
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "29de1b2f10ccecfb9a2663d73cb6cab07f5f8267d87dd45235cc3b3fb656b2c3",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "26a8f0a80dd55568b2d8139e0cfee77c5c04032e3a2fc84071715e493f9641fa",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "93fc2f4c0e41d65f0d1492ab2b1b1e785e6e59d7b1a99125a1f0520ceab21742",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "373a5a5f865cd6957193d7f2a83831fe5e8784715c1c41b6d1a96df527315700",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools": "3cf3adc6362f81f331b2722cf4fdc755d366f393da95a96187aff26ba15326b5",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5": "0577fb14adcaba99749937d6e1973e316d68c43609fab9e4b44c325e2cf31a86"
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "71ffa5a8083a8cd0822e28d3c0a6f47e4b7da6b58f58dbb4742af49385c47310",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "9be0f4ad54d046dca7d00496152cb9ea4a1979e704b0764ec0a411c36be70c28",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "ac089c2025c2a64a27cff93153c0deaffa6c5f819172d8e4ef79e9ba2534c012",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "46f868ac4b3d61d0673eaa6202c6405435ed469bb06a662dded1d2b2fb550e69",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools": "9be0f4ad54d046dca7d00496152cb9ea4a1979e704b0764ec0a411c36be70c28",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5": "c1f79aa30edaf88d8de39f45ab53267108554e6c3750b11defabe1b9210437dd"
   }
 }
