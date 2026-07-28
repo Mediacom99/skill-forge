@@ -5,6 +5,23 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.6.1 — 2026-07-28
+
+### Changed
+- **Retired dead source #5 (`prompting-tools`).** The Console prompt-tools page now 307-redirects to
+  `claude-prompting-best-practices` (#2), and the Console prompt generator/improver + Workbench are sunsetting
+  2026-08-17. Removed it from `.source-hashes.json` tracking (its normalized content already mirrored #2),
+  marked its `_sources.md` row retired, and repointed the template-variable citation to #2 (the
+  `{{double_bracket}}` convention is still demonstrated there). No technique was dropped.
+- **Added the "parallel tool calls" technique** to `techniques-advanced.md` — independent tool calls run in
+  parallel by default; a one-line system-prompt nudge pushes it to ~100% (distilled from #2).
+
+### Notes
+- Salvaged from the auto-reconcile routine's **PR #7** (its 2026-07-27 cycle), which caught these two items the
+  0.6.0 manual pass missed. PR #7 closed as superseded by 0.6.0 + this patch; drift issue #6 closed. Two
+  further additive topics it surfaced — cross-model **context awareness** and **reduce-file-creation** — moved
+  to `ROADMAP.md` for a deliberate distill rather than an automated guess.
+
 ## prompt-crafting 0.6.0 — 2026-07-28
 
 ### Added

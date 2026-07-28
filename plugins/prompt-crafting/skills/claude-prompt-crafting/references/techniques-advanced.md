@@ -38,6 +38,10 @@ eval prompts, or under --deep. The lean core is in techniques.md.
   when done") and a **tool budget** when you want to cap calls.
 - **Restore post-tool summaries** if you want them ("after using tools, give a quick summary") — newer models
   are terse by default.
+- **Parallel tool calls:** current models run independent tool calls in parallel by default. Push toward
+  ~100% with a system-prompt line — *"if multiple tool calls are independent, make them all in parallel; never
+  use placeholders or guess missing params; call sequentially only when one depends on another's output"* — or
+  add the opposite ("run operations sequentially") if parallel calls bottleneck the system.
 - **Grounding rule:** "never speculate about content you have not opened/seen."
 
 ## Multi-context / long-horizon work

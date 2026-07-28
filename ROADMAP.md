@@ -9,6 +9,12 @@ section; move an item to `CHANGELOG.md` once it ships.
 
 _Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
 
+- [ ] **Distill two cross-model topics flagged by the reference routine (2026-07-27)** · not yet in the library
+  - **Context awareness** — current models (Sonnet 5 / 4.6 / 4.5, Haiku 4.5) can track their remaining context
+    window ("token budget"); relevant to long-horizon / agentic prompts. Candidate for `techniques-advanced.md`.
+  - **Reduce file creation in agentic coding** — the best-practices tip to have the model clean up temporary
+    scratch files it creates while iterating. Small addition to `techniques-advanced.md`.
+
 - [x] ~~**Trim the skill `description:` frontmatter — it's over the listing budget**~~ · **done in 0.3.1** (trimmed it + added API framing; re-check the listing warning after install)
   - Claude Code warns when a skill description exceeds `skillListingBudgetFraction` (1.1% / 1% of context), so
     an over-budget description gets **dropped from the listing** → weaker/no auto-triggering. Real

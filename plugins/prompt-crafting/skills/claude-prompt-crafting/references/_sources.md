@@ -12,7 +12,7 @@ the `last-verified` dates here and in those files.
 | 2 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices | The living reference: clarity, examples, XML, roles, thinking, chaining, output/format, tool use, agentic, capability tips |
 | 3 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5 | **Opus 5** (current flagship): effort default `high`, thinking on-by-default (disable only ≤ `high`), verbosity/narration, scope + over-verification, subagents |
 | 4 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5 | Fable-specific: brief instructions, give-the-reason, memory file, no inline reasoning |
-| 5 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools | Console prompt generator / improver, template variables |
+| 5 | _(retired 2026-07-28)_ `prompting-tools` | **RETIRED** — now 307-redirects to #2 (best-practices); the Console prompt-generator/-improver + Workbench are sunsetting 2026-08-17. Removed from tracking (its normalized content already mirrored #2). The `{{double_bracket}}` template convention it covered is still demonstrated on #2. |
 | 6 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5 | Sonnet-specific: effort default/ladder, adaptive thinking on-by-default, new tokenizer, no sampling params |
 | 7 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8 | **Legacy** Opus 4.8 page (still live) — literal instruction-following, effort ladder, 64k budget, design house-style (`#F4F1EA`), computer-use resolutions |
 
@@ -22,17 +22,18 @@ file also carries its own `last-verified` header.
 
 | Reference file | Backed by |
 |----------------|-----------|
-| `techniques.md` · `techniques-advanced.md` | #1, #2 (+ #5 for template variables) |
+| `techniques.md` · `techniques-advanced.md` | #1, #2 (template variables now covered by #2; former #5 retired) |
 | `models/opus.md` | **#3** — dedicated **Opus 5** prompting page (current flagship; #7 is the legacy Opus 4.8 page) |
 | `models/fable.md` (Fable 5 + Mythos 5) | **#4** — dedicated Fable 5 / Mythos 5 prompting page |
 | `models/sonnet.md` | **#6** — dedicated Sonnet 5 prompting page (Anthropic shipped this since last cycle; Sonnet 4.6 had none) |
 | `models/haiku.md` | **#2** + the Haiku 4.5 model overview — **no dedicated prompting page** exists as of last-verified (reconfirmed 404 on `prompting-claude-haiku-4-5` this cycle) |
 
-> Seven prompting URLs are tracked in `.source-hashes.json`. The **Opus 5** page (#3) was added this cycle,
-> seeded with `null` — the check-sources Action captures its baseline hash on the next run. Add a *new* URL by
-> seeding it `null`; never hand-edit existing hash *values* (the Action owns them). The Haiku overview page is
-> not tracked — it churns on pricing/availability; `models/haiku.md`'s prompting substance comes from the
-> cross-model best-practices page (#2). Add a new tracked URL only if Anthropic ships a dedicated Haiku page.
+> Six prompting URLs are tracked in `.source-hashes.json`: the **Opus 5** page (#3) was added seeded `null`
+> (the check-sources Action captures its baseline on the next run), and the retired **prompting-tools** page
+> (#5) was removed from tracking (it now mirrors #2). Add a *new* URL by seeding it `null`; never hand-edit
+> existing hash *values* (the Action owns them). The Haiku overview page is not tracked — it churns on
+> pricing/availability; `models/haiku.md`'s substance comes from the cross-model best-practices page (#2). Add
+> a new tracked URL only if Anthropic ships a dedicated Haiku page.
 
 ## Volatile items to recheck each cycle
 - **Prefill removal** — applies to Claude 4.6 and newer, incl. the 5-series (Fable 5 / Mythos 5 / Sonnet 5); confirm.
