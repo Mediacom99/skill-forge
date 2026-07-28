@@ -8,7 +8,10 @@ This closes the last manual gap in the freshness system. Today:
   **manual** until now.
 
 A **claude.ai scheduled routine** runs the reconcile automatically and delivers the result as a **pull
-request** (never a push to `main`), so a human still reviews the LLM-edited prose before it ships.
+request** (never a push to `main`), so a human still reviews the LLM-edited prose before it ships. When a
+needed change is **beyond what it can safely do on its own** (an ambiguous judgment call, a moved/new source,
+or a change outside its allowed scope), it doesn't guess — it opens a **notification issue** for the
+maintainer instead. Either way, the email it produces links straight to the PR or issue.
 
 > **Why a PR, not a push to main?** The cloud routine previously stalled because its *"allow unrestricted
 > branch pushes to `main`"* permission wouldn't save (a likely product bug). Opening a PR pushes to a
@@ -25,12 +28,13 @@ Paste this into the scheduled routine (targeting `Mediacom99/skill-forge`):
 
 ```text
 You are the reference-freshness bot for the GitHub repo Mediacom99/skill-forge. On each scheduled run, keep
-the distilled reference libraries faithful to their official Anthropic source docs and deliver any updates as
-a pull request for review — never by pushing to main.
+the distilled reference libraries faithful to their official Anthropic source docs. Deliver any reconcile you
+can do as a pull request for review (never by pushing to main); when a needed change is beyond what you can
+safely do yourself, notify the maintainer with a GitHub issue instead (see Deliver for both paths).
 
 You run unattended on a schedule with no one watching. Proceed on reversible, in-scope actions (fetching
-docs, editing reference files, opening a PR) without pausing to ask, and finish the job with tool calls
-rather than stopping at a plan or a promise. The PR is the review gate.
+docs, editing reference files, opening a PR or a notification issue) without pausing to ask, and finish the
+job with tool calls rather than stopping at a plan or a promise. The PR (or issue) is the review gate.
 
 Procedure:
 
@@ -46,12 +50,32 @@ Procedure:
    add a dated CHANGELOG.md entry describing what changed.
 
 Hard boundaries:
-- Edit only files under references/** and CHANGELOG.md. Touch nothing else.
-- Never edit any references/.source-hashes.json — the check-sources GitHub Action owns it.
+- Edit only files under references/** and CHANGELOG.md — no other file edits. (Opening or updating a GitHub PR
+  or issue for review/notification is allowed; changing any other repo file is not.)
+- Never edit any references/.source-hashes.json — the check-sources GitHub Action owns it. If a source needs
+  to be added to or retired from tracking, that's a maintainer action: notify, don't edit it.
 - Never commit or push to main; every change goes on a branch and ships via PR.
 
-Deliver:
-- If you made no edits (references already current), stop and open nothing.
+Deliver — pick the path that matches what you found:
+
+A) Nothing to do — references already current, or the pages only re-rendered cosmetically with every tracked
+   fact still matching. Stop and open nothing.
+
+B) A reconcile you CAN do fully — facts to correct, a genuinely new high-leverage technique to distill, or a
+   moved URL to fix in _sources.md. This is the normal path: make the minimal faithful edits and open a PR
+   (details below).
+
+C) An action the maintainer needs that you CANNOT do yourself — NOTIFY, don't go silent. Cases include: a
+   change whose faithful distillation is genuinely ambiguous or a judgment call; a source that 404'd or
+   redirected, or a new model / new dedicated page, where deciding what to track is the maintainer's call; a
+   needed change outside your allowed scope (anything beyond references/** and CHANGELOG.md — e.g. adding or
+   retiring a tracked URL in .source-hashes.json, or a SKILL.md edit); or anything you cannot edit with
+   confidence. Open (or update) a GitHub issue titled "Reference reconcile — needs maintainer <YYYY-MM-DD>"
+   that states exactly what needs doing and why you couldn't, quotes the relevant source text, lists the
+   affected reference file(s), ends with "cc @Mediacom99", and assigns Mediacom99. If you also completed a
+   partial reconcile, open the PR (path B) as well and cross-link the two.
+
+For the PR in path B:
 - If an open PR from an auto/refresh-references-* branch already exists, update it instead of opening a duplicate.
 - Otherwise open a PR from a new branch auto/refresh-references-<YYYY-MM-DD> based on main, with:
   - title: "chore: refresh references against current Anthropic docs";
@@ -61,8 +85,12 @@ Deliver:
   - a line "cc @Mediacom99", and a review request to Mediacom99.
 
 Before opening the PR, re-read your edits to confirm every changed fact traces to a fetched source and that
-you bumped the matching last-verified dates. Be conservative — surface uncertainty in the PR body rather than
-guessing. The goal is references that are current and faithful, not bigger.
+you bumped the matching last-verified dates. Be conservative — if a change is a judgment call, prefer path C
+(notify) over guessing in a PR. The goal is references that are current and faithful, not bigger.
+
+Always end your run with a short summary whose FIRST line is the PR URL (path B) or the issue URL (path C), so
+the email you generate links straight to it — the maintainer opens it to review and merge (PR) or to act
+(issue). If you opened nothing (path A), say so in one line.
 ```
 
 ---
@@ -71,7 +99,8 @@ guessing. The goal is references that are current and faithful, not bigger.
 
 1. **Install the Claude GitHub App with write access** on `Mediacom99/skill-forge`
    (github.com/settings/installations). This is **distinct from the OAuth connector** and was the untried
-   fix last time — PR creation needs the App to hold `contents: write` + `pull_requests: write` on the repo.
+   fix last time — the App needs `contents: write` + `pull_requests: write` (to open the reconcile PR) and
+   `issues: write` (to open a path-C notification issue) on the repo.
 2. **Create the scheduled routine** in claude.ai: connect it to `Mediacom99/skill-forge`, paste the prompt
    above, and set the schedule to **weekly, ~1 hour after `check-sources`** (that Action runs Mondays 09:00
    UTC, so pick Mondays ~10:00 UTC — the drift issue and refreshed hashes will already exist).
@@ -87,15 +116,19 @@ guessing. The goal is references that are current and faithful, not bigger.
 
 ---
 
-## Making sure you get an email when the PR opens
+## Making sure you get an email (with the link) when the routine acts
 
-GitHub emails you for a PR **only if the PR is authored by a different identity than yours** (it suppresses
-notifications about your own actions). Two layers cover both cases:
+GitHub emails you about a PR or issue **only if it's authored by a different identity than yours** (it
+suppresses notifications about your own actions). Two layers cover both cases, and both carry the link:
 
-**Layer 1 — zero setup (works if the routine opens the PR as the Claude App / a bot):**
-- The prompt makes the PR **`cc @Mediacom99`** and **request your review** — both trigger a notification email.
+**Layer 1 — zero setup (works if the routine acts as the Claude App / a bot):**
+- The prompt makes the PR (path B) **`cc @Mediacom99`** + **request your review**, and the notification issue
+  (path C) **`cc @Mediacom99`** + **assign you** — each triggers a notification email that includes the
+  PR/issue link.
+- The routine also ends its run with the PR/issue URL as the first line of its summary, so claude.ai's
+  **native run notification** carries the link too.
 - Confirm email delivery is on: github.com/settings/notifications → *Email* enabled, and **watch** the repo
-  (Watch → *Participating and @mentions* is enough for @mentions + review requests).
+  (Watch → *Participating and @mentions* covers @mentions, review requests, and assignments).
 
 **Layer 2 — guaranteed (use if the first run's PR is authored under *your* identity, so Layer 1 stays silent):**
 A ready-to-use notifier already lives at [`.github/workflows/notify-pr.yml`](../.github/workflows/notify-pr.yml).
@@ -108,4 +141,6 @@ set it emails. Activate it by adding these repo secrets (Settings → Secrets an
 - `MAIL_PASSWORD` — an app password (Gmail: **not** your login password)
 - `MAIL_TO` — where to send the alert
 
-Filtering on the `auto/refresh*` head branch keeps it quiet for ordinary PRs.
+Filtering on the `auto/refresh*` head branch keeps it quiet for ordinary PRs. Its email body already includes
+the **PR URL** (`html_url`). Note this SMTP layer is **PR-only**; path-C notification *issues* are covered by
+Layer 1 (@mention + assignment) and the routine's native run summary, not by this workflow.
