@@ -1,80 +1,93 @@
 <!--
-last-verified: 2026-07-06
-source: _sources.md #3 — prompting-claude-opus-4-8 (dedicated Opus 4.8 page)
-scope: Per-model tuning for Claude Opus 4.8 (current Opus flagship). Loaded at craft time only when the
-target model is Opus. Applies on top of techniques.md; note 4.7/4.6 deltas inline.
+last-verified: 2026-07-28
+source: _sources.md #3 — prompting-claude-opus-5 (dedicated Opus 5 page) + models overview
+scope: Per-model tuning for Claude Opus 5 (current Opus flagship, claude-opus-5). Loaded at craft time only
+when the target model is Opus. Applies on top of techniques.md; Opus 4.8 (now legacy) deltas noted inline.
 -->
 
-# Tuning for Claude Opus 4.8
+# Tuning for Claude Opus 5
 
-Opus 4.8 is the flagship for long-horizon agentic work, knowledge work, vision, and memory. It follows
-instructions **literally** and calibrates its own length and depth to the task — so the biggest levers are
-`effort`, explicit scope, and telling it the length/tone you want.
+Claude Opus 5 (`claude-opus-5`) is built for **complex agentic coding and enterprise work**, with particular
+strength on long-horizon agentic tasks; the docs say to **start with Opus 5** for that work (step up to
+**Fable 5** only when you need the highest available capability). It has a **1M-token context window** (both
+default and max) and **128k** max output, and performs well out of the box on existing Opus 4.8 prompts. The
+biggest levers are `effort`, whether thinking is on, and telling it the length/scope you want — it now runs
+**longer and more autonomously** by default than prior Opus models.
 
-## Effort is the primary lever
-- Ladder (intelligence ↔ latency/cost): `max` · `xhigh` · `high` · `medium` · `low`.
-  - **`xhigh`** — best default for **coding and agentic** work.
-  - **`high`** — minimum for most **intelligence-sensitive** tasks; balances tokens vs. intelligence.
-  - **`medium`** — cost-sensitive work that can trade off some intelligence.
-  - **`low`** — short, scoped, latency-sensitive work only. Opus 4.8 scopes **strictly** at the low end;
-    on moderately complex tasks at `low` there's real under-thinking risk.
-  - **`max`** — for the most intelligence-demanding tasks; diminishing returns and some overthinking risk.
-- If reasoning looks shallow on a hard problem, **raise `effort`** rather than prompting around it. Effort
-  matters more on this model than any prior Opus — recommend tuning it actively.
-- At **`xhigh`/`max`, set a large max-output budget** (start ~**64k tokens**) so it has room to think and act.
+## Effort — the primary cost/latency lever
+- Ladder (intelligence ↔ latency/cost): `max` · `xhigh` · `high` · `medium` · `low`. **Default is `high`**
+  (on the Claude API and Claude Code).
+  - **`high`** — the default; the balanced starting point.
+  - **`xhigh`** — step up for **demanding coding and agentic** work.
+  - **`low` / `medium`** — now genuinely strong: they deliver good quality at a fraction of the tokens and
+    latency, so use them **liberally** as your primary control for cost and response time wherever quality
+    holds. (This is a shift from Opus 4.8, which recommended `xhigh` for coding/agentic and warned of
+    under-thinking at `low`.)
+  - **`max`** — the most intelligence-demanding tasks; diminishing returns on token spend.
+- If you carried effort defaults over from a prior model, **re-run an effort sweep on your own evals** — the
+  cost/quality curve moved. If reasoning looks shallow on a hard problem, raise effort rather than prompting
+  around it.
 
-## Thinking
-- Thinking is **off** unless you set **`thinking: {type: "adaptive"}`**. Adaptive triggering is steerable; if
-  a large/complex system prompt makes it think more than you want, add a line telling it to think only when
-  it will meaningfully improve the answer and otherwise respond directly.
+## Thinking — ON by default now (the key migration change)
+- Opus 5 uses **adaptive thinking, on by default**: omit the `thinking` field and it runs with adaptive
+  thinking. (This is a flip from Opus 4.8, where thinking was **off** unless you set `thinking: {type:
+  "adaptive"}`.)
+- **You can disable thinking only at effort `high` or lower** (`thinking: {type: "disabled"}`); at `xhigh`
+  and `max`, thinking is always on. Manual extended-thinking budgets (`budget_tokens`) are not supported (400).
+- **Prefer keeping thinking on at a lower effort** over disabling it — for most tasks, thinking on at `low`
+  beats thinking off at similar cost. With thinking **disabled**, two artifacts can leak into visible output:
+  the model occasionally writes a **tool call as plain text** (it never runs) on tool-heavy work, and it can
+  emit **internal `<thinking>`/XML tags**. Don't add rules like "do not think/do not reason" — they *increase*
+  tag leakage. If you must disable thinking, one combined instruction mitigates both: allow a brief sentence
+  before a tool call, allow saying "no tool fits" instead of forcing a call, and forbid internal tags.
+
+## Length, narration, and written output run long — rein them in explicitly
+- **Verbosity:** Opus 5's default user-facing responses run **longer** than prior Opus. Effort controls how
+  much it *thinks*, **not** how much it *says* — lowering effort won't reliably shorten the reply. Ask for
+  concision directly, e.g. *"Keep responses focused and concise; spend most of the response on the main
+  answer; give a high-level summary unless more depth is requested."*
+- **Progress narration:** it narrates readily in agentic runs (announcing what it's about to do; longer
+  per-message output). Describe the cadence you want, e.g. one sentence before the first tool call, brief
+  updates only on important findings or direction changes, outcome-first at the end. Positive examples of the
+  style beat "don't" instructions.
+- **Written deliverables:** files it writes to disk (reports, docs) also run long — add length calibration
+  (*"match length to what the task needs; don't pad with filler sections or boilerplate"*).
+
+## Scope and self-verification — remove old scaffolding
+- **It verifies its own work without being told.** If your prompt carries explicit verification steps
+  ("include a final verification step", "use a subagent to verify", "double-check before responding"),
+  **remove them** — on Opus 5 they cause *over-verification* (wasted tokens/latency) with no quality gain.
+  Same for legacy harness scaffolding that adds a separate verify pass.
+- **It can widen scope** (adding unrequested steps, transforming the task). For narrow work, constrain
+  explicitly: *"Deliver what was asked, at the scope intended; make routine judgment calls yourself; if a
+  better approach exists, say so in a sentence and continue with the task as asked rather than quietly
+  widening or transforming it."*
+- **Self-correction:** it catches and fixes its own mistakes well; avoid re-check instructions. It also
+  narrates corrections more than prior models — if that's noisy in a product, tell it to only surface
+  corrections that change the user's code/conclusions and otherwise fix silently.
+
+## Subagents
+- Opus 5 **delegates to subagents readily**, which pays off on genuinely independent, sizeable tracks but
+  multiplies cost/time on small ones. Cap it: *"Delegate only for large, genuinely independent, parallelizable
+  work; don't delegate what you can finish in a few tool calls; don't use subagents to verify your own work;
+  keep spawn counts low."* Deterministic caps also help. (It coordinates writer-verifier teams well.)
 
 ## Literal instruction-following → state scope
-- Opus 4.8 interprets prompts literally, especially at lower effort; it will **not** silently generalize one
-  instruction to other items or infer requests you didn't make. When an instruction should apply broadly,
-  **say so**: "Apply this to every section, not just the first." Great for structured extraction and pipelines
-  where predictable behavior matters.
+- Like current Sonnet/Fable, Opus 5 follows instructions literally and won't silently generalize one to
+  other items. When an instruction should apply broadly, say so ("Apply this to every section, not just the
+  first"). Great for structured extraction and pipelines. In **code-review** harnesses it follows "only report
+  high-severity / be conservative" faithfully (precision up, measured recall down) — for coverage, tell it to
+  report everything with confidence + severity and filter in a separate pass.
 
-## Length, verbosity, tone
-- It **calibrates length to task complexity** (short on lookups, long on open-ended analysis). If you need a
-  specific verbosity, ask for it explicitly (e.g. "concise, focused responses; skip non-essential context").
-- **Positive framing beats "don't."** Positive examples of the concision/style you want steer better than
-  negative instructions.
-- Prose baseline is **direct and opinionated**, minimal validation-forward phrasing, sparing emoji.
-  **Re-evaluate old voice/style prompts** against this baseline; add warmth/tone explicitly if the product
-  needs it.
-- **Front-load the full task in the first turn.** Well-specified, upfront intent + constraints maximize
-  autonomy and token efficiency; ambiguous, progressively-revealed asks cost more and can hurt performance.
-
-## Agentic targets (only if the prompt is tool-using / multi-agent)
-- Favors **reasoning over tool calls** by default — raise `effort` (`high`/`xhigh`) for more tool use, or
-  describe explicitly when/why to use a given tool.
-- Spawns **fewer subagents** by default; if you want fan-out, give explicit guidance on when delegation is
-  desirable.
-- Gives good **interim progress updates** on its own — remove any "summarize progress every N tool calls"
-  scaffolding; describe the update style you want instead.
-- **Code-review harnesses:** it follows "only report high-severity / be conservative" faithfully and may
-  report fewer low-severity bugs. For coverage, instruct it to report every finding with a confidence +
-  severity and let a downstream step filter.
-
-## Design and frontend defaults
-- Has a **persistent default house style** on open-ended briefs: warm cream/off-white backgrounds
-  (~`#F4F1EA`), serif display type (Georgia, Fraunces, Playfair), italic word-accents, terracotta/amber
-  accent. Reads well for editorial/hospitality/portfolio work; feels off for dashboards, dev tools, fintech,
-  healthcare, or enterprise apps.
-- Generic pushback ("don't use cream," "make it clean and minimal") just shifts the model to a *different*
-  fixed palette, not variety. Two things reliably work instead: **(1)** give a concrete, fully-specified
-  alternative spec (colors, type, layout) — it follows explicit specs precisely; or **(2)** have it **propose
-  3–4 distinct visual directions first**, then implement the one picked — this is also the substitute for
-  `temperature`-based variety.
-- Needs **less frontend-aesthetics scaffolding** than earlier models to avoid the generic "AI slop" look;
-  a short `<frontend_aesthetics>` steer (avoid Inter/Roboto/Arial, purple-gradient clichés, cookie-cutter
-  layouts) is enough — no need for a lengthy prompt snippet.
-
-## Computer use
-- Supports resolutions **up to 2576px / 3.75MP**. **1080p** is the good performance/cost balance for testing;
-  **720p / 1366×768** for cost-sensitive workloads.
+## Vision
+- Strong on charts, documents, diagrams, and UI/frontend replication. Vision is best when it has **tools to
+  iteratively analyze, crop, and visually verify** — tool use is a more cost-effective lever than thinking
+  alone here. Re-validate prompt-side vision workarounds tuned for older models; they may no longer be needed.
 
 ## Version deltas
-- **Opus 4.7 / 4.6:** 4.8 performs well out of the box on existing 4.7 prompts; sampling params, the `effort`
-  default, 1M-context default, and refusal details changed across the migration — verify against the current
-  migration guide if targeting an older Opus.
+- **Opus 4.8 / 4.7 / 4.6 are now legacy** (each has its own page). Migrating **4.8 → 5**: thinking is now on
+  by default; disabling it is capped at `high` effort; and the effort cost/quality curve moved (re-sweep).
+- The **Opus 4.8** page documented two things the Opus 5 page does **not** carry: a persistent design house
+  style (warm cream/off-white ~`#F4F1EA`, serif display type, terracotta/amber accents, and the two ways to
+  break it) and computer-use resolution guidance (up to 2576px / 3.75MP; 1080p balance). If you're targeting
+  **Opus 4.8**, see its page (`prompting-claude-opus-4-8`) for those; don't assume they carry to Opus 5.

@@ -32,7 +32,7 @@ A short, sharp **alignment dialogue** nails the spec — goal, output, success b
 - **It nails the spec first.** The align-first interview targets the real failure point — a confident prompt for the *wrong goal* — instead of dressing up an under-specified idea. That's the wedge a one-shot generator structurally can't cover.
 - **Sourced, dated, and kept current.** Every technique traces to an official Anthropic doc with a `last-verified` date, and an automated job re-checks those docs and opens a PR when they change (that's how it picked up **Sonnet 5**). You always see *where each claim came from* and *how fresh it is*.
 - **Runs where your code lives.** It's a Claude Code skill — in-repo and read-only — and it can drop the finished prompt straight into your project as a file you version like any other. It never runs your task, edits your code, or touches your shell.
-- **Tuned per model.** Loads the target model's own official guidance (Opus 4.8 · Sonnet 5 · Haiku 4.5 · Fable 5 · Mythos 5) via `--model` or auto-detect — effort defaults, instruction style, model-specific gotchas.
+- **Tuned per model.** Loads the target model's own official guidance (Opus 5 · Sonnet 5 · Haiku 4.5 · Fable 5 · Mythos 5) via `--model` or auto-detect — effort defaults, instruction style, model-specific gotchas.
 - **One-off or reusable.** A clean, ready-to-use prompt by default; add `--template` for a parameterized system/user template with `{{variables}}` for your app or pipeline.
 
 ## Table of contents
@@ -84,7 +84,7 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 
 | Skill | Invoke | What it does |
 |-------|--------|--------------|
-| **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget), **tuned to the target model** (Opus 4.8 / Sonnet 5 / Haiku 4.5 / Fable 5 · Mythos 5) via `--model` or auto-detect; `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
+| **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget), **tuned to the target model** (Opus 5 / Sonnet 5 / Haiku 4.5 / Fable 5 · Mythos 5) via `--model` or auto-detect; `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
 | **reclaim-disk-space** *(mac-cleanup)* | `/reclaim-disk-space` | Safely frees SSD space on an **Apple Silicon Mac**: scans **read-only** for reclaimable space (caches, build artifacts, dev/package caches, Xcode, Docker), presents a ranked report, then removes **only what you approve — batch by batch, Trash-first**. Built for **zero data-loss surprises**. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 

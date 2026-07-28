@@ -103,7 +103,7 @@ dialogue below) — but the output is always a prompt, never the task carried ou
 
   | Family | Pick it when | Default `effort` |
   |--------|--------------|------------------|
-  | **Opus** (4.8) | hardest long-horizon / agentic / reasoning + coding work | `xhigh` (min `high`) |
+  | **Opus** (5) | complex agentic coding + enterprise; strong default flagship | `high` (`xhigh` for demanding coding/agentic; `low`/`medium` efficient) |
   | **Sonnet** (5) | balanced default for most production / API + coding/agentic work | `high` (`xhigh` hardest) |
   | **Haiku** (4.5) | high-volume, latency-sensitive, well-scoped (classify / extract / route) | low–medium |
   | **Fable / Mythos** (5) | frontier long-horizon, agentic, ambiguous, multi-day work | `high` (`xhigh` hardest) |
@@ -157,7 +157,7 @@ Ask about the *unknown* and *partial* dimensions only, most important first. Kee
 Before crafting, present a **compact spec** — the nine dimensions, filled, in a few tight lines
 (omit any that are genuinely N/A). Mark any assumptions you made, and **state both the target model** (mark
 it if you auto-detected it; and when the target differs from the model you're running as, say both — e.g.
-"crafting on Opus 4.8 · tuned for **Fable 5**" — so it's clear the flag sets the destination, not your session)
+"crafting on Opus 5 · tuned for **Fable 5**" — so it's clear the flag sets the destination, not your session)
 **and the output shape** you'll produce
 (*improve* = a ready-to-use prompt, or *template* = reusable with variables) so the user can flip either
 before you craft. Then ask the user to confirm or correct. This is the contract. Do not proceed to
@@ -284,7 +284,7 @@ Confirm it's copied. These clipboard commands are the only shell the skill is al
 
 ---
 
-This skill targets **Claude**, and tunes each prompt to its **target model** (Opus 4.8 · Sonnet 5 ·
+This skill targets **Claude**, and tunes each prompt to its **target model** (Opus 5 · Sonnet 5 ·
 Haiku 4.5 · Fable 5 / Mythos 5) via [references/models/](references/models/), loaded per craft.
 The technique libraries are sourced and dated in
 [references/_sources.md](references/_sources.md); keep them fresh with the `refresh-references` skill.

@@ -5,7 +5,41 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.6.0 — 2026-07-28
+
+### Added
+- **Claude Opus 5 (`claude-opus-5`) — the new Opus flagship — added to the per-model tuning matrix.** Rewrote
+  `references/models/opus.md` from the dedicated *Prompting Claude Opus 5* page (now source #3). Opus 5 is
+  built for complex agentic coding + enterprise work and is the recommended default ("start with Opus 5"; step
+  up to Fable 5 only for frontier capability). `--model opus` now loads Opus 5 tuning; the SKILL model
+  selector, README model lists, and the skill footer all name Opus 5.
+
+### Changed
+- **Opus effort + thinking defaults moved with Opus 5** (distinct from now-legacy Opus 4.8):
+  - **Effort defaults to `high`** (Opus 4.8 recommended `xhigh` for coding/agentic); `low`/`medium` are now
+    efficient enough to use liberally as the primary cost/latency control, with `xhigh` for demanding
+    coding/agentic. Migrating prompts should re-run an effort sweep — the cost/quality curve moved.
+  - **Adaptive thinking is now ON by default** (a flip from Opus 4.8's off-by-default) and can be **disabled
+    only at effort ≤ `high`**. Updated `techniques-advanced.md`'s cross-model thinking note (Opus 5 + Sonnet 5
+    on by default; legacy Opus 4.8 / Sonnet 4.6 off; Fable 5 / Mythos 5 always on).
+  - New Opus 5 tuning captured: longer default verbosity + written-deliverable length (prompt for concision),
+    readier agentic narration (tune cadence), **self-verification without prompting** (remove legacy "verify"
+    instructions — they now cause over-verification), scope-widening (constrain for narrow tasks), readier
+    subagent delegation (cap it), correction-narration control, and the thinking-disabled artifacts
+    (tool-call-as-text, internal XML-tag leakage → prefer thinking-on at low effort). 1M context (default and
+    max), 128k output, no manual `budget_tokens`.
+- The Opus-4.8-only sections (cream/`#F4F1EA` design house-style, computer-use resolutions) are **not** on the
+  Opus 5 page, so they were dropped from `models/opus.md` — kept only as a pointer to the legacy Opus 4.8 page
+  (#7) rather than fabricated for Opus 5.
+
 ### Maintenance
+- **Sourced against live docs (2026-07-28).** Repointed source #3 → `prompting-claude-opus-5` and moved the
+  legacy Opus 4.8 page to #7 in `_sources.md`; seeded the Opus 5 URL `null` in `.source-hashes.json` (the
+  check-sources Action captures its baseline hash on the next run — existing hashes untouched). Bumped
+  `last-verified` to 2026-07-28 on every touched file. Opus 4.8 / 4.7 / 4.6 are now labeled **legacy**.
+  Re-verified the **Fable 5 fallback target is still Claude Opus 4.8** on the live Fable page (unchanged — left
+  `models/fable.md` and `examples.md` as-is). Current model set: Fable 5, Mythos 5, Opus 5, Sonnet 5, Haiku
+  4.5 (still no dedicated Haiku prompting page). Bumped `prompt-crafting` to 0.6.0.
 - **Scheduled reference-freshness check (routine run, 2026-07-06):** re-fetched all 6 tracked source URLs
   in `_sources.md` and reconciled `claude-prompt-crafting`'s reference library.
   - **`models/opus.md` was missing two sections that exist on the live Opus 4.8 prompting page** and were
