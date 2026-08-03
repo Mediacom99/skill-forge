@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-01
+last-verified: 2026-08-03
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: LEAN CORE — the high-leverage techniques that apply to most Claude prompts.
 For agentic/tool-use/long-context/RAG/eval guidance, see techniques-advanced.md;
@@ -44,7 +44,7 @@ fit the spec; do not apply all of them. Each entry: **what · when · how**.
 
 7. **Instruct positively.** *What:* say what TO do, not a list of "don'ts". *When:* always. *How:*
    "Do not use markdown" → "Write in smoothly flowing prose paragraphs." Positive examples beat negative
-   instructions, especially on Opus 4.x.
+   instructions across current Claude models.
 
 8. **State scope explicitly.** *What:* name how broadly an instruction applies. *When:* multi-part or
    long outputs. *How:* "Apply this to every section, not just the first." Newer models follow

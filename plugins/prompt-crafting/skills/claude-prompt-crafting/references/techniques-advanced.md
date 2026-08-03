@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-03
+last-verified: 2026-08-03
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.
@@ -54,8 +54,10 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 ## Extended thinking (deep)
 - Adaptive thinking (where supported) lets the model decide when/how much to think, calibrated by an `effort`
   parameter + query complexity; it generally beats fixed extended thinking. *(VOLATILE: on/off-by-default is
-  model-specific and has already flipped once — Opus 4.8 and Sonnet 4.6 default to off; Sonnet 5 defaults to
-  **on** (disable via `thinking: {type: "disabled"}`); Fable 5 / Mythos 5 are adaptive-thinking-only and always
+  model-specific — Opus 4.8 and Sonnet 4.6 default to off; Sonnet 5 and **Opus 5** default to **on**. Sonnet 5
+  disables via `thinking: {type: "disabled"}` at any effort; **Opus 5 only accepts that at effort `high` or
+  below** — combined with `xhigh`/`max` it errors, and disabling on Opus 5 risks leaked tool-call text / XML
+  tags in the visible output (see `models/opus.md`). Fable 5 / Mythos 5 are adaptive-thinking-only and always
   on. Confirm the current model's default in its `models/*.md` file before assuming either way.)*
 - **Overthinking control:** "choose an approach and commit; don't revisit unless new info contradicts it."
 - Only use heavy thinking when it will meaningfully improve the answer; when in doubt, respond directly.
