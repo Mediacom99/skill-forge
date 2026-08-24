@@ -1,6 +1,6 @@
 # Sources — claude-prompt-crafting references
 
-**last-verified: 2026-07-28** · vendor: Anthropic · official docs only.
+**last-verified: 2026-08-24** · vendor: Anthropic · official docs only.
 
 The `refresh-references` skill and the `check-sources.yml` workflow read the URL list below.
 When updating, re-fetch each URL, reconcile `techniques.md` / `techniques-advanced.md`, then bump
@@ -53,6 +53,10 @@ file also carries its own `last-verified` header.
   extended-thinking `budget_tokens` is removed (400 error); a new tokenizer produces ~30% more tokens for the
   same text (re-check `max_tokens` budgets ported from Sonnet 4.6).
 - **Structured Outputs / API surface** — verify the current way to force formats.
+- **Computer-use tool versions** — Sonnet 5 and Opus 4.8 now additionally list the `computer_toolset_20260801`
+  toolset and the `browser_toolset_20260801` browser-use tool (alongside the older `computer_20251124` tool
+  version). Updated in `models/sonnet.md` this cycle (2026-08-24); recheck naming/versions each cycle — this
+  surface has churned twice now.
 
 > NOTE: Anthropic docs are also served from `docs.anthropic.com` / `docs.claude.com`; the
 > `platform.claude.com` paths above are the canonical ones as of the verified date.

@@ -5,6 +5,41 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting — scheduled reference-freshness check, 2026-08-24
+
+### Changed
+- **`models/sonnet.md` — computer-use tool surface updated.** Claude Sonnet 5 now additionally supports the
+  `computer_toolset_20260801` toolset and, for in-webpage tasks, the browser use tool
+  (`browser_toolset_20260801`), alongside the previously-documented `computer_20251124` tool version. Sourced
+  from the live `prompting-claude-sonnet-5` page (source #6); the Opus 4.8 page (#7) shows the same toolset
+  update, but `models/opus.md` doesn't cover Opus 4.8 computer use in detail (it only points to the legacy
+  page), so no edit was needed there.
+- **`models/opus.md` — added deterministic subagent-spawn caps for Claude Code / Agent SDK.** The dedicated
+  Opus 5 page (#3) now documents `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` / `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`
+  env vars and the SDK's `max_budget_usd` option as concrete caps on Opus 5's readier subagent delegation
+  (requires Claude Code 2.1.217+), plus the note that Claude Code only adds its own damping instruction under
+  the `claude_code` system-prompt preset. Added as a second bullet under "Subagents" — directly extends the
+  existing "cap it" guidance with an actionable, sourced mechanism.
+- Bumped `last-verified` to 2026-08-24 in `_sources.md` and in the two touched files above.
+
+### Notes
+- **Re-fetched and reconciled all 6 tracked source URLs** (overview, best-practices, and the four per-model
+  pages) against `techniques.md`, `techniques-advanced.md`, and all four `models/*.md` files. Everything else
+  checked out unchanged and faithful: effort ladders/defaults, adaptive-thinking on/off-by-default and the
+  Opus-5-disable-only-at-≤-`high` constraint, `max_tokens`/tokenizer/sampling-parameter behavior on Sonnet 5,
+  the Fable 5 refusal categories (`reasoning_extraction`, offensive-cyber, bio/life-sciences) and Opus 4.8
+  fallback, prefill removal on 4.6+ (including the 5-series), parallel-tool-calls guidance, and Structured
+  Outputs as the prefill replacement. No content was removed and no URLs moved or 404'd.
+- **Issue #9** (`Source docs changed`) has flagged all 6 URLs as changed on every check-sources cycle since
+  2026-08-10 (including today, 2026-08-24) with no corresponding real content drift found this pass beyond the
+  two items above — worth a human look at whether `check_sources.py`'s normalization still has a
+  non-deterministic input (timestamp, nonce, ordering) causing a hash flip every run. Left the issue open per
+  procedure (a PR closes it once merged); flagged here rather than guessing at the hashing bug.
+- **Deliberately left alone** (per existing `ROADMAP.md` backlog entries, not missed): cross-model **context
+  awareness** (Sonnet 5/4.6/4.5, Haiku 4.5) and **reduce-file-creation-in-agentic-coding** — both still present
+  on the best-practices page (#2), both still queued in `ROADMAP.md` for a deliberate distillation pass rather
+  than an automated one.
+
 ## prompt-crafting 0.6.1 — 2026-07-28
 
 ### Changed

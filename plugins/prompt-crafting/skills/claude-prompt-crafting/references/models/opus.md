@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-08-24
 source: _sources.md #3 — prompting-claude-opus-5 (dedicated Opus 5 page) + models overview
 scope: Per-model tuning for Claude Opus 5 (current Opus flagship, claude-opus-5). Loaded at craft time only
 when the target model is Opus. Applies on top of techniques.md; Opus 4.8 (now legacy) deltas noted inline.
@@ -71,6 +71,11 @@ biggest levers are `effort`, whether thinking is on, and telling it the length/s
   multiplies cost/time on small ones. Cap it: *"Delegate only for large, genuinely independent, parallelizable
   work; don't delegate what you can finish in a few tool calls; don't use subagents to verify your own work;
   keep spawn counts low."* Deterministic caps also help. (It coordinates writer-verifier teams well.)
+- **In Claude Code / the Agent SDK**, deterministic caps are available as the `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`
+  and `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` environment variables and the SDK's `max_budget_usd` option —
+  requires Claude Code **2.1.217+** (update a pinned SDK before targeting Opus 5). Claude Code only adds its
+  own delegation-damping instruction on Opus 5 when using the `claude_code` system-prompt preset; with a
+  custom or omitted system prompt, add a delegation instruction yourself (as above).
 
 ## Literal instruction-following → state scope
 - Like current Sonnet/Fable, Opus 5 follows instructions literally and won't silently generalize one to

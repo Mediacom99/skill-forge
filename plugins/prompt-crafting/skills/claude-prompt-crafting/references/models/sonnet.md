@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-08-24
 source: _sources.md #6 — prompting-claude-sonnet-5 (dedicated Sonnet 5 prompting page)
 scope: Per-model tuning for Claude Sonnet 5 (current Sonnet flagship). Loaded at craft time only when the
 target model is Sonnet. Applies on top of techniques.md; note the 4.6 migration deltas inline.
@@ -66,8 +66,9 @@ prompts, but several **defaults changed**: read the migration deltas below befor
   directions first, then implement the one picked" — the reliable ways to break the default now.
 
 ## Computer use
-- Supports the `computer_20251124` tool version, up to 2576px / 3.75MP. 1080p is the good performance/cost
-  balance for testing; 720p / 1366×768 for cost-sensitive workloads.
+- Supports the `computer_toolset_20260801` toolset and the earlier `computer_20251124` tool version, up to
+  2576px / 3.75MP. For in-webpage tasks, also supports the **browser use tool** (`browser_toolset_20260801`).
+  1080p is the good performance/cost balance for testing; 720p / 1366×768 for cost-sensitive workloads.
 
 ## When to pick Sonnet
 - Default for balanced production prompts, API pipelines, and coding/agentic tasks. Step **up to Opus 5** for
