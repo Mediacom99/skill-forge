@@ -5,6 +5,25 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## repo — 2026-09-07
+
+### Fixed
+- **`check-sources` reported every tracked URL as changed on every run.** `normalize()` hashed the whole
+  page's visible text, which on these docs includes the cookie banner, the **full left nav**, and the
+  marketing footer. One nav entry — adding the Fable 5.1 page — changed the shared chrome on *all seven*
+  pages at once, so the detector flagged the entire set as drifted while the article bodies were untouched.
+  Three auto-reconcile PRs (#7, #8, #10) were closed as superseded after being sent to re-derive work by
+  these false alarms. `normalize()` now scopes to the page's `<article>` (falling back to `<main>`, then the
+  whole document) before stripping tags. Verified against the live pages: a simulated nav + footer edit no
+  longer flips the hash, an article-body edit still does.
+- Stored hashes nulled in the same commit so the next scheduled run re-baselines under the new normalizer
+  — a baseline is not drift, so no issue is opened. The requirement is documented in the script and in the
+  hash file's `_comment`.
+
+### Added
+- `check_sources.py --selftest` — offline assertions that chrome (nav, footer, cookie banner, scripts) stays
+  out of the hash and that both container fallbacks work.
+
 ## prompt-crafting 0.7.0 — 2026-09-07
 
 Reconcile cycle against all six tracked sources (all six drifted; issue #9) plus one new page.
