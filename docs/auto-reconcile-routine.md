@@ -24,6 +24,16 @@ Billing: the routine runs on the **Claude subscription** (no `ANTHROPIC_API_KEY`
 
 ## The routine prompt
 
+> **The prompt does not contain the procedure.** The reconcile steps live in
+> [`plugins/maintenance/skills/refresh-references/SKILL.md`](../plugins/maintenance/skills/refresh-references/SKILL.md)
+> — the same file behind `/refresh-references` — and the routine reads it from the repo at run time. This
+> prompt carries only what's specific to running unattended: scope, delivery, and notification.
+>
+> **So: to change how the reconcile works, edit the skill.** The routine picks it up on the next run with no
+> re-paste. Only re-paste this prompt when the *delivery* rules change. (These two used to be independent
+> copies and had drifted apart — the skill was still telling maintainers they could hand-refresh
+> `.source-hashes.json`, which the routine correctly forbids.)
+
 Paste this into the scheduled routine (targeting `Mediacom99/skill-forge`):
 
 ```text
@@ -36,57 +46,44 @@ You run unattended on a schedule with no one watching. Proceed on reversible, in
 docs, editing reference files, opening a PR or a notification issue) without pausing to ask, and finish the
 job with tool calls rather than stopping at a plan or a promise. The PR (or issue) is the review gate.
 
-Procedure:
+Procedure — do not improvise one:
 
-1. Find every references/_sources.md in the repo. For each, read its source-URL list, its last-verified date,
-   and the reference files it governs (techniques.md, techniques-advanced.md, models/*.md, examples.md).
-2. Fetch each source URL and compare it against what those reference files currently claim. Concentrate on the
-   volatile items each _sources.md flags: model IDs and versions, effort/reasoning parameters and their
-   enums/defaults, feature availability (prefill, adaptive thinking), refusal categories, API surface, and any
-   moved or 404'd URLs. If a source can't be fetched, note it — never delete content over a failed fetch.
-3. Only where something is genuinely out of date, make the minimal faithful edit: correct changed facts; add a
-   genuinely new high-leverage technique sparingly (keep the core lean); remove what is no longer true; fix
-   moved URLs in _sources.md. Bump last-verified in _sources.md and in the header of every file you touch, and
-   add a dated CHANGELOG.md entry describing what changed.
+Read plugins/maintenance/skills/refresh-references/SKILL.md in the repo and follow it exactly. That file is
+the authoritative reconcile procedure (it is the same content behind the /refresh-references skill; read it
+from the repo rather than assuming the plugin is installed here). You are its "Unattended" mode throughout:
+don't pause for approval on in-scope reversible work, and escalate anything ambiguous instead of guessing.
+Its Hard boundaries are binding — in particular, never edit any references/.source-hashes.json.
 
-Hard boundaries:
-- Edit only files under references/** and CHANGELOG.md — no other file edits. (Opening or updating a GitHub PR
-  or issue for review/notification is allowed; changing any other repo file is not.)
-- Never edit any references/.source-hashes.json — the check-sources GitHub Action owns it. If a source needs
-  to be added to or retired from tracking, that's a maintainer action: notify, don't edit it.
-- Never commit or push to main; every change goes on a branch and ships via PR.
+One scope rule this run adds on top of the skill: edit only files under references/** and CHANGELOG.md. Any
+other repo file — including a SKILL.md — is out of scope and becomes a path-C notification below. This
+narrows the skill's Step 6: do the last-verified bumps and the CHANGELOG entry as written, but a version bump
+(plugin.json + SKILL.md frontmatter) is out of scope — mention it in the PR body for the maintainer instead.
+(Opening or updating a GitHub PR or issue is of course allowed.)
 
-Deliver — pick the path that matches what you found:
+Before you start, make sure your branch is cut from CURRENT origin/main (git fetch origin, then branch from
+origin/main). Two past runs branched from a stale base and reproduced work that had already shipped; both PRs
+were closed as superseded.
 
-A) Nothing to do — references already current, or the pages only re-rendered cosmetically with every tracked
-   fact still matching. Stop and open nothing.
+Deliver — the skill's Step 4 sorts your findings into A, B, or C. Here is what each one means for delivery:
 
-B) A reconcile you CAN do fully — facts to correct, a genuinely new high-leverage technique to distill, or a
-   moved URL to fix in _sources.md. This is the normal path: make the minimal faithful edits and open a PR
-   (details below).
+A) Nothing to do. Stop and open nothing.
 
-C) An action the maintainer needs that you CANNOT do yourself — NOTIFY, don't go silent. Cases include: a
-   change whose faithful distillation is genuinely ambiguous or a judgment call; a source that 404'd or
-   redirected, or a new model / new dedicated page, where deciding what to track is the maintainer's call; a
-   needed change outside your allowed scope (anything beyond references/** and CHANGELOG.md — e.g. adding or
-   retiring a tracked URL in .source-hashes.json, or a SKILL.md edit); or anything you cannot edit with
-   confidence. Open (or update) a GitHub issue titled "Reference reconcile — needs maintainer <YYYY-MM-DD>"
-   that states exactly what needs doing and why you couldn't, quotes the relevant source text, lists the
-   affected reference file(s), ends with "cc @Mediacom99", and assigns Mediacom99. If you also completed a
-   partial reconcile, open the PR (path B) as well and cross-link the two.
+B) A reconcile you can do faithfully. Make the minimal faithful edits and open a PR (details below).
+
+C) Something the maintainer must decide or do. NOTIFY, don't go silent: open (or update) a GitHub issue
+   titled "Reference reconcile — needs maintainer <YYYY-MM-DD>" containing exactly what the skill's Step 4C
+   tells you to state — what needs doing, why you couldn't, the quoted source text, the affected reference
+   files — ending with "cc @Mediacom99", and assign Mediacom99. If you also completed a partial reconcile,
+   open the path-B PR too and cross-link the two.
 
 For the PR in path B:
 - If an open PR from an auto/refresh-references-* branch already exists, update it instead of opening a duplicate.
-- Otherwise open a PR from a new branch auto/refresh-references-<YYYY-MM-DD> based on main, with:
+- Otherwise open a PR from a new branch auto/refresh-references-<YYYY-MM-DD> based on current origin/main, with:
   - title: "chore: refresh references against current Anthropic docs";
   - a body summarizing exactly what changed and why, listing each source URL you checked, and flagging
     anything ambiguous for a human;
   - "Closes #<n>" if an open issue titled "Source docs changed" exists;
   - a line "cc @Mediacom99", and a review request to Mediacom99.
-
-Before opening the PR, re-read your edits to confirm every changed fact traces to a fetched source and that
-you bumped the matching last-verified dates. Be conservative — if a change is a judgment call, prefer path C
-(notify) over guessing in a PR. The goal is references that are current and faithful, not bigger.
 
 Always end your run with a short summary whose FIRST line is the PR URL (path B) or the issue URL (path C), so
 the email you generate links straight to it — the maintainer opens it to review and merge (PR) or to act

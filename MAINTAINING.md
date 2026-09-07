@@ -53,7 +53,10 @@ Any skill whose content distills external docs should be **sourced**:
 3. **Automated reconcile (optional)** — a claude.ai scheduled routine can run the reconcile weekly and
    deliver it as a **PR** for review (subscription-billed, no API key; opening a PR sidesteps the
    push-to-`main` permission that blocked the earlier attempt). See
-   [`docs/auto-reconcile-routine.md`](docs/auto-reconcile-routine.md).
+   [`docs/auto-reconcile-routine.md`](docs/auto-reconcile-routine.md). The routine **reads the
+   `refresh-references` SKILL.md at run time** rather than carrying its own copy of the procedure — so
+   changing the reconcile means editing the skill, and the routine prompt only needs re-pasting when the
+   *delivery* rules change.
 4. After any reference change: bump `last-verified` in `_sources.md` and the file headers, and add a
    `CHANGELOG.md` entry.
 

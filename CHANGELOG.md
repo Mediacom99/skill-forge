@@ -5,6 +5,59 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## repo — 2026-08-07
+
+### Added
+- **`validate.py` now enforces version parity**: every plugin's `plugin.json` must declare a
+  `MAJOR.MINOR.PATCH` version, and any skill that declares a `version:` in its frontmatter must match its
+  plugin's. prompt-crafting shipped 0.6.0 and 0.6.1 with the manifest bumped and the skill frontmatter left
+  at 0.5.2, and CI stayed green through both — the install-safety gate now catches it.
+
+## maintenance 0.2.0 — 2026-08-07
+
+### Changed
+- **`refresh-references` SKILL.md is now the single source of truth for the reconcile procedure.** The
+  claude.ai auto-reconcile routine used to carry its own paraphrase of the same steps; the two had drifted
+  apart. The routine prompt now reads the skill from the repo at run time and carries only what's specific to
+  running unattended — scope, delivery (paths A/B/C), and notification. Changing the reconcile means editing
+  the skill; the routine prompt only needs re-pasting when delivery rules change.
+
+### Fixed
+- **The skill told maintainers they could hand-refresh `.source-hashes.json`** ("or refresh it if you have a
+  local script for it") — the exact thing the routine forbids, since the `check-sources` Action owns that
+  file. Now a Hard boundary: never edit it; adding or retiring a tracked URL is a Step 4C escalation.
+- **Closing the `check-sources` drift issue** is now part of Step 6. It was in the maintainer's head and in
+  the routine prompt, but nowhere in the skill.
+- **Stale volatile-items example** — Step 3 still cited "`none` reasoning mode", left over from the
+  pre-0.4.0 multi-vendor era. Replaced with the current Claude set (prefill removal, adaptive thinking,
+  refusal categories/fallback, Sonnet 5 API constraints, Structured Outputs).
+
+### Added
+- **Interactive vs unattended modes** — the skill was written for a human-in-the-loop only, so the routine
+  had to override it implicitly. Now explicit: unattended runs don't pause for approval but must escalate
+  ambiguity rather than guess.
+- **Step 4 (decide: reconcile or escalate)** — the A/B/C judgment now lives in the skill, where the *what*
+  belongs; the routine keeps only the *how* (which GitHub artifact to open). Escalating is framed as a
+  success, and B+C can be combined.
+- **Branch from current `origin/main`** (Step 1) — PRs #7 and #8 were both cut from a stale base and both
+  closed as superseded, having redone work that already shipped.
+- **Version-parity reminder** (Step 6) — bump `plugin.json` and the skill's `version:` frontmatter together;
+  nothing in CI enforces this.
+- Confirm a 404/redirect with `curl -I` before acting on it (Step 2), and treat a bytes-changed /
+  facts-identical page as the no-op it is (Step 3).
+
+## prompt-crafting 0.6.2 — 2026-08-07
+
+### Fixed
+- `SKILL.md`'s `version:` frontmatter was stuck at **0.5.2** while `plugin.json` said 0.6.1 — the 0.6.0 and
+  0.6.1 releases bumped the manifest but not the skill. Both now read the same version.
+
+### Maintenance
+- Closed **PR #8** (auto-reconcile, 2026-08-03 cycle) as superseded — like PR #7 it was branched from a base
+  predating the manual 0.6.0/0.6.1 pass and re-derived changes already on `main` (Opus 5 tracking, the
+  `prompting-tools` retirement, the stale Opus-4.x qualifier). The one new item it surfaced — the **"Claude
+  Mythos Preview"** naming on the best-practices page — moved to `ROADMAP.md` for a deliberate decision.
+
 ## prompt-crafting 0.6.1 — 2026-07-28
 
 ### Changed

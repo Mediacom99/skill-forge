@@ -3,12 +3,14 @@
 
 Checks:
   - .claude-plugin/marketplace.json: valid JSON, has name/owner/plugins[], each plugin has name+source.
-  - plugins/*/.claude-plugin/plugin.json: valid JSON, has name+description.
+  - plugins/*/.claude-plugin/plugin.json: valid JSON, has name+description+version.
   - plugins/*/skills/*/SKILL.md: frontmatter has name+description; name is kebab-case and matches the
     skill directory; relative markdown links to bundled files actually exist.
+  - version parity: a skill's `version:` frontmatter matches its plugin.json version.
 
 Exits non-zero (printing every problem) if anything is wrong. Run locally: python .github/scripts/validate.py
 """
+import functools
 import json
 import re
 import sys
@@ -22,6 +24,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[2]
 KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 errors = []
 
 # Prompt-crafting skills are read-only by contract (see their SKILL.md): they may declare only these
@@ -60,6 +63,7 @@ def check_marketplace():
             errors.append(f"marketplace.json: plugin '{plugin.get('name', i)}' missing 'source'")
 
 
+@functools.lru_cache(maxsize=None)
 def parse_frontmatter(path):
     text = path.read_text()
     if not text.startswith("---"):
@@ -125,9 +129,40 @@ def check_plugins():
         check_links(skill_md)
 
 
+def check_versions():
+    """A plugin's manifest and its skills must agree on the version number.
+
+    Bumping plugin.json without the skill's `version:` frontmatter (or vice versa) ships a plugin whose
+    two halves disagree about what it is. That drifted silently across two prompt-crafting releases with
+    CI green, so the install-safety gate enforces it here.
+    """
+    for plugin_json in sorted((ROOT / "plugins").glob("*/.claude-plugin/plugin.json")):
+        data = load_json(plugin_json)
+        if data is None:
+            continue
+        rel = plugin_json.relative_to(ROOT)
+        version = data.get("version")
+        if version is None:
+            errors.append(f"{rel}: missing 'version'")
+            continue
+        if not SEMVER.match(str(version)):
+            errors.append(f"{rel}: version '{version}' is not MAJOR.MINOR.PATCH")
+        for skill_md in sorted(plugin_json.parents[1].glob("skills/*/SKILL.md")):
+            fm = parse_frontmatter(skill_md)
+            if fm is None:
+                continue
+            declared = fm.get("version")
+            # A skill need not declare a version; only a declared one can fall out of sync.
+            if declared is not None and str(declared) != str(version):
+                errors.append(
+                    f"{skill_md.relative_to(ROOT)}: version '{declared}' != '{version}' in {rel}"
+                )
+
+
 def main():
     check_marketplace()
     check_plugins()
+    check_versions()
     if errors:
         print(f"❌ validation failed ({len(errors)} problem(s)):")
         for e in errors:

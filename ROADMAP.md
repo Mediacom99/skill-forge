@@ -9,6 +9,15 @@ section; move an item to `CHANGELOG.md` once it ships.
 
 _Backlog for the prompt-crafting skill (Claude-only as of 0.4.0)._
 
+- [ ] **Decide what "Claude Mythos Preview" is** · flagged by the reference routine (2026-08-03), salvaged from PR #8
+  - The `claude-prompting-best-practices` page (source #2) now says **"Claude Mythos Preview"** in two places
+    (prefill removal, adaptive thinking), alongside "Claude Mythos 5" elsewhere. The routine couldn't tell from
+    the fetched pages whether it's a distinct in-preview model or an alternate name tied to Mythos 5's release
+    history, so it deliberately added nothing and flagged it instead — the right call.
+  - **Decide, then act:** if it's a distinct model, `models/fable.md` (which covers Fable 5 + Mythos 5) needs a
+    line and `_sources.md`'s model set needs updating; if it's just release-history naming, add a one-line note
+    to the volatile-items list so the next cycle doesn't re-flag it.
+
 - [ ] **Distill two cross-model topics flagged by the reference routine (2026-07-27)** · not yet in the library
   - **Context awareness** — current models (Sonnet 5 / 4.6 / 4.5, Haiku 4.5) can track their remaining context
     window ("token budget"); relevant to long-horizon / agentic prompts. Candidate for `techniques-advanced.md`.
