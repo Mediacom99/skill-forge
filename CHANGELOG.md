@@ -5,6 +5,51 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting — scheduled reference-freshness check, 2026-09-07
+
+### Added
+- **Claude Fable 5.1 / Mythos 5.1 — new current-frontier release, added to `models/fable.md`.** Anthropic
+  shipped a dedicated `prompting-claude-fable-5-1` page (now source #8 in `_sources.md`), superseding Fable 5 /
+  Mythos 5 (page #4, kept as the still-valid baseline). Existing Fable 5 prompts carry over unchanged, but
+  `models/fable.md` now documents the deltas worth checking: an effort re-sweep (gains largest at higher
+  effort; `low` is now often cost-competitive with Opus/Sonnet at a higher effort while scoring better; `xhigh`
+  /`max` on a long deliverable can draft the output twice — once in thinking, once in the reply); fewer
+  user-facing progress updates by default in long tool-calling turns (and a note that progress-update
+  `thinking` blocks are empty unless you opt into the `thinking.display` beta); tool-call batching regressing
+  to one-per-turn in coding/computer-use loops; a new **conversation-history append-only constraint** on newer
+  accounts (a replayed thinking block whose prefix changed now 400s or drops, so mid-conversation edits to
+  `system`/`tools` or in-place summarization need to move to turn-scoped/mid-conversation system messages or
+  server-side compaction); denser default prose ("mannered prose"); less default chat formatting; a reversal
+  from Fable 5 on file edits (5.1 leans toward whole-file rewrites — prompt for surgical edits); scope creep on
+  open-ended feature work (unrequested fixes/extensions, over-committed test files); weaker search triggering
+  at `low` effort; and fewer safeguard false positives (three residual triggers: compile-check phrasing,
+  lesser-known languages, base64 in tool output).
+
+### Changed
+- Bumped `last-verified` to 2026-09-07 in `_sources.md`, `models/fable.md`, and `techniques-advanced.md`
+  (the latter's cross-model adaptive-thinking note now names Fable 5.1 / Mythos 5.1 alongside Fable 5 /
+  Mythos 5 as always-on, adaptive-thinking-only models).
+- `_sources.md`'s refusal-categories volatile item now flags that the Fable 5.1 page reconfirms the same
+  three refusal categories but does **not** restate the Opus-4.8 fallback target on-page (that detail lives on
+  the untracked `whats-new-fable-5-1` page) — treat the fallback target as likely-unchanged but unconfirmed for
+  5.1 specifically rather than asserting it.
+
+### Notes
+- **Re-fetched and reconciled all 7 previously-tracked source URLs plus the new Fable 5.1 page (8 total)**
+  against every reference file. Everything besides the Fable 5.1 addition reconfirmed unchanged: the Sonnet 5
+  computer-use toolset and Opus 5 subagent-cap env vars added last cycle (2026-08-24, PR #10) are still
+  accurate; effort ladders/defaults, adaptive-thinking on/off-by-default, `max_tokens`/tokenizer/sampling-
+  parameter behavior on Sonnet 5, prefill removal on 4.6+, parallel-tool-calls guidance, and Structured Outputs
+  as the prefill replacement all still match. No content was removed and no other URLs moved or 404'd.
+- **`.source-hashes.json` was intentionally left untouched** (this routine's instructions bar it from editing
+  that file — the check-sources Action owns it). The new Fable 5.1 URL still needs to be seeded there with a
+  `null` hash by a maintainer or the next Action run; see the note in `_sources.md`.
+- **Flagging for a human:** `SKILL.md` (outside this routine's `references/**` + `CHANGELOG.md` scope) still
+  describes `--model fable` as selecting "Fable 5 / Mythos 5" in its model-selector table and footer — worth a
+  follow-up edit to mention Fable 5.1 / Mythos 5.1 now that `models/fable.md` covers both.
+- **Deliberately left alone** (per existing `ROADMAP.md` backlog entries, not missed): cross-model **context
+  awareness** and **reduce-file-creation-in-agentic-coding**, still queued for a deliberate distillation pass.
+
 ## prompt-crafting — scheduled reference-freshness check, 2026-08-24
 
 ### Changed
