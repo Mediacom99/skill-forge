@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-06-21
+last-verified: 2026-09-07
 scope: Worked before/after examples for the Claude craft step. Illustrative, not exhaustive.
 -->
 
@@ -87,20 +87,20 @@ gave structure and length; isolated the variable brief. Kept the user's intent, 
 
 ---
 
-## Example C — per-model tuning (an agentic prompt tuned for Fable 5)
+## Example C — per-model tuning (an agentic prompt tuned for Fable 5.1)
 
-Shows how the craft changes once the **target model** is pinned — here Fable 5 / Mythos 5 (load
+Shows how the craft changes once the **target model** is pinned — here Fable 5.1 / Mythos 5.1 (load
 `models/fable.md`).
 
 **User's rough idea:** "A system prompt for an autonomous agent that triages our failing CI tests overnight
 and fixes the flaky ones."
 
 **Spec after alignment (compact):** Goal: overnight autonomous agent that triages failing CI tests and fixes
-flaky ones. Output: fixes as commits + a morning summary. Target: **Fable 5** via API, agentic/long-horizon,
+flaky ones. Output: fixes as commits + a morning summary. Target: **Fable 5.1** via API, agentic/long-horizon,
 `high` effort. Success: real flaky tests fixed, no false "done" claims. Failure modes: fabricated progress,
-unrequested refactors, asking permission mid-run when no one's watching.
+unrequested refactors, asking permission mid-run when no one's watching, ending the turn on a plan.
 
-**Crafted prompt (Fable 5 idiom):**
+**Crafted prompt (Fable 5.1 idiom):**
 
 ```
 You are a CI-triage agent. Overnight, find failing tests, separate genuinely flaky ones from real
@@ -112,17 +112,25 @@ is for. When you have enough information to act, act; give a recommendation, not
 Before reporting progress, audit each claim against a tool result from this session. Report only work you
 can point to evidence for; if a fix is unverified, say so.
 
-Don't refactor or add abstractions beyond the flaky fix. You are operating autonomously — no one is
-watching, so proceed on reversible, in-scope actions without asking; pause only for a destructive or
-irreversible action.
+Don't refactor or add abstractions beyond the flaky fix. If you spot an unrelated bug, report it as a
+follow-up instead of fixing it. You are operating autonomously — no one is watching, so proceed on
+reversible, in-scope actions without asking; pause only for a destructive or irreversible action. Before
+ending your turn, check your last paragraph: if it's a plan, a question, or a promise ("I'll…"), do that
+work now with tool calls.
 
 Keep a notes file (one lesson per file, a one-line summary on top) recording which tests were flaky and
 why, and reference it on future runs.
+
+Close with a recap that stands on its own for someone who saw none of the run: what you found, what you
+changed, what's still failing.
 ```
 
-**Why (model-specific):** Fable 5 is a strong instruction-follower, so the prompt stays **brief and
+**Why (model-specific):** the Fable family is a strong instruction-follower, so the prompt stays **brief and
 outcome-led** instead of enumerating every behavior; it **gives the reason**, **grounds progress claims**,
-**states boundaries**, and adds a **memory file** — all straight from `models/fable.md`. Crucially it
-**never asks the agent to echo or explain its reasoning** (that risks the `reasoning_extraction` refusal and
-an Opus 4.8 fallback); effort is set to `high`. Tuned for Haiku instead, the same spec would get a tighter,
-example-led classification prompt; for Opus, explicit scope statements.
+**states boundaries**, and adds a **memory file**. The three 5.1-specific additions come from
+`models/fable.md`: the **last-paragraph check** (it can end a turn on a plan), the **follow-up rule** (it
+extends scope on open-ended work), and the **stand-alone recap** (5.1 narrates *less* than Fable 5 — for
+Fable 5 you'd instead add a brevity line to hold its over-elaboration down). Crucially it **never asks the
+agent to echo or explain its reasoning** (that risks the `reasoning_extraction` refusal and an Opus 4.8
+fallback); effort is `high`. Tuned for Haiku instead, the same spec would get a tighter, example-led
+classification prompt; for Opus, explicit scope statements.

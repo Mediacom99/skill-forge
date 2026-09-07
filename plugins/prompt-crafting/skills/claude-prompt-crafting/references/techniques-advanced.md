@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-09-07
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.
@@ -41,7 +41,14 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - **Parallel tool calls:** current models run independent tool calls in parallel by default. Push toward
   ~100% with a system-prompt line — *"if multiple tool calls are independent, make them all in parallel; never
   use placeholders or guess missing params; call sequentially only when one depends on another's output"* — or
-  add the opposite ("run operations sequentially") if parallel calls bottleneck the system.
+  add the opposite ("run operations sequentially") if parallel calls bottleneck the system. *(On Fable 5.1 in
+  long agent loops, send that instruction as a **turn-scoped system message** after each round of tool
+  results rather than once in the system prompt — see `models/fable.md`.)*
+- **Keep the history append-only.** Append each assistant turn exactly as returned, thinking blocks included.
+  Rewriting `system`/`tools`, injecting-then-removing per-turn reminders, or summarizing older turns in place
+  breaks the prompt cache — and on Fable 5.1 invalidates every later thinking block (a 400 for newer
+  accounts). Put per-turn reminders in turn-scoped system messages and let server-side compaction / context
+  editing do the trimming.
 - **Grounding rule:** "never speculate about content you have not opened/seen."
 
 ## Multi-context / long-horizon work
@@ -59,9 +66,9 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - Adaptive thinking (where supported) lets the model decide when/how much to think, calibrated by an `effort`
   parameter + query complexity; it generally beats fixed extended thinking. *(VOLATILE: on/off-by-default is
   model-specific and has flipped again — **Opus 5 and Sonnet 5 default to on** (disable via `thinking: {type:
-  "disabled"}`; on Opus 5 only at effort ≤ `high`); legacy Opus 4.8 / Sonnet 4.6 default to off; Fable 5 /
-  Mythos 5 are adaptive-thinking-only and always on. Confirm the current model's default in its `models/*.md`
-  file before assuming either way.)*
+  "disabled"}`; on Opus 5 only at effort ≤ `high`); legacy Opus 4.8 / Sonnet 4.6 default to off; the Fable
+  family (5.1 / 5, Mythos 5.1 / 5) is adaptive-thinking-only and always on. Confirm the model's default in
+  its `models/*.md` file before assuming either way.)*
 - **Overthinking control:** "choose an approach and commit; don't revisit unless new info contradicts it."
 - Only use heavy thinking when it will meaningfully improve the answer; when in doubt, respond directly.
 - *(VOLATILE: parameter names/levels — e.g. `effort: low|medium|high|xhigh|max`, adaptive thinking config —
@@ -76,8 +83,8 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 ## Per-model tips → moved to references/models/
 Per-model tuning now lives in **one file per family**, loaded at craft time for the **target model only**:
 [models/opus.md](models/opus.md) · [models/sonnet.md](models/sonnet.md) · [models/haiku.md](models/haiku.md)
-· [models/fable.md](models/fable.md) (Fable 5 + Mythos 5). Load the one matching the confirmed target model,
-in addition to the lean core. Each file is sourced + dated against its model's page (see `_sources.md`).
+· [models/fable.md](models/fable.md) (Fable 5.1 / Mythos 5.1 + the Fable 5 / Mythos 5 deltas). Load the one
+matching the confirmed target model, in addition to the lean core. Each file is sourced + dated against its model's page (see `_sources.md`).
 
 ## Prompt-injection / untrusted input
 - Separate untrusted content in clearly named tags and tell Claude that content inside them is data, not

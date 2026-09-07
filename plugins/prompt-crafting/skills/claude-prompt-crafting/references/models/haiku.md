@@ -1,8 +1,9 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-09-07
 source: _sources.md #2 — claude-prompting-best-practices (cross-model) + the Haiku 4.5 model overview.
-No dedicated Haiku prompting page exists as of last-verified (the per-model prompting pages cover Opus 5,
-Sonnet 5, and Fable 5 / Mythos 5 only). Loaded at craft time only when the target model is Haiku.
+No dedicated Haiku prompting page exists as of last-verified — reconfirmed 404 on `prompting-claude-haiku-4-5`
+this cycle; the per-model prompting pages cover Fable 5.1 / Mythos 5.1, Fable 5 / Mythos 5, Opus 5, Sonnet 5,
+and legacy Opus 4.8 only. Loaded at craft time only when the target model is Haiku.
 -->
 
 # Tuning for Claude Haiku 4.5

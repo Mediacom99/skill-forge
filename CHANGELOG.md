@@ -5,6 +5,45 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.0 — 2026-09-07
+
+Reconcile cycle against all six tracked sources (all six drifted; issue #9) plus one new page.
+
+### Added
+- **Source #8 — the dedicated `prompting-claude-fable-5-1` page** (Fable 5.1 / Mythos 5.1). Tracked in
+  `.source-hashes.json` seeded `null`; the `check-sources` Action captures its baseline on the next run.
+- **`models/fable.md` now targets Fable 5.1 / Mythos 5.1**, with the Fable 5 / Mythos 5 deltas kept in a
+  closing section rather than a second file. New 5.1 material: effort re-sweep (names don't map across
+  models; `medium` ≈ Fable 5 at lower cost), quieter narration and how to get progress updates back,
+  tool-call batching in coding loops, append-only history / preserved thinking, mannered-prose density,
+  chat **under**-formatting, unmarked quoting of retrieved sources, finishing the whole task, scope and
+  test sprawl, low-effort search triggering, targeted edits over whole-file rewrites, `xhigh`/`max` output
+  headroom, client-side compaction summaries, async subagents, and vision crop/zoom.
+- `techniques-advanced.md`: **keep the history append-only** (per-turn reminders as turn-scoped system
+  messages; editing earlier turns invalidates later thinking blocks on Fable 5.1).
+- `models/sonnet.md`: interactive-coding-product guidance (front-load the spec in the first turn) and the
+  anti-"AI slop" frontend directive.
+
+### Changed
+- **Two Fable 5 instincts now invert on 5.1** and the file says so: brevity/anti-over-elaboration lines and
+  inherited anti-formatting rules suppress behavior 5.1 doesn't have. Example C in `examples.md` is retuned
+  to the 5.1 idiom (last-paragraph check, follow-up rule, stand-alone recap).
+- `SKILL.md`: `--model fable` now resolves to **Fable 5.1 / Mythos 5.1**; selector table and craft-step
+  references updated.
+- Prefill removal (`techniques.md` #15) now names the *last* assistant turn only, the full 5-series, and
+  **Claude Mythos Preview**.
+- Computer-use guidance in `models/sonnet.md` / `models/opus.md`: `computer_toolset_20260801` and the
+  `browser_toolset_20260801` browser-use tool alongside the older `computer_20251124`.
+
+### Fixed
+- **Resolved the open "what is Claude Mythos Preview" question** (ROADMAP, flagged by the routine on
+  2026-08-03): the best-practices page names it as a distinct model linking to anthropic.com/glasswing, not
+  alternate naming for Mythos 5. Recorded in `_sources.md` volatile items so it isn't re-flagged; ROADMAP
+  item removed.
+- Opus/Sonnet "step up to Fable 5 for frontier capability" pointers now say Fable 5.1.
+- `models/haiku.md` header listed a stale set of per-model pages; 404 on `prompting-claude-haiku-4-5`
+  reconfirmed this cycle.
+
 ## repo — 2026-08-07
 
 ### Added

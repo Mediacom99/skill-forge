@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-09-07
 source: _sources.md #6 — prompting-claude-sonnet-5 (dedicated Sonnet 5 prompting page)
 scope: Per-model tuning for Claude Sonnet 5 (current Sonnet flagship). Loaded at craft time only when the
 target model is Sonnet. Applies on top of techniques.md; note the 4.6 migration deltas inline.
@@ -55,6 +55,9 @@ prompts, but several **defaults changed**: read the migration deltas below befor
 - **With thinking disabled, it's less likely to reach for tools** — if you rely on tool calls with thinking off,
   add an explicit nudge in the system prompt.
 - `high`/`xhigh` effort shows substantially more tool use in agentic search and coding.
+- **Interactive coding products:** run at `xhigh`/`high` and front-load the task, intent, and constraints in
+  the *first* user turn (plus an auto mode where you can). Ambiguity delivered progressively over several
+  turns costs tokens and sometimes performance.
 - Gives good interim progress updates on its own — remove forced "summarize every N calls" scaffolding.
 - **Code-review harnesses:** follows "only report high-severity / be conservative" faithfully and may under-report
   low-severity bugs as a result (precision up, measured recall down). For coverage, ask it to report every
@@ -63,13 +66,20 @@ prompts, but several **defaults changed**: read the migration deltas below befor
 ## Design & frontend defaults
 - Can settle into a consistent default visual style on open-ended briefs. Since `temperature` can no longer be
   used for variety, prefer: (1) a concrete, fully-specified alternative spec, or (2) "propose 4 distinct visual
-  directions first, then implement the one picked" — the reliable ways to break the default now.
+  directions first, then implement the one picked" — the reliable ways to break the default now. Generic
+  negatives ("don't use that color", "clean and minimal") just move it to a different fixed palette.
+- Against the generic "AI slop" look, a short system-prompt directive works alongside the above: *"NEVER use
+  generic AI-generated aesthetics — overused font families (Inter, Roboto, Arial, system fonts), clichéd color
+  schemes (especially purple gradients), predictable layouts and cookie-cutter components. Use unique fonts,
+  cohesive themes, and animations for micro-interactions."*
 
 ## Computer use
-- Supports the `computer_20251124` tool version, up to 2576px / 3.75MP. 1080p is the good performance/cost
-  balance for testing; 720p / 1366×768 for cost-sensitive workloads.
+- Supports the `computer_toolset_20260801` toolset (Claude API + Google Cloud) and the earlier
+  `computer_20251124` tool version, plus the `browser_toolset_20260801` browser-use tool for in-page work
+  (same two platforms). Up to 2576px / 3.75MP. 1080p is the good performance/cost balance for testing;
+  720p / 1366×768 for cost-sensitive workloads.
 
 ## When to pick Sonnet
 - Default for balanced production prompts, API pipelines, and coding/agentic tasks. Step **up to Opus 5** for
-  the hardest agentic-coding / enterprise / long-horizon work (or **Fable 5** for frontier capability); step
+  the hardest agentic-coding / enterprise / long-horizon work (or **Fable 5.1** for frontier capability); step
   **down to Haiku** for high-volume, latency-sensitive, well-scoped tasks.

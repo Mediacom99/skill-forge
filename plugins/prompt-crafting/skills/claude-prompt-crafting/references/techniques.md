@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-09-07
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: LEAN CORE — the high-leverage techniques that apply to most Claude prompts.
 For agentic/tool-use/long-context/RAG/eval guidance, see techniques-advanced.md;
@@ -84,10 +84,11 @@ fit the spec; do not apply all of them. Each entry: **what · when · how**.
 
 ## VOLATILE / model mechanics
 
-15. **No prefill on 4.6 and newer.** *What:* prefilling the assistant turn is unsupported on Claude 4.6
-    and newer, including the 5-series (Fable 5 / Mythos 5) — returns 400. *Instead:* force format via
-    Structured Outputs or a direct instruction ("Respond directly, no preamble; do not start with
-    'Here is…'"); put continuations in the user turn.
+15. **No prefill on 4.6 and newer.** *What:* prefilling the *last* assistant turn is unsupported on Claude 4.6
+    and newer — the 5-series (Fable 5.1 / Mythos 5.1, Fable 5 / Mythos 5, Opus 5, Sonnet 5) and Claude Mythos
+    Preview included — and returns 400. Assistant messages *elsewhere* in the conversation are unaffected.
+    *Instead:* force format via Structured Outputs or a direct instruction ("Respond directly, no preamble;
+    do not start with 'Here is…'"); put continuations in the user turn.
 
 16. **Effort & output budget (current models).** *What:* harder tasks want more reasoning effort and a
     bigger output budget. *When:* complex or long generations. *How:* raise `effort` (e.g. high/xhigh)
@@ -98,4 +99,4 @@ fit the spec; do not apply all of them. Each entry: **what · when · how**.
 For tool use, agents, long context, RAG, evals, prompt chaining, and self-correction, see
 [techniques-advanced.md](techniques-advanced.md). For **per-model tuning**, load the target model's file:
 [opus](models/opus.md) · [sonnet](models/sonnet.md) · [haiku](models/haiku.md) · [fable](models/fable.md)
-(Fable 5 + Mythos 5).
+(Fable 5.1 / Mythos 5.1, with the Fable 5 / Mythos 5 deltas in the same file).

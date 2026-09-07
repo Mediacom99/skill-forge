@@ -9,7 +9,7 @@ description: >
   "prompt").
 argument-hint: "[your rough idea] [--model <opus|sonnet|haiku|fable>] [--quick | --deep] [--refine] [--template]"
 allowed-tools: Read, Grep, Glob, AskUserQuestion, Write, Bash(pbcopy:*), Bash(wl-copy:*), Bash(xclip:*), Bash(xsel:*), Bash(clip.exe:*), Bash(clip:*)
-version: 0.6.2
+version: 0.7.0
 metadata:
   tags: prompt-engineering, prompts, claude, anthropic, system-prompt, alignment
 ---
@@ -88,7 +88,7 @@ dialogue below) — but the output is always a prompt, never the task carried ou
     wired into a pipeline or agent. **Do NOT infer template from the task domain alone** (e.g. "contract
     review / release notes are usually recurring" is not a signal). When unsure, default to *improve* and
     present it as the default rather than recommending template. `--template` always forces it.
-- **Target model** — the model your finished prompt will *run on* (its **destination** — e.g. a Fable 5 agent
+- **Target model** — the model your finished prompt will *run on* (its **destination** — e.g. a Fable 5.1 agent
   via the API), **not** the model you're currently running as. `--model` never changes your running session;
   it only selects the per-model guidance you load at craft (you can craft a Fable/Haiku/Sonnet prompt while
   running on Opus). It is a **required** field by the checkpoint; resolve it in this priority order:
@@ -106,9 +106,10 @@ dialogue below) — but the output is always a prompt, never the task carried ou
   | **Opus** (5) | complex agentic coding + enterprise; strong default flagship | `high` (`xhigh` for demanding coding/agentic; `low`/`medium` efficient) |
   | **Sonnet** (5) | balanced default for most production / API + coding/agentic work | `high` (`xhigh` hardest) |
   | **Haiku** (4.5) | high-volume, latency-sensitive, well-scoped (classify / extract / route) | low–medium |
-  | **Fable / Mythos** (5) | frontier long-horizon, agentic, ambiguous, multi-day work | `high` (`xhigh` hardest) |
+  | **Fable / Mythos** (5.1) | frontier long-horizon, agentic, ambiguous, multi-day work | `high` (re-sweep per model) |
 
-  `fable` selects Fable 5 / Mythos 5 (shared guidance).
+  `fable` selects **Fable 5.1 / Mythos 5.1**; `models/fable.md` covers them and carries the Fable 5 /
+  Mythos 5 deltas in its last section, so say which generation the prompt targets if it isn't the current one.
 
 ## Step 1 — Intake (do this silently)
 
@@ -157,7 +158,7 @@ Ask about the *unknown* and *partial* dimensions only, most important first. Kee
 Before crafting, present a **compact spec** — the nine dimensions, filled, in a few tight lines
 (omit any that are genuinely N/A). Mark any assumptions you made, and **state both the target model** (mark
 it if you auto-detected it; and when the target differs from the model you're running as, say both — e.g.
-"crafting on Opus 5 · tuned for **Fable 5**" — so it's clear the flag sets the destination, not your session)
+"crafting on Opus 5 · tuned for **Fable 5.1**" — so it's clear the flag sets the destination, not your session)
 **and the output shape** you'll produce
 (*improve* = a ready-to-use prompt, or *template* = reusable with variables) so the user can flip either
 before you craft. Then ask the user to confirm or correct. This is the contract. Do not proceed to
@@ -172,7 +173,7 @@ Only now — not earlier — load the technique library, so the dialogue stays c
   [references/models/opus.md](references/models/opus.md),
   [references/models/sonnet.md](references/models/sonnet.md),
   [references/models/haiku.md](references/models/haiku.md), or
-  [references/models/fable.md](references/models/fable.md) (Fable 5 / Mythos 5) — and apply it in the craft.
+  [references/models/fable.md](references/models/fable.md) (the Fable family) — and apply it in the craft.
 - Read [references/techniques-advanced.md](references/techniques-advanced.md) **if** the spec is
   agentic / tool-using / long-context (20k+ tokens) / RAG / multi-agent / an LLM-as-judge or eval
   prompt, **or** if `--deep`.
@@ -197,7 +198,7 @@ Write the prompt the way Claude works best (full rationale and current specifics
 - **Set reasoning/effort and output budget** when the task is hard or long (see references).
 - **Apply the target model's tuning** from its `models/<model>.md` file — its default `effort`, instruction
   style, output budget, and model-specific gotchas (e.g. state scope explicitly for Opus; keep it tight and
-  example-led for Haiku; brief, outcome-led instructions for Fable 5 / Mythos 5, and **never** ask it to
+  example-led for Haiku; brief, outcome-led instructions for the Fable family, and **never** ask it to
   echo, transcribe, or explain its reasoning as output text — that triggers a `reasoning_extraction` refusal).
 
 Then craft for the chosen **output shape**:
@@ -225,7 +226,7 @@ Critique your own draft against the spec, then revise once:
   stated, contradictions, prompt-injection surface if it handles untrusted input, output shape
   mismatched to the chosen mode (template-ized an improve request or vice versa), pre-existing
   placeholders stripped or renamed, **model-fit** (does it follow the target model's guidance? — e.g. asking
-  Fable 5 to show/echo its reasoning, missing explicit scope for Opus, or a prompt too loose for Haiku).
+  a Fable-family model to show/echo its reasoning, missing explicit scope for Opus, or a prompt too loose for Haiku).
 - Is anything in it not pulling its weight? Cut it.
 - Under `--deep`: optionally show a **dry** illustrative sample — describe what the prompt would likely
   produce on a representative input. Do not actually execute the task, call tools, or touch the
@@ -285,6 +286,6 @@ Confirm it's copied. These clipboard commands are the only shell the skill is al
 ---
 
 This skill targets **Claude**, and tunes each prompt to its **target model** (Opus 5 · Sonnet 5 ·
-Haiku 4.5 · Fable 5 / Mythos 5) via [references/models/](references/models/), loaded per craft.
+Haiku 4.5 · Fable 5.1 / Mythos 5.1) via [references/models/](references/models/), loaded per craft.
 The technique libraries are sourced and dated in
 [references/_sources.md](references/_sources.md); keep them fresh with the `refresh-references` skill.

@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-07-28
+last-verified: 2026-09-07
 source: _sources.md #3 — prompting-claude-opus-5 (dedicated Opus 5 page) + models overview
 scope: Per-model tuning for Claude Opus 5 (current Opus flagship, claude-opus-5). Loaded at craft time only
 when the target model is Opus. Applies on top of techniques.md; Opus 4.8 (now legacy) deltas noted inline.
@@ -9,10 +9,11 @@ when the target model is Opus. Applies on top of techniques.md; Opus 4.8 (now le
 
 Claude Opus 5 (`claude-opus-5`) is built for **complex agentic coding and enterprise work**, with particular
 strength on long-horizon agentic tasks; the docs say to **start with Opus 5** for that work (step up to
-**Fable 5** only when you need the highest available capability). It has a **1M-token context window** (both
-default and max) and **128k** max output, and performs well out of the box on existing Opus 4.8 prompts. The
-biggest levers are `effort`, whether thinking is on, and telling it the length/scope you want — it now runs
-**longer and more autonomously** by default than prior Opus models.
+**Fable 5.1** only when you need the highest available capability). It has a **1M-token context window** (both
+default and max) and **128k** max output, and performs well out of the box on existing Opus 4.8 prompts. It
+does its best work when handed the **complete task specification up front** and left to run — it finishes
+tasks rather than leaving stubs. The biggest levers are `effort`, whether thinking is on, and telling it the
+length/scope you want — it now runs **longer and more autonomously** by default than prior Opus models.
 
 ## Effort — the primary cost/latency lever
 - Ladder (intelligence ↔ latency/cost): `max` · `xhigh` · `high` · `medium` · `low`. **Default is `high`**
@@ -89,5 +90,7 @@ biggest levers are `effort`, whether thinking is on, and telling it the length/s
   by default; disabling it is capped at `high` effort; and the effort cost/quality curve moved (re-sweep).
 - The **Opus 4.8** page documented two things the Opus 5 page does **not** carry: a persistent design house
   style (warm cream/off-white ~`#F4F1EA`, serif display type, terracotta/amber accents, and the two ways to
-  break it) and computer-use resolution guidance (up to 2576px / 3.75MP; 1080p balance). If you're targeting
+  break it) and computer-use guidance (the `computer_toolset_20260801` toolset and the earlier
+  `computer_20251124`, plus the `browser_toolset_20260801` browser-use tool on the Claude API and Google
+  Cloud; up to 2576px / 3.75MP, 1080p balance). If you're targeting
   **Opus 4.8**, see its page (`prompting-claude-opus-4-8`) for those; don't assume they carry to Opus 5.
