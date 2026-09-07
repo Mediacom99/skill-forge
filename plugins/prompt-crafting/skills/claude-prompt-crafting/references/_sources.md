@@ -54,8 +54,10 @@ file also carries its own `last-verified` header.
   #7). Dedicated prompting pages exist for Fable 5.1, Fable 5, Opus 5, Sonnet 5, and legacy Opus 4.8;
   **no Haiku page** yet — recheck.
 - **Refusal categories & fallback (Fable family)** — `reasoning_extraction` (don't ask the model to
-  reproduce its reasoning as text), offensive-cyber, bio/life-sciences; declined requests fall back to
-  Opus 4.8. On **Fable 5.1** false positives are down and source-code vulnerability finding is permitted;
+  reproduce its reasoning as text), offensive-cyber, bio/life-sciences. **The Opus 4.8 fallback target is
+  stated on #4 (Fable 5) only**; #8 defers to the untracked `whats-new-fable-5-1` page and names no model, so
+  `models/fable.md` flags it rather than asserting it for 5.1 — confirm next cycle (and reconsider tracking
+  that page). On **Fable 5.1** false positives are down and source-code vulnerability finding is permitted;
   the three remaining triggers (compile-check phrasing, lesser-known languages, base64 in tool output) are
   new this cycle — recheck whether they persist.
 - **Preserved thinking / append-only history (Fable 5.1)** — editing earlier turns invalidates later

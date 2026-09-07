@@ -71,7 +71,9 @@ length/scope you want — it now runs **longer and more autonomously** by defaul
 - Opus 5 **delegates to subagents readily**, which pays off on genuinely independent, sizeable tracks but
   multiplies cost/time on small ones. Cap it: *"Delegate only for large, genuinely independent, parallelizable
   work; don't delegate what you can finish in a few tool calls; don't use subagents to verify your own work;
-  keep spawn counts low."* Deterministic caps also help. (It coordinates writer-verifier teams well.)
+  keep spawn counts low."* (It coordinates writer-verifier teams well.) Deterministic caps also help — in
+  Claude Code / the Agent SDK those are `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`,
+  `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, and `max_budget_usd` (Claude Code 2.1.217+).
 
 ## Literal instruction-following → state scope
 - Like current Sonnet/Fable, Opus 5 follows instructions literally and won't silently generalize one to

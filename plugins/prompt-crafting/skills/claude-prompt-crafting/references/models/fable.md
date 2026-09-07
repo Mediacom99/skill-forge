@@ -48,7 +48,8 @@ Fable 5 prompts run well on Fable 5.1 unchanged. The deltas in **What changed in
 ## Reasoning — critical gotcha
 - **Do NOT ask the model to reproduce, echo, transcribe, or explain its internal reasoning as response text.**
   Such "show your thinking / reflect on your reasoning" instructions can trigger the **`reasoning_extraction`
-  refusal** and cause elevated fallbacks to Opus 4.8. If the app needs reasoning visibility, read the
+  refusal** and cause elevated fallbacks (to Opus 4.8 on Fable 5; see the fallback note below). If the app
+  needs reasoning visibility, read the
   structured `thinking` blocks from adaptive thinking instead. **Audit ported prompts/skills** for
   show-your-work language before targeting this family.
 - Fable is **adaptive-thinking-only** with no extended-thinking budgets; effort is the depth control.
@@ -56,7 +57,9 @@ Fable 5 prompts run well on Fable 5.1 unchanged. The deltas in **What changed in
 ## Safety & fallback (API)
 - Runs safety classifiers targeting **offensive cybersecurity**, **biology/life-sciences**, and
   **reasoning-extraction**; declined requests return `stop_reason: "refusal"`. Configure **server- or
-  client-side fallback to Opus 4.8** to auto-reroute.
+  client-side fallback** to auto-reroute. *(The **Opus 4.8** target is what the Fable 5 page states; the 5.1
+  page points at its untracked "what's new" page for refusals/fallback instead of naming a model — confirm
+  the target before hard-coding it for 5.1.)*
 - 5.1 produces **fewer false positives** than Fable 5 did at launch, and **finding vulnerabilities in source
   code is permitted**. Three things still raise the odds: **compile-check phrasing** (ask *"are there any bugs
   in this program?"*, not *"does this compile without errors?"*), **lesser-known languages** (give the model
