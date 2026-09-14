@@ -1,6 +1,6 @@
 # Sources — claude-prompt-crafting references
 
-**last-verified: 2026-09-07** · vendor: Anthropic · official docs only.
+**last-verified: 2026-09-14** · vendor: Anthropic · official docs only.
 
 The `refresh-references` skill and the `check-sources.yml` workflow read the URL list below.
 When updating, re-fetch each URL, reconcile `techniques.md` / `techniques-advanced.md`, then bump
@@ -52,7 +52,7 @@ file also carries its own `last-verified` header.
   change; current set: **Fable 5.1 / Mythos 5.1** (new frontier, own page — #8), Fable 5 / Mythos 5,
   Opus 5, Sonnet 5, Haiku 4.5. **Opus 4.8 / 4.7 / 4.6 are legacy** (the 4.8 page is still live, tracked as
   #7). Dedicated prompting pages exist for Fable 5.1, Fable 5, Opus 5, Sonnet 5, and legacy Opus 4.8;
-  **no Haiku page** yet — recheck.
+  **no Haiku page** yet — reconfirmed 404 on `prompting-claude-haiku-4-5` again this cycle (2026-09-14).
 - **Refusal categories & fallback (Fable family)** — `reasoning_extraction` (don't ask the model to
   reproduce its reasoning as text), offensive-cyber, bio/life-sciences. **The Opus 4.8 fallback target is
   stated on #4 (Fable 5) only**; #8 defers to the untracked `whats-new-fable-5-1` page and names no model, so
@@ -61,12 +61,15 @@ file also carries its own `last-verified` header.
   the three remaining triggers (compile-check phrasing, lesser-known languages, base64 in tool output) are
   new this cycle — recheck whether they persist.
 - **Preserved thinking / append-only history (Fable 5.1)** — editing earlier turns invalidates later
-  thinking blocks: a 400 for accounts created on or after **2026-08-31**, and expected to be enforced for
-  everyone on later models. Recheck the enforcement date and whether it has gone universal.
+  thinking blocks: a 400 for accounts created on or after **2026-08-31** (unchanged this cycle), and
+  expected to be enforced for everyone on later models — still not universal as of 2026-09-14. New this
+  cycle: an opt-in `thinking.block_binding.prefix_mismatch_behavior: "drop_block"` (beta,
+  `thinking-binding-controls-2026-08-01`) drops the affected blocks instead of erroring — added to
+  `models/fable.md`. Recheck the enforcement date and whether it has gone universal.
 - **Turn-scoped and mid-conversation system messages** — the `clear_at: "next_user_message"` and
   `thinking.display: "updates"` mechanics that #8's batching and progress-update advice depend on are in
   **beta** (headers `mid-conversation-system-clear-at-2026-08-21`, `thinking-display-updates-2026-08-18`).
-  Recheck for GA / header changes.
+  Reconfirmed still beta with the same header dates as of 2026-09-14. Recheck for GA / header changes.
 - **Sonnet 5 API constraints** — `temperature`/`top_p`/`top_k` at non-default values return 400; manual
   extended-thinking `budget_tokens` is removed (400); the tokenizer produces ~30% more tokens for the same
   text (re-check `max_tokens` budgets ported from Sonnet 4.6).

@@ -5,6 +5,30 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.1 — 2026-09-14
+
+Routine reconcile cycle against all seven tracked sources. Six of seven pages (overview, best-practices,
+Opus 5, Fable 5, Sonnet 5, Opus 4.8) reconfirmed unchanged — effort ladders/defaults, adaptive-thinking
+defaults, the Sonnet 5 tokenizer/sampling-param constraints, computer/browser toolset versions, refusal
+categories, and the Claude Mythos Preview note all still match. No 404s or moved URLs. The Fable 5.1 page
+(#8) surfaced two genuinely new, high-leverage details:
+
+### Added
+- `models/fable.md`: the opt-in `thinking.block_binding.prefix_mismatch_behavior: "drop_block"` escape
+  hatch (beta, `thinking-binding-controls-2026-08-01`) that drops invalidated thinking blocks instead of
+  erroring, alongside the existing append-only-history guidance.
+- `models/opus.md`: Claude Code only auto-adds a subagent-delegation-damping instruction on Opus 5 when
+  using its `claude_code` system-prompt preset — call this out so a custom/omitted system prompt still gets
+  one.
+
+### Confirmed unchanged (no edit)
+- Preserved-thinking enforcement date (accounts created on/after 2026-08-31) — still not universal.
+- Turn-scoped/mid-conversation system message betas — same header dates
+  (`mid-conversation-system-clear-at-2026-08-21`, `thinking-display-updates-2026-08-18`).
+- No dedicated Haiku prompting page — reconfirmed 404 on `prompting-claude-haiku-4-5`.
+- Fable 5.1's refusal-fallback target is still not named on its own page (points at the untracked
+  "what's new" page) — `models/fable.md` keeps flagging rather than asserting it.
+
 ## repo — 2026-09-07
 
 ### Fixed
