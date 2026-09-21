@@ -5,6 +5,27 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.2 — 2026-09-21
+
+Routine reconcile cycle against all seven tracked sources (re-run of the 2026-09-14 cycle in PR #11, 7 days
+later). All seven pages reconfirmed unchanged against the live docs — no 404s or moved URLs, and no drift in
+any volatile item: effort ladders/defaults, adaptive-thinking defaults, the Sonnet 5 tokenizer/sampling-param
+constraints, computer/browser toolset versions, the Fable 5 → Opus 4.8 fallback target, the Fable 5.1
+preserved-thinking 400 (still accounts created on/after 2026-08-31, still not universal) and its
+`drop_block` escape hatch, the two mid-conversation system-message betas (same header dates, still beta),
+the three Fable 5.1 safeguard-false-positive triggers, and the Claude Mythos Preview note.
+
+### Confirmed unchanged (no edit)
+- No dedicated Haiku prompting page — reconfirmed 404 on `prompting-claude-haiku-4-5` again.
+- Fable 5.1's refusal-fallback target is still not named on its own page (still points at the untracked
+  "what's new" page) — `models/fable.md` continues to flag rather than assert it.
+- `techniques.md`, `techniques-advanced.md`, `examples.md`, and all four `models/*.md` files checked against
+  their backing sources and found accurate; left untouched (their `last-verified` headers are unchanged).
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-09-21 and refreshed the volatile-items notes to record this
+  cycle's reconfirmations (no substantive change).
+
 ## prompt-crafting 0.7.1 — 2026-09-14
 
 Routine reconcile cycle against all seven tracked sources. Six of seven pages (overview, best-practices,
