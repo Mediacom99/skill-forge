@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-07
+last-verified: 2026-09-28
 source: _sources.md #6 — prompting-claude-sonnet-5 (dedicated Sonnet 5 prompting page)
 scope: Per-model tuning for Claude Sonnet 5 (current Sonnet flagship). Loaded at craft time only when the
 target model is Sonnet. Applies on top of techniques.md; note the 4.6 migration deltas inline.
@@ -80,6 +80,7 @@ prompts, but several **defaults changed**: read the migration deltas below befor
   720p / 1366×768 for cost-sensitive workloads.
 
 ## When to pick Sonnet
-- Default for balanced production prompts, API pipelines, and coding/agentic tasks. Step **up to Opus 5** for
-  the hardest agentic-coding / enterprise / long-horizon work (or **Fable 5.1** for frontier capability); step
-  **down to Haiku** for high-volume, latency-sensitive, well-scoped tasks.
+- Default for balanced production prompts, API pipelines, and coding/agentic tasks. Step **up to Opus 5.5**
+  (current Opus flagship — see `models/opus.md`) for the hardest agentic-coding / enterprise / long-horizon
+  work (or **Fable 5.1** for frontier capability); step **down to Haiku** for high-volume, latency-sensitive,
+  well-scoped tasks.
