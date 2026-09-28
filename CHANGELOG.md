@@ -5,6 +5,49 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.3 — 2026-09-28
+
+Reconcile cycle against all eight now-tracked sources (the seven from prior cycles plus the newly-discovered
+Opus 5.5 page). **Claude Opus 5.5 is now Anthropic's current Opus flagship**, with its own dedicated prompting
+page (`prompting-claude-opus-5-5`) that the best-practices page's model-guidance table and the Opus 4.8 page's
+own migration links already pointed to — this had gone untracked. Opus 5 is now the previous Opus generation;
+its page is unchanged and still live. The other six previously-tracked pages (overview, best-practices, Fable
+5, Sonnet 5, Opus 4.8, Fable 5.1) reconfirmed unchanged — no 404s or moved URLs, no drift in any other
+volatile item (Fable 5.1 preserved-thinking 400 still accounts created on/after 2026-08-31 and not universal,
+its `drop_block` escape hatch unchanged, the two mid-conversation system-message betas at the same header
+dates, the three Fable 5.1 safeguard-false-positive triggers unchanged, no dedicated Haiku page).
+
+### Added
+- **Source #9 — the dedicated `prompting-claude-opus-5-5` page** (current Opus flagship). Not yet in
+  `.source-hashes.json` — that file is out of scope for this refresh (owned exclusively by the check-sources
+  Action); it needs `prompting-claude-opus-5-5` added, seeded `null`, before drift detection covers it.
+- `models/opus.md` **restructured to target Opus 5.5** (mirroring how `models/fable.md` targets 5.1 over 5):
+  effort default drops to `medium` (from `high`) and thinking can no longer be disabled at all; four-step
+  migration guidance for integrations that ran Opus 5 with thinking disabled; two new safeguard-refusal
+  categories (biology, `reasoning_extraction`); unattended-run text-only-turn-end handling; progress-update
+  mechanics (`display: "updates"`, turn-scoped nudges); preserved-thinking / append-only-history behavior
+  (same shape as Fable 5.1's `drop_block` opt-in); multi-app exploration and multiagent time-budget guidance;
+  chat-specific thinking instructions; the `<pasted_content>` marking pattern for indirect-injection
+  resistance; and updated vision/frontend-defaults notes. Opus 5's own tuning (effort `high` default,
+  disable-able thinking, verbosity/over-verification/subagent notes) is kept in a dedicated delta section;
+  the legacy Opus 4.8 notes (design house-style, computer-use toolsets) move to their own closing section.
+- `_sources.md`, `techniques.md`, `techniques-advanced.md`, `models/sonnet.md`: updated every Opus-version
+  reference affected by the new flagship — the prefill-removal and always-on-thinking model lists now include
+  Opus 5.5, the effort/thinking volatile-items note distinguishes Opus 5.5 (`medium` default, no disable) from
+  Opus 5 (`high` default, disable ≤ `high`), and Sonnet's "when to step up" note now points to Opus 5.5.
+
+### Confirmed unchanged (no edit)
+- No dedicated Haiku prompting page — reconfirmed 404 on `prompting-claude-haiku-4-5` again.
+- Fable 5.1's refusal-fallback target is still not named on its own page (still points at the untracked
+  "what's new" page) — `models/fable.md` continues to flag rather than assert it.
+- `techniques.md` (aside from the Opus 5.5 prefill-list addition), `techniques-advanced.md` (aside from the
+  thinking-default addition), `examples.md`, `models/fable.md`, and `models/haiku.md` checked against their
+  backing sources and found otherwise accurate.
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-09-28, added source #9, reworded #3's description (previous
+  generation, not current flagship), updated the reference-files table and volatile-items notes.
+
 ## prompt-crafting 0.7.2 — 2026-09-21
 
 Routine reconcile cycle against all seven tracked sources (re-run of the 2026-09-14 cycle in PR #11, 7 days

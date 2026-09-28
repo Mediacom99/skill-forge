@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-07
+last-verified: 2026-09-28
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: LEAN CORE — the high-leverage techniques that apply to most Claude prompts.
 For agentic/tool-use/long-context/RAG/eval guidance, see techniques-advanced.md;
@@ -85,8 +85,9 @@ fit the spec; do not apply all of them. Each entry: **what · when · how**.
 ## VOLATILE / model mechanics
 
 15. **No prefill on 4.6 and newer.** *What:* prefilling the *last* assistant turn is unsupported on Claude 4.6
-    and newer — the 5-series (Fable 5.1 / Mythos 5.1, Fable 5 / Mythos 5, Opus 5, Sonnet 5) and Claude Mythos
-    Preview included — and returns 400. Assistant messages *elsewhere* in the conversation are unaffected.
+    and newer — the 5-series (Fable 5.1 / Mythos 5.1, Fable 5 / Mythos 5, Opus 5.5, Opus 5, Sonnet 5) and
+    Claude Mythos Preview included — and returns 400. Assistant messages *elsewhere* in the conversation are
+    unaffected.
     *Instead:* force format via Structured Outputs or a direct instruction ("Respond directly, no preamble;
     do not start with 'Here is…'"); put continuations in the user turn.
 
