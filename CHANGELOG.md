@@ -5,6 +5,159 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.4 — 2026-10-12
+
+Reconcile cycle triggered by drift issue #12 (two check-sources runs, 2026-09-28 and 2026-10-05, flagged
+nearly every tracked URL). Re-fetched all eleven now-tracked sources. **Anthropic shipped dedicated prompting
+pages for Claude Sonnet 5.5 and Claude Haiku 5.5**, named alongside Opus 5.5 on the best-practices page's
+model-guidance table — all three Claude families now have a current-generation flagship with its own
+prompting page. Haiku's is the **first dedicated Haiku prompting page ever published**.
+
+### Added
+- **Source #10 — `prompting-claude-sonnet-5-5`** (current Sonnet flagship). Recalibrated effort (don't port
+  Sonnet 5 settings), a new lowest-thinking setting `thinking: {type: "between_tools"}` distinct from
+  `disabled` (Sonnet 5.5 has no `disabled` mode), initiative/scope steering at low vs. high effort, JSON output
+  on reasoning tasks, user-facing progress updates, tool use in chat, a mid-turn-user-message
+  prompt-injection misread and its fix, coding-task verification, tolerant tool-call handling, vision tooling,
+  and a 5-category safeguard-refusal taxonomy (`cyber`/`bio`/`frontier_llm`/`reasoning_extraction`/
+  `general_harms`) with fallback retrying only two of the five categories.
+- **Source #11 — `prompting-claude-haiku-5-5`** (current Haiku flagship) — **Haiku's first dedicated
+  prompting page**, and the first Haiku generation with `effort` levels at all (replacing `budget_tokens`).
+  Search grounding via today's date, JSON output with custom tools, early-stopping prevention in long agent
+  prompts, coding verification, the same mid-turn-user-message injection misread as Sonnet 5.5, chatbot
+  system-prompt adherence, a 4-category refusal taxonomy (no `reasoning_extraction`), and **no server-side
+  fallback at all**.
+- `models/sonnet.md` **restructured to target Sonnet 5.5 primarily** (mirroring `models/opus.md`'s Opus
+  5.5-over-5 structure): all of the above, with Sonnet 5's own tuning (simple `high`-default effort,
+  `disabled`-mode thinking, tokenizer/sampling-param constraints, code-review harness guidance, computer-use
+  toolsets) kept in a dedicated "If the target is Claude Sonnet 5" delta section.
+- `models/haiku.md` **rewritten to target Haiku 5.5 primarily** — the first time this file has had a real
+  dedicated source instead of deriving entirely from the cross-model best-practices page. Haiku 4.5's old
+  content (tighter/more explicit prompting, heavy multishot, no prefill, `budget_tokens`) moved to a closing
+  "Legacy: Claude Haiku 4.5" section.
+- `techniques-advanced.md`: a new cross-model note under "Tool use & agentic systems" — never put user-authored
+  text inside a `tool_result` block, and don't place harness reminders immediately after one on every turn;
+  Sonnet 5.5 and Haiku 5.5 can both misread text in that position as prompt injection and ignore or
+  challenge it.
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-10-12; added sources #10–#11; updated the reference-files
+  table (`models/sonnet.md` and `models/haiku.md` now each have a primary + delta/legacy source like
+  `models/opus.md` and `models/fable.md` already did); rewrote the effort/thinking, refusal-category, and
+  preserved-thinking volatile-items notes to cover all three current-generation flagships without assuming
+  parity across families (the refusal taxonomy, the fallback scope, and the disable mechanism for thinking
+  all differ model-to-model this cycle).
+- `techniques.md` (item 15) and `techniques-advanced.md` (extended-thinking volatile note): prefill-removal
+  and thinking-default model lists now include Sonnet 5.5 and Haiku 5.5.
+
+### Confirmed unchanged (no edit)
+- `overview`, `prompting-claude-fable-5`, `prompting-claude-fable-5-1`, `prompting-claude-opus-5`,
+  `prompting-claude-opus-4-8` reconfirmed against the live docs this cycle — no 404s or moved URLs, no drift
+  in the Fable 5/5.1 refusal-fallback-to-Opus-4.8 target, the three Fable 5.1 safeguard-false-positive
+  triggers, or the Sonnet 5 / Opus 4.8 computer-use toolset version strings.
+- `examples.md` checked against its backing material and found current; left untouched.
+
+### Flagged for a human
+- **`.source-hashes.json` is still missing `prompting-claude-opus-5-5`** from the 0.7.3 cycle, and now also
+  needs `prompting-claude-sonnet-5-5` and `prompting-claude-haiku-5-5` added (all three seeded `null`).
+  Editing that file is out of scope for this refresh (owned exclusively by the `check-sources` Action) — a
+  maintainer needs to add all three in one pass so drift detection actually covers the current flagships.
+- This PR does not bump `plugin.json` / `SKILL.md` version frontmatter (out of scope for this cycle — only
+  `references/**` and this changelog were touched). A maintainer should bump both to **0.7.4** to keep
+  `validate.py`'s version-parity check passing, matching this changelog header.
+- `frontier_llm` is a refusal category new to this cycle, seen only on the Sonnet 5.5 and Haiku 5.5 pages —
+  worth checking next cycle whether Opus 5.5 and the Fable family pick it up too.
+- Fable 5.1's refusal-fallback target is still not named on its own page (still defers to the untracked
+  "what's new" page) — unresolved for three cycles now; worth deciding whether to start tracking that page.
+
+## prompt-crafting 0.7.3 — 2026-09-28
+
+Reconcile cycle against all eight now-tracked sources (the seven from prior cycles plus the newly-discovered
+Opus 5.5 page). **Claude Opus 5.5 is now Anthropic's current Opus flagship**, with its own dedicated prompting
+page (`prompting-claude-opus-5-5`) that the best-practices page's model-guidance table and the Opus 4.8 page's
+own migration links already pointed to — this had gone untracked. Opus 5 is now the previous Opus generation;
+its page is unchanged and still live. The other six previously-tracked pages (overview, best-practices, Fable
+5, Sonnet 5, Opus 4.8, Fable 5.1) reconfirmed unchanged — no 404s or moved URLs, no drift in any other
+volatile item (Fable 5.1 preserved-thinking 400 still accounts created on/after 2026-08-31 and not universal,
+its `drop_block` escape hatch unchanged, the two mid-conversation system-message betas at the same header
+dates, the three Fable 5.1 safeguard-false-positive triggers unchanged, no dedicated Haiku page).
+
+### Added
+- **Source #9 — the dedicated `prompting-claude-opus-5-5` page** (current Opus flagship). Not yet in
+  `.source-hashes.json` — that file is out of scope for this refresh (owned exclusively by the check-sources
+  Action); it needs `prompting-claude-opus-5-5` added, seeded `null`, before drift detection covers it.
+- `models/opus.md` **restructured to target Opus 5.5** (mirroring how `models/fable.md` targets 5.1 over 5):
+  effort default drops to `medium` (from `high`) and thinking can no longer be disabled at all; four-step
+  migration guidance for integrations that ran Opus 5 with thinking disabled; two new safeguard-refusal
+  categories (biology, `reasoning_extraction`); unattended-run text-only-turn-end handling; progress-update
+  mechanics (`display: "updates"`, turn-scoped nudges); preserved-thinking / append-only-history behavior
+  (same shape as Fable 5.1's `drop_block` opt-in); multi-app exploration and multiagent time-budget guidance;
+  chat-specific thinking instructions; the `<pasted_content>` marking pattern for indirect-injection
+  resistance; and updated vision/frontend-defaults notes. Opus 5's own tuning (effort `high` default,
+  disable-able thinking, verbosity/over-verification/subagent notes) is kept in a dedicated delta section;
+  the legacy Opus 4.8 notes (design house-style, computer-use toolsets) move to their own closing section.
+- `_sources.md`, `techniques.md`, `techniques-advanced.md`, `models/sonnet.md`: updated every Opus-version
+  reference affected by the new flagship — the prefill-removal and always-on-thinking model lists now include
+  Opus 5.5, the effort/thinking volatile-items note distinguishes Opus 5.5 (`medium` default, no disable) from
+  Opus 5 (`high` default, disable ≤ `high`), and Sonnet's "when to step up" note now points to Opus 5.5.
+
+### Confirmed unchanged (no edit)
+- No dedicated Haiku prompting page — reconfirmed 404 on `prompting-claude-haiku-4-5` again.
+- Fable 5.1's refusal-fallback target is still not named on its own page (still points at the untracked
+  "what's new" page) — `models/fable.md` continues to flag rather than assert it.
+- `techniques.md` (aside from the Opus 5.5 prefill-list addition), `techniques-advanced.md` (aside from the
+  thinking-default addition), `examples.md`, `models/fable.md`, and `models/haiku.md` checked against their
+  backing sources and found otherwise accurate.
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-09-28, added source #9, reworded #3's description (previous
+  generation, not current flagship), updated the reference-files table and volatile-items notes.
+
+## prompt-crafting 0.7.2 — 2026-09-21
+
+Routine reconcile cycle against all seven tracked sources (re-run of the 2026-09-14 cycle in PR #11, 7 days
+later). All seven pages reconfirmed unchanged against the live docs — no 404s or moved URLs, and no drift in
+any volatile item: effort ladders/defaults, adaptive-thinking defaults, the Sonnet 5 tokenizer/sampling-param
+constraints, computer/browser toolset versions, the Fable 5 → Opus 4.8 fallback target, the Fable 5.1
+preserved-thinking 400 (still accounts created on/after 2026-08-31, still not universal) and its
+`drop_block` escape hatch, the two mid-conversation system-message betas (same header dates, still beta),
+the three Fable 5.1 safeguard-false-positive triggers, and the Claude Mythos Preview note.
+
+### Confirmed unchanged (no edit)
+- No dedicated Haiku prompting page — reconfirmed 404 on `prompting-claude-haiku-4-5` again.
+- Fable 5.1's refusal-fallback target is still not named on its own page (still points at the untracked
+  "what's new" page) — `models/fable.md` continues to flag rather than assert it.
+- `techniques.md`, `techniques-advanced.md`, `examples.md`, and all four `models/*.md` files checked against
+  their backing sources and found accurate; left untouched (their `last-verified` headers are unchanged).
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-09-21 and refreshed the volatile-items notes to record this
+  cycle's reconfirmations (no substantive change).
+
+## prompt-crafting 0.7.1 — 2026-09-14
+
+Routine reconcile cycle against all seven tracked sources. Six of seven pages (overview, best-practices,
+Opus 5, Fable 5, Sonnet 5, Opus 4.8) reconfirmed unchanged — effort ladders/defaults, adaptive-thinking
+defaults, the Sonnet 5 tokenizer/sampling-param constraints, computer/browser toolset versions, refusal
+categories, and the Claude Mythos Preview note all still match. No 404s or moved URLs. The Fable 5.1 page
+(#8) surfaced two genuinely new, high-leverage details:
+
+### Added
+- `models/fable.md`: the opt-in `thinking.block_binding.prefix_mismatch_behavior: "drop_block"` escape
+  hatch (beta, `thinking-binding-controls-2026-08-01`) that drops invalidated thinking blocks instead of
+  erroring, alongside the existing append-only-history guidance.
+- `models/opus.md`: Claude Code only auto-adds a subagent-delegation-damping instruction on Opus 5 when
+  using its `claude_code` system-prompt preset — call this out so a custom/omitted system prompt still gets
+  one.
+
+### Confirmed unchanged (no edit)
+- Preserved-thinking enforcement date (accounts created on/after 2026-08-31) — still not universal.
+- Turn-scoped/mid-conversation system message betas — same header dates
+  (`mid-conversation-system-clear-at-2026-08-21`, `thinking-display-updates-2026-08-18`).
+- No dedicated Haiku prompting page — reconfirmed 404 on `prompting-claude-haiku-4-5`.
+- Fable 5.1's refusal-fallback target is still not named on its own page (points at the untracked
+  "what's new" page) — `models/fable.md` keeps flagging rather than asserting it.
+
 ## session-handoff 0.1.0 — 2026-10-05
 
 ### Added

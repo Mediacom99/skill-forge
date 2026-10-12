@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-07
+last-verified: 2026-10-12
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.
@@ -46,9 +46,16 @@ eval prompts, or under --deep. The lean core is in techniques.md.
   results rather than once in the system prompt — see `models/fable.md`.)*
 - **Keep the history append-only.** Append each assistant turn exactly as returned, thinking blocks included.
   Rewriting `system`/`tools`, injecting-then-removing per-turn reminders, or summarizing older turns in place
-  breaks the prompt cache — and on Fable 5.1 invalidates every later thinking block (a 400 for newer
-  accounts). Put per-turn reminders in turn-scoped system messages and let server-side compaction / context
-  editing do the trimming.
+  breaks the prompt cache — and on Fable 5.1, Opus 5.5, Sonnet 5.5, and Haiku 5.5 invalidates every later
+  thinking block (a 400 for newer accounts). Put per-turn reminders in turn-scoped system messages and let
+  server-side compaction / context editing do the trimming.
+- **Never put user-authored text inside a `tool_result` block, and don't place harness reminders right after
+  one on every turn.** On Sonnet 5.5 and Haiku 5.5, text that lands immediately after a tool result — a
+  mid-task user message placed there, or a harness notice sent on every step (a token/budget countdown,
+  per-step instructions) — can be misread as injected content; the model may ignore it or ask the user to
+  confirm it isn't an attack. Deliver mid-turn user input as its own text block after the last `tool_result`
+  in the user turn, and keep harness notices in a separate, occasional mid-conversation system message rather
+  than a block shared with the user's words.
 - **Grounding rule:** "never speculate about content you have not opened/seen."
 
 ## Multi-context / long-horizon work
@@ -65,10 +72,16 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 ## Extended thinking (deep)
 - Adaptive thinking (where supported) lets the model decide when/how much to think, calibrated by an `effort`
   parameter + query complexity; it generally beats fixed extended thinking. *(VOLATILE: on/off-by-default is
-  model-specific and has flipped again — **Opus 5 and Sonnet 5 default to on** (disable via `thinking: {type:
-  "disabled"}`; on Opus 5 only at effort ≤ `high`); legacy Opus 4.8 / Sonnet 4.6 default to off; the Fable
-  family (5.1 / 5, Mythos 5.1 / 5) is adaptive-thinking-only and always on. Confirm the model's default in
-  its `models/*.md` file before assuming either way.)*
+  model- and generation-specific — **Sonnet 5** and **Haiku 5.5** default to on, disable via
+  `thinking: {type: "disabled"}` (Sonnet 5: any effort; Haiku 5.5: effort ≤ `high` only — 400 at `xhigh`/`max`,
+  and it's Haiku's *first* generation with `effort` at all); **Opus 5** (previous Opus generation) also
+  defaults to on, disable only at effort ≤ `high`; **Sonnet 5.5** (current Sonnet flagship) defaults to on
+  with no `disabled` mode at all — its lowest setting is the distinct `thinking: {type: "between_tools"}`,
+  accepted only at effort ≤ `high`; **Opus 5.5** (current Opus flagship) and the Fable family (5.1 / 5,
+  Mythos 5.1 / 5) are adaptive-thinking-only with **no disable option at all**, regardless of effort; legacy
+  Opus 4.8 / Sonnet 4.6 / Haiku 4.5 default to off (Haiku 4.5 via the now-deprecated `budget_tokens`, not
+  `effort`). Confirm the model's default and disable mechanism in its `models/*.md` file before assuming
+  either way — don't assume the previous and current generation of the same family agree.)*
 - **Overthinking control:** "choose an approach and commit; don't revisit unless new info contradicts it."
 - Only use heavy thinking when it will meaningfully improve the answer; when in doubt, respond directly.
 - *(VOLATILE: parameter names/levels — e.g. `effort: low|medium|high|xhigh|max`, adaptive thinking config —

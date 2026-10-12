@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-07
+last-verified: 2026-09-14
 sources: _sources.md #8 — prompting-claude-fable-5-1 (Fable 5.1 / Mythos 5.1 — the default target here)
          _sources.md #4 — prompting-claude-fable-5 (Fable 5 / Mythos 5 — the base this builds on)
 scope: Per-model tuning for the Fable family (frontier — long-horizon, agentic, ambiguity-tolerant).
@@ -82,8 +82,11 @@ Fable 5 prompts run well on Fable 5.1 unchanged. The deltas in **What changed in
 - **Keep the conversation history append-only.** Replay each assistant turn exactly as returned, thinking
   blocks included. Editing earlier turns — injecting/removing per-turn reminders, summarizing in place,
   rebuilding `system` or `tools` — invalidates every later thinking block (a 400 for accounts created on or
-  after **2026-08-31**, and expected to become universal). Send reminders as turn-scoped system messages,
-  change instructions via mid-conversation system messages, and let server-side compaction do the trimming.
+  after **2026-08-31**, and expected to become universal). As a stopgap while you fix the underlying edit,
+  opt into `thinking.block_binding.prefix_mismatch_behavior: "drop_block"` (beta,
+  `thinking-binding-controls-2026-08-01` header) to drop the affected blocks instead of erroring. Send
+  reminders as turn-scoped system messages, change instructions via mid-conversation system messages, and
+  let server-side compaction do the trimming.
   *(Harness constraint, not prompt text — but it decides whether a per-turn reminder is safe to write.)*
 - **Denser prose.** Longer sentences, fewer breaks. Name the anti-pattern: *"Please remove all mannered
   prose"* — or the long form defining mannered prose as metaphor and flourish substituted for direct
