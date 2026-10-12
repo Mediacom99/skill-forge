@@ -1,0 +1,7 @@
+{
+  "name": "session-handoff",
+  "description": "End a long session cleanly: handoff persists everything worth keeping into the project's own state files, then hands you a short, copy-ready prompt for the next session — so you can /clear and pick up exactly where you left off.",
+  "version": "0.1.0",
+  "author": { "name": "Mediacom99", "url": "https://github.com/Mediacom99" },
+  "homepage": "https://github.com/Mediacom99/skill-forge"
+}

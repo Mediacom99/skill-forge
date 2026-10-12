@@ -158,6 +158,17 @@ categories, and the Claude Mythos Preview note all still match. No 404s or moved
 - Fable 5.1's refusal-fallback target is still not named on its own page (points at the untracked
   "what's new" page) — `models/fable.md` keeps flagging rather than asserting it.
 
+## session-handoff 0.1.0 — 2026-10-05
+
+### Added
+- **New plugin `session-handoff` with the `handoff` skill** (`/handoff [next focus]`). For the
+  "the context is full, I'm restarting" moment: it updates the project's own state files (found
+  through `CLAUDE.md` / `AGENTS.md` rules first, the usual names second), persists what would die
+  with the session (scratchpad files, worktrees, unapplied changes, running processes), then writes
+  a 10–25 line resume prompt in the user's language that points to the files instead of copying
+  them, prints it in one code block and copies it to the clipboard. No questions, no subagents, no
+  re-exploring; no commit unless the project says so.
+
 ## repo — 2026-09-07
 
 ### Fixed

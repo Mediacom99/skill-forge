@@ -64,7 +64,9 @@ That's it — now invoke it:
 ```
 
 > Also available: `/plugin install mac-cleanup@skill-forge` — safely reclaim SSD space on an Apple
-> Silicon Mac (scans read-only, then removes only what you approve). Maintainers can install the
+> Silicon Mac (scans read-only, then removes only what you approve). `/plugin install
+> session-handoff@skill-forge` — `/handoff` saves a long session's state and hands you a resume
+> prompt, so you can `/clear` and carry on. Maintainers can install the
 > upkeep tooling: `/plugin install maintenance@skill-forge`
 
 <details>
@@ -86,6 +88,7 @@ The plugin-marketplace path above is recommended — it gives you discovery and 
 |-------|--------|--------------|
 | **claude-prompt-crafting** | `/claude-prompt-crafting` | Crafts or improves a production-grade prompt **for Claude** in Claude's idiom (XML structure, multishot, effort/budget), **tuned to the target model** (Opus 5 / Sonnet 5 / Haiku 4.5 / Fable 5 · Mythos 5) via `--model` or auto-detect; `--template` adds a reusable system+user split with variables. Grounded in Anthropic's official docs. |
 | **reclaim-disk-space** *(mac-cleanup)* | `/reclaim-disk-space` | Safely frees SSD space on an **Apple Silicon Mac**: scans **read-only** for reclaimable space (caches, build artifacts, dev/package caches, Xcode, Docker), presents a ranked report, then removes **only what you approve — batch by batch, Trash-first**. Built for **zero data-loss surprises**. |
+| **handoff** *(session-handoff)* | `/handoff` | Ends a long session cleanly before `/clear`: writes everything worth keeping into the **project's own state files** (progress, TODO, decisions, session log — following its `CLAUDE.md` / `AGENTS.md` rules), then gives you a **short, copy-ready prompt** for the next session, already on your clipboard. No questions, no re-exploring — built to be fast when the context is full. |
 | **refresh-references** *(maintenance)* | `/refresh-references` | Maintainer tool: re-fetches the official source docs behind a skill's references, diffs them, and proposes updates. |
 
 It also **refines existing prompts** — paste one and ask to improve it. By default it returns an improved, ready-to-use prompt; add **`--template`** for a reusable, parameterized version.
@@ -166,6 +169,8 @@ skill-forge/                         # this repo IS the marketplace
 │   │   └── skills/reclaim-disk-space/
 │   │       ├── SKILL.md             # two-phase safety spine (scan → per-batch approval)
 │   │       └── references/          # scan-catalog + report-format + reclaim-commands
+│   ├── session-handoff/             # the handoff skill
+│   │   └── skills/handoff/SKILL.md  # persist state → resume prompt → /clear
 │   └── maintenance/                 # refresh-references (upkeep)
 ├── .github/
 │   ├── workflows/{validate,check-sources,notify-pr}.yml
