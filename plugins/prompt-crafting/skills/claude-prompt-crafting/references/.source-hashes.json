@@ -1,9 +1,9 @@
 {
   "_comment": "Content snapshots for the check-sources.yml drift detector. Only the page's article body is hashed (see check_sources.py). hash=null means not yet captured; the workflow populates and commits real hashes on first run, then compares on each scheduled run. Null every value when normalize() changes, so the next run re-baselines instead of reporting drift on all of them.",
-  "last_updated": "2026-10-12",
+  "last_updated": "2026-10-19",
   "sources": {
     "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "e3d3de107f583e3b879dfb8245e2b08f62e06176c38dadf4aae271ce4cbe0b8a",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "38dfa2e979d72f8155f558937325836f16b7e8b800b47d003e23e51835cd7a14",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "fd115bf14c17b22c169d0f23742d5a12449dbfcd4e4b6a766fa349c11e80b439",
     "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "b6941066722a4b05dd0f4f0170be0a64635b2eb670d1c040e8f2f740d39ee579",
     "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "91b463da2c8379e266708760bb7b713185a002b527345d29283bbc40a36d72f8",
     "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5": "6ce9cf8fd6a3611bb4c162f0b308ef1e198019e04a338d1dfdd0f7b3578b9738",
