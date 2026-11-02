@@ -1,6 +1,6 @@
 # Sources — claude-prompt-crafting references
 
-**last-verified: 2026-10-12** · vendor: Anthropic · official docs only.
+**last-verified: 2026-11-02** · vendor: Anthropic · official docs only.
 
 The `refresh-references` skill and the `check-sources.yml` workflow read the URL list below.
 When updating, re-fetch each URL, reconcile `techniques.md` / `techniques-advanced.md`, then bump
@@ -86,12 +86,17 @@ file also carries its own `last-verified` header.
   (biology, cybersecurity, `reasoning_extraction`); **Sonnet 5.5 names 5** (`cyber`, `bio`, `frontier_llm`,
   `reasoning_extraction`, `general_harms`); **Haiku 5.5 names 4** (`cyber`, `frontier_llm`, `bio`,
   `general_harms` — **no** `reasoning_extraction`). `frontier_llm` (declining requests that could assist a
-  competing model's development) is new to this cycle and appears only on the Sonnet 5.5 / Haiku 5.5 pages as
-  fetched — recheck whether Opus 5.5 and the Fable family gain it too, or whether Opus 5's own page gains any
-  of Opus 5.5's categories. **Server-side fallback scope also diverges by model**: Opus 5.5 retries every
-  category except `reasoning_extraction`; **Sonnet 5.5 retries only `cyber` and `frontier_llm`** (not `bio`,
-  `reasoning_extraction`, or `general_harms`); **Haiku 5.5 has no server-side fallback at all**. Don't assume
-  parity across families — recheck each model's own page every cycle.
+  competing model's development) still appears only on the Sonnet 5.5 / Haiku 5.5 pages as fetched — recheck
+  whether Opus 5.5 and the Fable family gain it too. **Resolved this cycle (2026-11-02):** the dedicated
+  **Opus 5** page (previous generation, #3) now carries its own "Reasoning in the response" section naming
+  `reasoning_extraction` — so that category is *not* new to Opus 5.5 after all, only **biology** is;
+  `models/opus.md` corrected (it previously asserted the Opus 5 page named neither). Re-fetch the best-practices
+  page's own cross-model note (its "rely on thinking instead" list already names Opus 5 alongside Opus 5.5,
+  Fable 5.1, Fable 5, and Sonnet 5.5 for this) if the model list there changes again. **Server-side fallback
+  scope also diverges by model**: Opus 5.5 retries every category except `reasoning_extraction`; **Sonnet 5.5
+  retries only `cyber` and `frontier_llm`** (not `bio`, `reasoning_extraction`, or `general_harms`); **Haiku
+  5.5 has no server-side fallback at all**. Don't assume parity across families — recheck each model's own page
+  every cycle.
 - **Mid-turn user messages can be misread as prompt injection (Sonnet 5.5, Haiku 5.5 — new this cycle)** — both
   pages describe the same failure: a genuine user message arriving right after a `tool_result` (inside the
   block, or as a mid-conversation system message placed directly after one) can be treated as untrusted
@@ -102,17 +107,19 @@ file also carries its own `last-verified` header.
 - **Refusal categories & fallback (Fable family)** — `reasoning_extraction` (don't ask the model to
   reproduce its reasoning as text), offensive-cyber, bio/life-sciences. **The Opus 4.8 fallback target is
   stated on #4 (Fable 5) only**; #8 defers to the untracked `whats-new-fable-5-1` page and names no model, so
-  `models/fable.md` flags it rather than asserting it for 5.1 — reconfirmed still unresolved on 2026-10-12
+  `models/fable.md` flags it rather than asserting it for 5.1 — reconfirmed still unresolved on 2026-11-02
   (and reconsider tracking that page; the Fable family's 3-category taxonomy also hasn't picked up
   `frontier_llm`/`general_harms` the way Sonnet 5.5/Haiku 5.5 have — recheck next cycle). On **Fable 5.1**
   false positives are down and source-code vulnerability finding is permitted; the three triggers
   (compile-check phrasing, lesser-known languages, base64 in tool output) persisted unchanged this cycle
-  (2026-10-12).
+  (2026-11-02).
 - **Preserved thinking / append-only history** — editing earlier turns invalidates later thinking blocks: a
   400 for accounts created on or after **2026-08-31** (unchanged this cycle), still not universal as of
-  2026-10-12. The best-practices page (#2) now names the affected set explicitly in its migration section:
-  **Claude Fable 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5** — confirmed *not* Opus 5 or
-  Sonnet 5 (the previous generations). The opt-in `thinking.block_binding.prefix_mismatch_behavior:
+  2026-11-02. The best-practices page's (#2) migration section now frames the affected set as a version
+  threshold — **"Claude 5.1 and later models"** — rather than the enumerated list used last cycle (Fable 5.1,
+  Opus 5.5, Sonnet 5.5, Haiku 5.5); same four models either way, confirmed *not* Opus 5 or Sonnet 5 (the
+  previous generations, both "5.0"). Re-fetched 2026-11-02, no further change. The opt-in
+  `thinking.block_binding.prefix_mismatch_behavior:
   "drop_block"` (beta, `thinking-binding-controls-2026-08-01`) escape hatch is unchanged and documented in
   `models/fable.md` and `models/opus.md`. Recheck the enforcement date and whether it has gone universal, and
   whether it extends to Sonnet 5.5 / Haiku 5.5's own pages explicitly (neither page states it in those terms

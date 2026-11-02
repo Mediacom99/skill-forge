@@ -5,6 +5,51 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.5 — 2026-11-02
+
+Reconcile cycle triggered by drift issue #13 (`claude-prompting-best-practices`, `prompting-claude-fable-5`,
+`prompting-claude-fable-5-1` flagged changed). Re-fetched all three, plus `prompting-claude-opus-5` after the
+best-practices page's own cross-model note on CoT prompting surfaced a discrepancy worth checking against its
+dedicated page.
+
+### Fixed
+- **`models/opus.md`'s "If target is Claude Opus 5" delta section was wrong about refusal categories.** It
+  stated the Opus 5 page named neither a biology nor a reasoning-extraction safeguard, both "new on Opus 5.5."
+  The live Opus 5 page now carries its own **"Reasoning in the response"** section documenting the
+  `reasoning_extraction` refusal category — confirmed independently by the best-practices page's cross-model
+  CoT note, which lists Claude Opus 5 alongside Opus 5.5, Fable 5.1, Fable 5, and Sonnet 5.5 as models where
+  asking for reasoning as response text "may be declined." Only **biology** is actually new to Opus 5.5;
+  `reasoning_extraction` is shared with Opus 5. Corrected the Opus 5.5 "Safeguard refusals" section header
+  (now "one category new since Opus 5") and body, and the Opus 5 delta bullet, to match.
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-11-02. Reworded the preserved-thinking volatile note — the
+  best-practices page's migration section now frames the affected set as a version threshold ("Claude 5.1 and
+  later models") rather than the enumerated list used last cycle; same four models either way (Fable 5.1,
+  Opus 5.5, Sonnet 5.5, Haiku 5.5), still confirmed not Opus 5 or Sonnet 5. Reworded the refusal-taxonomy
+  volatile note to record the Opus 5 finding above, and refreshed this cycle's reconfirmation dates on the
+  Fable 5.1 false-positive triggers and the still-unresolved Fable 5.1 refusal-fallback target.
+
+### Confirmed unchanged (no edit)
+- `claude-prompting-best-practices`, `prompting-claude-fable-5`, and `prompting-claude-fable-5-1` (the three
+  sources issue #13 flagged) reconciled against the live docs: no 404s or moved URLs, and the model-specific
+  guidance table, prefill-removal wording, adaptive-thinking defaults, and Fable 5 / Fable 5.1 scaffolding and
+  safeguard content all still match `techniques.md`, `techniques-advanced.md`, and `models/fable.md` — the one
+  real defect found this cycle (above) traced to our own distillation lagging an already-live Opus 5 page, not
+  to a change on any of the three flagged pages. Fable 5.1's refusal-fallback target is still not named on its
+  own page (still defers to the untracked "what's new" page, unresolved for four cycles now).
+- `examples.md` checked against its backing material and found current; left untouched.
+
+### Flagged for a human
+- **Issue #13 can be closed once this PR merges** — all three pages it named reconfirmed current; the only
+  substantive change shipped here is a correction to our own `models/opus.md`, not a reaction to source drift.
+- **`plugin.json` / `SKILL.md` are still at 0.7.0** while this changelog has moved through 0.7.1–0.7.4 and now
+  0.7.5 — flagged in the 0.7.4 entry and still unresolved. A maintainer should bump both to keep
+  `validate.py`'s version-parity check meaningful.
+- **`.source-hashes.json` still needs `prompting-claude-opus-5-5`, `prompting-claude-sonnet-5-5`, and
+  `prompting-claude-haiku-5-5` added** (seeded `null`) — flagged again since the 0.7.3 cycle, still unresolved.
+  Out of scope for this refresh (owned exclusively by the `check-sources` Action).
+
 ## prompt-crafting 0.7.4 — 2026-10-12
 
 Reconcile cycle triggered by drift issue #12 (two check-sources runs, 2026-09-28 and 2026-10-05, flagged

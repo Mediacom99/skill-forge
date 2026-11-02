@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-28
+last-verified: 2026-11-02
 sources: _sources.md #9 — prompting-claude-opus-5-5 (dedicated Opus 5.5 page, current Opus flagship)
          _sources.md #3 — prompting-claude-opus-5 (previous Opus generation; deltas in a dedicated section)
          _sources.md #7 — prompting-claude-opus-4-8 (legacy; deltas in a dedicated section)
@@ -47,14 +47,15 @@ Opus 5.5 has no disabled-thinking mode, so a former `thinking: {type: "disabled"
 - **Read responses by block type**, not by assuming text comes first — a reply may open with a `thinking`
   block (empty under the default `display: "omitted"`).
 
-## Safeguard refusals — two categories new since Opus 5
+## Safeguard refusals — one category new since Opus 5
 Runs safety classifiers for **biology** (new — same classifier as Fable 5.1's; everyday health/education
 questions are unaffected; apply to the Life Sciences Verification Program if it blocks legitimate work),
 **cybersecurity** (finding vulnerabilities in source code is allowed; high-risk dual-use activity is not —
-unchanged from Opus 5), and **reasoning extraction** (new — declines a request that pushes the model to
-reproduce its internal reasoning in the response text; fix as above). A decline returns
-`stop_reason: "refusal"` with a `stop_details` category. Server-side fallback retries on a fallback model for
-every category **except** `reasoning_extraction`, which is returned to you instead of retried.
+unchanged from Opus 5), and **reasoning extraction** (declines a request that pushes the model to reproduce
+its internal reasoning in the response text; fix as above — the Opus 5 page now documents this category too,
+see below, so it is not new to 5.5). A decline returns `stop_reason: "refusal"` with a `stop_details` category.
+Server-side fallback retries on a fallback model for every category **except** `reasoning_extraction`, which
+is returned to you instead of retried.
 
 ## Unattended agentic runs — text-only turn-ends before the task is done
 On long multi-part tasks, some progress updates end the turn as text with no tool call
@@ -146,8 +147,10 @@ verbosity / over-verification / self-correction. What differs targeting Opus 5 s
   scaffolding (no quality gain, wastes tokens); constrain scope explicitly for narrow work (*"deliver what
   was asked, at the scope intended; make routine judgment calls yourself; say so in a sentence rather than
   quietly widening the task."*).
-- **Refusal categories:** the Opus 5 page names no biology or reasoning-extraction safeguards — those are new
-  on Opus 5.5 (see above); don't assume they apply when targeting Opus 5 itself.
+- **Refusal categories:** the Opus 5 page documents its own **"Reasoning in the response"** section — writing
+  out reasoning/thinking verbatim, in a fixed format, can be declined under `reasoning_extraction`; ask for a
+  short explanation or summary instead and read `display: "summarized"` thinking if you need it. **Biology**
+  is still new to Opus 5.5 only — the Opus 5 page names no biology safeguard.
 - **Subagents:** delegates readily; cap with explicit guidance plus deterministic caps
   (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`, `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, `max_budget_usd`, Claude
   Code 2.1.217+). Claude Code only auto-adds its own damping instruction under the `claude_code`
