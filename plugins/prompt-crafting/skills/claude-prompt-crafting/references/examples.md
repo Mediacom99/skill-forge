@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-07
+last-verified: 2026-11-09
 scope: Worked before/after examples for the Claude craft step. Illustrative, not exhaustive.
 -->
 
@@ -131,6 +131,6 @@ outcome-led** instead of enumerating every behavior; it **gives the reason**, **
 `models/fable.md`: the **last-paragraph check** (it can end a turn on a plan), the **follow-up rule** (it
 extends scope on open-ended work), and the **stand-alone recap** (5.1 narrates *less* than Fable 5 — for
 Fable 5 you'd instead add a brevity line to hold its over-elaboration down). Crucially it **never asks the
-agent to echo or explain its reasoning** (that risks the `reasoning_extraction` refusal and an Opus 4.8
-fallback); effort is `high`. Tuned for Haiku instead, the same spec would get a tighter, example-led
+agent to echo or explain its reasoning** (that risks the `reasoning_extraction` refusal, which falls back to
+Opus 4.8 or Opus 5); effort is `high`. Tuned for Haiku instead, the same spec would get a tighter, example-led
 classification prompt; for Opus, explicit scope statements.

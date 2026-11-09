@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-09-14
+last-verified: 2026-11-09
 sources: _sources.md #8 — prompting-claude-fable-5-1 (Fable 5.1 / Mythos 5.1 — the default target here)
          _sources.md #4 — prompting-claude-fable-5 (Fable 5 / Mythos 5 — the base this builds on)
 scope: Per-model tuning for the Fable family (frontier — long-horizon, agentic, ambiguity-tolerant).
@@ -57,9 +57,11 @@ Fable 5 prompts run well on Fable 5.1 unchanged. The deltas in **What changed in
 ## Safety & fallback (API)
 - Runs safety classifiers targeting **offensive cybersecurity**, **biology/life-sciences**, and
   **reasoning-extraction**; declined requests return `stop_reason: "refusal"`. Configure **server- or
-  client-side fallback** to auto-reroute. *(The **Opus 4.8** target is what the Fable 5 page states; the 5.1
-  page points at its untracked "what's new" page for refusals/fallback instead of naming a model — confirm
-  the target before hard-coding it for 5.1.)*
+  client-side fallback** to auto-reroute. **Fable 5 falls back to Opus 4.8** (its own page's stated target).
+  **Fable 5.1's permitted fallback targets are Opus 4.8 and Opus 5** — `fallbacks: "default"` (beta) picks
+  whichever Anthropic recommends per category. *(Resolved 2026-11-09, unconfirmed for four prior cycles: the
+  5.1 prompting page (#8) still doesn't name a model itself, but its linked "What's new in Claude Fable 5.1"
+  page states the permitted targets explicitly — see `_sources.md`.)*
 - 5.1 produces **fewer false positives** than Fable 5 did at launch, and **finding vulnerabilities in source
   code is permitted**. Three things still raise the odds: **compile-check phrasing** (ask *"are there any bugs
   in this program?"*, not *"does this compile without errors?"*), **lesser-known languages** (give the model

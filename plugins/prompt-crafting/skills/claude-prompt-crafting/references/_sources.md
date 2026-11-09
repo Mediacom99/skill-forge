@@ -1,6 +1,6 @@
 # Sources — claude-prompt-crafting references
 
-**last-verified: 2026-11-02** · vendor: Anthropic · official docs only.
+**last-verified: 2026-11-09** · vendor: Anthropic · official docs only.
 
 The `refresh-references` skill and the `check-sources.yml` workflow read the URL list below.
 When updating, re-fetch each URL, reconcile `techniques.md` / `techniques-advanced.md`, then bump
@@ -19,6 +19,7 @@ the `last-verified` dates here and in those files.
 | 9 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5 | **Opus 5.5** (current Opus flagship; added 2026-09-28): effort default drops to `medium`, thinking cannot be disabled at all, migrating a thinking-disabled Opus 5 integration, two new safeguard-refusal categories (biology, reasoning-extraction), unattended-run text-only turn-ends, progress-update mechanics, multi-app exploration, multiagent time budgets, chat thinking instructions, pasted-text marking, vision tooling, frontend defaults |
 | 10 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5 | **Sonnet 5.5** (current Sonnet flagship; added 2026-10-12): recalibrated effort (workload-dependent starting point), the new `between_tools` lowest-thinking setting, initiative/scope steering, JSON output on reasoning tasks, progress updates, tool use in chat, mid-turn-user-message injection misread, coding verification, tolerant tool-call handling, vision tooling, 5-category safeguard refusals (`cyber`/`bio`/`frontier_llm`/`reasoning_extraction`/`general_harms`) with partial fallback |
 | 11 | https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5 | **Haiku 5.5** (current Haiku flagship; added 2026-10-12) — **first-ever dedicated Haiku prompting page**: first Haiku model with `effort` levels (replaces `budget_tokens`), search grounding with today's date, JSON output with custom tools, early-stopping prevention, coding verification, mid-turn-user-message injection misread, chatbot system-prompt adherence, 4-category safeguard refusals (`cyber`/`frontier_llm`/`bio`/`general_harms`, no `reasoning_extraction`), no server-side fallback |
+| 12 | https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1 | **Untracked, cited only to resolve a specific fact** (not added to `.source-hashes.json` — out of scope, owned by the check-sources Action): its "Refusals, fallback, and billing" section states "The permitted fallback targets for Claude Fable 5.1 are Claude Opus 4.8 and Claude Opus 5" — resolves the fallback-target ambiguity flagged in `models/fable.md` for four prior cycles (the dedicated 5.1 prompting page, #8, links here instead of naming a model itself) |
 
 ## Reference files → sources
 Which source backs which reference file (reconcile the file when its backing source drifts). Each per-model
@@ -28,7 +29,7 @@ file also carries its own `last-verified` header.
 |----------------|-----------|
 | `techniques.md` · `techniques-advanced.md` | #1, #2 (template variables now covered by #2; former #5 retired) |
 | `models/opus.md` (Opus 5.5 + Opus 5 deltas + legacy Opus 4.8 notes) | **#9** primary (current flagship) + **#3** (Opus 5, previous generation) + **#7** (legacy Opus 4.8) |
-| `models/fable.md` (Fable 5.1 / Mythos 5.1 + Fable 5 / Mythos 5 deltas) | **#8** primary (current frontier) + **#4** for the Fable 5 base and its deltas |
+| `models/fable.md` (Fable 5.1 / Mythos 5.1 + Fable 5 / Mythos 5 deltas) | **#8** primary (current frontier) + **#4** for the Fable 5 base and its deltas + **#12** (untracked, cited only for the 5.1 fallback-target fact) |
 | `models/sonnet.md` (Sonnet 5.5 + Sonnet 5 deltas) | **#10** primary (current flagship) + **#6** (Sonnet 5, previous generation) |
 | `models/haiku.md` (Haiku 5.5 + legacy Haiku 4.5 notes) | **#11** primary (current flagship, first dedicated Haiku page) + **#2** for the legacy Haiku 4.5 section (no dedicated 4.5 page ever shipped) |
 
@@ -105,17 +106,19 @@ file also carries its own `last-verified` header.
   mid-conversation system message. Recheck whether Opus 5.5 / Fable 5.1 share this behavior — their pages as
   fetched this cycle don't mention it either way.
 - **Refusal categories & fallback (Fable family)** — `reasoning_extraction` (don't ask the model to
-  reproduce its reasoning as text), offensive-cyber, bio/life-sciences. **The Opus 4.8 fallback target is
-  stated on #4 (Fable 5) only**; #8 defers to the untracked `whats-new-fable-5-1` page and names no model, so
-  `models/fable.md` flags it rather than asserting it for 5.1 — reconfirmed still unresolved on 2026-11-02
-  (and reconsider tracking that page; the Fable family's 3-category taxonomy also hasn't picked up
-  `frontier_llm`/`general_harms` the way Sonnet 5.5/Haiku 5.5 have — recheck next cycle). On **Fable 5.1**
-  false positives are down and source-code vulnerability finding is permitted; the three triggers
-  (compile-check phrasing, lesser-known languages, base64 in tool output) persisted unchanged this cycle
-  (2026-11-02).
+  reproduce its reasoning as text), offensive-cyber, bio/life-sciences. **Fallback target resolved this
+  cycle (2026-11-09), after sitting unconfirmed for four prior cycles:** #4 (Fable 5) states its own
+  fallback target as Opus 4.8; #8 (Fable 5.1) still doesn't name a model on the prompting page itself, but
+  its linked "What's new in Claude Fable 5.1" page (#12, untracked — cited only for this fact) states
+  **"The permitted fallback targets for Claude Fable 5.1 are Claude Opus 4.8 and Claude Opus 5."**
+  `models/fable.md` and `examples.md` updated to match. The Fable family's 3-category taxonomy still hasn't
+  picked up `frontier_llm`/`general_harms` the way Sonnet 5.5/Haiku 5.5 have — recheck next cycle. On
+  **Fable 5.1** false positives are down and source-code vulnerability finding is permitted; the three
+  triggers (compile-check phrasing, lesser-known languages, base64 in tool output) persisted unchanged this
+  cycle (2026-11-09).
 - **Preserved thinking / append-only history** — editing earlier turns invalidates later thinking blocks: a
   400 for accounts created on or after **2026-08-31** (unchanged this cycle), still not universal as of
-  2026-11-02. The best-practices page's (#2) migration section now frames the affected set as a version
+  2026-11-09. The best-practices page's (#2) migration section now frames the affected set as a version
   threshold — **"Claude 5.1 and later models"** — rather than the enumerated list used last cycle (Fable 5.1,
   Opus 5.5, Sonnet 5.5, Haiku 5.5); same four models either way, confirmed *not* Opus 5 or Sonnet 5 (the
   previous generations, both "5.0"). Re-fetched 2026-11-02, no further change. The opt-in
@@ -123,7 +126,12 @@ file also carries its own `last-verified` header.
   "drop_block"` (beta, `thinking-binding-controls-2026-08-01`) escape hatch is unchanged and documented in
   `models/fable.md` and `models/opus.md`. Recheck the enforcement date and whether it has gone universal, and
   whether it extends to Sonnet 5.5 / Haiku 5.5's own pages explicitly (neither page states it in those terms
-  as fetched this cycle — only the central migration note does).
+  as fetched this cycle — only the central migration note does). Re-fetched 2026-11-09 (best-practices
+  migration note, the dedicated `preserved-thinking` enforcement table, and the Fable 5.1 page): the
+  2026-08-31 cutoff, the "Claude 5.1 and later models" framing, and the `drop_block` escape hatch are all
+  still unchanged. One previously untracked nuance: the enforcement table gives **Claude Mythos 5.1** a 400
+  regardless of account-creation date (unlike the other four 5.1-era models) — not folded into our docs, as
+  it's Mythos-specific and below this library's bar for per-model nuance.
 - **Turn-scoped and mid-conversation system messages** — the `clear_at: "next_user_message"` and
   `thinking.display: "updates"` mechanics are in **beta** (headers `mid-conversation-system-clear-at-2026-08-21`,
   `thinking-display-updates-2026-08-18`), unchanged this cycle and now confirmed used identically on Opus 5.5

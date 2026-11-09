@@ -5,6 +5,63 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.6 — 2026-11-09
+
+Reconcile cycle triggered by drift issue #15 (seven of the eleven tracked sources flagged changed by
+`check-sources`: `overview`, `claude-prompting-best-practices`, `prompting-claude-opus-4-8`,
+`prompting-claude-fable-5`, `prompting-claude-sonnet-5`, `prompting-claude-opus-5`,
+`prompting-claude-fable-5-1`). Re-fetched all seven, plus the four not yet hash-tracked
+(`prompting-claude-opus-5-5`, `prompting-claude-sonnet-5-5`, `prompting-claude-haiku-5-5`, and the dedicated
+`preserved-thinking` page) to cross-check the volatile items that reference them.
+
+### Fixed
+- **`models/fable.md`'s Fable 5.1 refusal-fallback target had been flagged "unconfirmed" for four
+  consecutive cycles.** The dedicated Fable 5.1 prompting page (#8) still doesn't name a fallback model
+  itself, but its linked "What's new in Claude Fable 5.1" page states it plainly: *"The permitted fallback
+  targets for Claude Fable 5.1 are Claude Opus 4.8 and Claude Opus 5."* Updated `models/fable.md`'s
+  "Safety & fallback" section and `examples.md`'s Example C (which had been asserting a bare "Opus 4.8
+  fallback" for Fable 5.1 without that page ever actually confirming it) to name both permitted targets.
+  Added that "What's new" page to `_sources.md` as source #12, explicitly untracked (cited only for this one
+  fact, not added to `.source-hashes.json` — out of scope, owned by the `check-sources` Action).
+
+### Confirmed unchanged (no edit)
+- All seven sources issue #15 flagged reconciled against the live docs: no 404s or moved URLs. The
+  model-specific guidance table, the prefill-removal wording ("Claude 4.6 models and Claude Mythos
+  Preview"), the "rely on thinking instead" cross-model list (Fable 5.1, Fable 5, Opus 5.5, Opus 5, Sonnet
+  5.5), the Opus 5 page's "Reasoning in the response" section (confirmed present, matching the 0.7.5 fix),
+  the Opus 4.8 design house-style and computer/browser toolset version strings, the Sonnet 5 effort
+  ladder/tokenizer/sampling-param constraints, and the Fable 5 / Fable 5.1 effort, narration, and
+  safety-classifier content (aside from the fallback-target fix above) all still match
+  `techniques.md`/`techniques-advanced.md`/the relevant `models/*.md` file. The hash drift on these seven
+  traces to prose/ordering changes in the article bodies, not to any volatile fact tracked here.
+- Also re-verified (not hash-tracked yet): `prompting-claude-opus-5-5`, `prompting-claude-sonnet-5-5`, and
+  `prompting-claude-haiku-5-5` — the safeguard-refusal taxonomies (3/5/4 categories respectively), the
+  server-side fallback scope per model, and the effort/thinking defaults all still match
+  `models/opus.md`/`models/sonnet.md`/`models/haiku.md`. The dedicated `preserved-thinking` page's
+  enforcement table confirms the 2026-08-31 account-creation cutoff and the "Claude 5.1 and later models"
+  framing are unchanged; it also documents a Claude-Mythos-5.1-specific exception (400 regardless of account
+  age) not folded into our docs as below this library's bar for per-model nuance.
+- `techniques.md`, `techniques-advanced.md`, `models/opus.md`, `models/sonnet.md`, `models/haiku.md` checked
+  against their backing sources and found current; left untouched (their `last-verified` headers are
+  unchanged).
+
+### Changed
+- `_sources.md`: bumped `last-verified` to 2026-11-09. Added source #12 (untracked). Reworded the
+  Fable-family refusal/fallback volatile note to record the resolution above, and the preserved-thinking
+  note to record this cycle's re-verification and the new Mythos 5.1 nuance.
+
+### Flagged for a human
+- **Issue #15 can be closed once this PR merges** — all seven pages it named reconfirmed current; the only
+  substantive change shipped here is the long-standing Fable 5.1 fallback-target fix, not a reaction to new
+  drift on any of the seven.
+- **`plugin.json` / `SKILL.md` are still at 0.7.0** while this changelog has moved through 0.7.1–0.7.6 —
+  flagged every cycle since 0.7.4 and still unresolved.
+- **`.source-hashes.json` still needs `prompting-claude-opus-5-5`, `prompting-claude-sonnet-5-5`, and
+  `prompting-claude-haiku-5-5` added** (seeded `null`) — flagged again since the 0.7.3 cycle, still
+  unresolved. Out of scope for this refresh (owned exclusively by the `check-sources` Action). The new
+  source #12 added to `_sources.md` this cycle is deliberately **not** meant for hash-tracking — it's cited
+  for one fact, not distilled as a reference file's primary source.
+
 ## prompt-crafting 0.7.5 — 2026-11-02
 
 Reconcile cycle triggered by drift issue #13 (`claude-prompting-best-practices`, `prompting-claude-fable-5`,
