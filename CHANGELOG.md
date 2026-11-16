@@ -5,6 +5,68 @@ All notable changes to skill-forge are documented here. Format follows
 
 ## [Unreleased]
 
+## prompt-crafting 0.7.7 — 2026-11-16
+
+Scheduled reconcile cycle. No new drift issue was open against the eleven hash-tracked sources — this cycle
+re-fetched every tracked source (and the previously-untracked Opus 5.5 / Sonnet 5.5 / Haiku 5.5 pages) by
+hand rather than reacting to a flagged diff, per the reference-freshness bot's standing instructions.
+
+### Changed
+- **Anthropic shipped Claude Fable 5.2 / Mythos 5.2, the new current Fable flagship — Claude Fable 5.1 /
+  Mythos 5.1 is now a legacy model.** This was not caught by `check-sources` hash-diffing, because
+  `prompting-claude-fable-5-2` had no hash entry to drift against; it surfaced from the Fable 5.1
+  model-overview page's own "Claude Fable 5.1 is a legacy model, and Claude Fable 5.2 is the current Fable
+  model" notice, followed up against the dedicated `prompting-claude-fable-5-2` page, `whats-new-fable-5-2`,
+  and the now-updated `claude-prompting-best-practices` model-guidance table.
+- **`models/fable.md`** rewritten with Fable 5.2 as the primary target (previously Fable 5.1). Carried
+  forward everything still true of the family (brief outcome-led instructions, give-the-reason, state
+  boundaries, memory system, agentic scaffolding) and added the Fable-5.2-specific guidance: effort
+  calibration (re-sweep, don't port a 5.1 value), finishing the whole task (ordinary obstacles vs.
+  deliberate blockers), approvals specificity, **"say who owns the code"** (a new high-leverage technique —
+  an ownership sentence raised duplicate-code consolidation from <10% to ~75% of runs in Anthropic's
+  testing, at a real token-count and unrequested-scope cost), keeping users informed during long turns (three
+  levers), setting expectations for subagents, keeping caution from piling up across sessions, a migration
+  checklist for prompts/harnesses built for earlier models, and "make reports easy to follow" for low-context
+  readers. The safeguard-refusal taxonomy widened from Fable 5.1's three categories to five plus `null`,
+  matching Sonnet 5.5's taxonomy; the fallback targets (Claude Opus 4.8 and Claude Opus 5) are unchanged from
+  5.1. Former Fable-5.1-specific items (narrates less, one-tool-call-per-turn batching, dense prose,
+  under-formatting, unmarked quoting, low-effort search triggering, whole-file rewrites, long-output
+  double-drafting) moved into a new "If the target is Claude Fable 5.1 / Mythos 5.1 (legacy, previous
+  generation)" section — flagged that the one-tool-call-per-turn issue is not mentioned on the 5.2 page and
+  is likely resolved, pending re-test. The Fable 5 section and migration note were kept, lightly updated.
+- **`examples.md`**: Example C re-targeted from Fable 5.1 to Fable 5.2 — the crafted prompt now uses the
+  ownership sentence and the obstacles-vs-blockers finishing language instead of 5.1's "check your last
+  paragraph for a promise" line, and closes with the plain-language reporting instruction. The "Why" section
+  explains the swap.
+- **`techniques.md` / `techniques-advanced.md`**: added Fable 5.2 / Mythos 5.2 everywhere Fable 5.1 was
+  listed as part of a cross-model group (prefill removal, adaptive-thinking-only models, append-only-history
+  models, the per-model-tuning pointer to `models/fable.md`); noted that the Fable-5.1-specific turn-scoped
+  tool-call-batching workaround is not repeated on Fable 5.2's page.
+- **`_sources.md`**: bumped `last-verified` to 2026-11-16; added source #13 (`prompting-claude-fable-5-2`,
+  tracked) and #14 (`whats-new-fable-5-2`, untracked, cited only for the fallback-target and breaking-change
+  facts); marked #8 (`prompting-claude-fable-5-1`) legacy; updated the reference-files-to-sources table, the
+  per-model-pages and effort/thinking volatile items, and the refusal-taxonomy volatile item for the new
+  Fable 5.2 facts; added a note that hash-diffing is structurally unable to discover a brand-new page like
+  Fable 5.2 — only a source-by-source fetch catches that, which is what this cycle did.
+
+### Confirmed unchanged (no edit)
+- `overview`, `claude-prompting-best-practices` (aside from the Fable 5.2 additions above),
+  `prompting-claude-opus-5-5`, `prompting-claude-sonnet-5-5`, and `prompting-claude-haiku-5-5` — all
+  re-fetched and reconfirmed current: no new "5.6" generation for Opus, Sonnet, or Haiku; effort defaults,
+  thinking-disable rules, and safeguard-refusal taxonomies for all three all match `models/opus.md`,
+  `models/sonnet.md`, and `models/haiku.md` as they stand. Fable is the only family that moved this cycle.
+
+### Flagged for a human
+- **`.source-hashes.json` still needs four URLs added** (seeded `null`): `prompting-claude-fable-5-2` (new
+  this cycle), `prompting-claude-opus-5-5`, `prompting-claude-sonnet-5-5`, and `prompting-claude-haiku-5-5`
+  (flagged every cycle since 0.7.3/0.7.4, still unresolved) — out of scope for this refresh, owned
+  exclusively by the `check-sources` Action.
+- **`plugin.json` / `SKILL.md` are still at `0.7.0`** while this changelog has moved through 0.7.1–0.7.7 —
+  flagged every cycle since 0.7.4, still unresolved. A maintainer should bump both for `validate.py`'s
+  version-parity check.
+- Nothing ambiguous turned up in the Fable 5.2 facts used here — the fallback targets, refusal categories,
+  and breaking API changes are all stated plainly on the fetched pages, not inferred.
+
 ## prompt-crafting 0.7.6 — 2026-11-09
 
 Reconcile cycle triggered by drift issue #15 (seven of the eleven tracked sources flagged changed by

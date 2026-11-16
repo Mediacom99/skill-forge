@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-11-09
+last-verified: 2026-11-16
 scope: Worked before/after examples for the Claude craft step. Illustrative, not exhaustive.
 -->
 
@@ -87,24 +87,24 @@ gave structure and length; isolated the variable brief. Kept the user's intent, 
 
 ---
 
-## Example C — per-model tuning (an agentic prompt tuned for Fable 5.1)
+## Example C — per-model tuning (an agentic prompt tuned for Fable 5.2)
 
-Shows how the craft changes once the **target model** is pinned — here Fable 5.1 / Mythos 5.1 (load
-`models/fable.md`).
+Shows how the craft changes once the **target model** is pinned — here Fable 5.2 / Mythos 5.2, the current
+Fable flagship (load `models/fable.md`).
 
 **User's rough idea:** "A system prompt for an autonomous agent that triages our failing CI tests overnight
 and fixes the flaky ones."
 
 **Spec after alignment (compact):** Goal: overnight autonomous agent that triages failing CI tests and fixes
-flaky ones. Output: fixes as commits + a morning summary. Target: **Fable 5.1** via API, agentic/long-horizon,
+flaky ones. Output: fixes as commits + a morning summary. Target: **Fable 5.2** via API, agentic/long-horizon,
 `high` effort. Success: real flaky tests fixed, no false "done" claims. Failure modes: fabricated progress,
-unrequested refactors, asking permission mid-run when no one's watching, ending the turn on a plan.
+unrequested refactors, asking permission mid-run when no one's watching, stopping before the work is done.
 
-**Crafted prompt (Fable 5.1 idiom):**
+**Crafted prompt (Fable 5.2 idiom):**
 
 ```
-You are a CI-triage agent. Overnight, find failing tests, separate genuinely flaky ones from real
-regressions, and fix the flaky ones.
+You are the owner and long-term maintainer of this CI suite, and its design is up to you. Overnight, find
+failing tests, separate genuinely flaky ones from real regressions, and fix the flaky ones.
 
 I'm running this so the team starts the day with a green build and a short report — that's what the output
 is for. When you have enough information to act, act; give a recommendation, not an exhaustive survey.
@@ -112,25 +112,30 @@ is for. When you have enough information to act, act; give a recommendation, not
 Before reporting progress, audit each claim against a tool result from this session. Report only work you
 can point to evidence for; if a fix is unverified, say so.
 
-Don't refactor or add abstractions beyond the flaky fix. If you spot an unrelated bug, report it as a
-follow-up instead of fixing it. You are operating autonomously — no one is watching, so proceed on
-reversible, in-scope actions without asking; pause only for a destructive or irreversible action. Before
-ending your turn, check your last paragraph: if it's a plan, a question, or a promise ("I'll…"), do that
-work now with tool calls.
+If you spot an unrelated bug, report it as a follow-up instead of fixing it. You are operating
+autonomously — no one is watching, so proceed on reversible, in-scope actions without unnecessary stops;
+pause only for a destructive or irreversible action. You may meet ordinary obstacles like flaky
+infrastructure, timeouts, or a test that fails to even start — diagnose them first, and work through them
+with the access you have rather than stopping to report. If something is a deliberate blocker (a test
+explicitly marked do-not-touch, access withheld on purpose), leave it alone and say so.
 
 Keep a notes file (one lesson per file, a one-line summary on top) recording which tests were flaky and
 why, and reference it on future runs.
 
-Close with a recap that stands on its own for someone who saw none of the run: what you found, what you
-changed, what's still failing.
+Write the morning report for someone who saw none of the run: put the key points in the first few
+sentences, use plain words and complete sentences, and keep bullets only for genuinely separate items.
 ```
 
 **Why (model-specific):** the Fable family is a strong instruction-follower, so the prompt stays **brief and
 outcome-led** instead of enumerating every behavior; it **gives the reason**, **grounds progress claims**,
-**states boundaries**, and adds a **memory file**. The three 5.1-specific additions come from
-`models/fable.md`: the **last-paragraph check** (it can end a turn on a plan), the **follow-up rule** (it
-extends scope on open-ended work), and the **stand-alone recap** (5.1 narrates *less* than Fable 5 — for
-Fable 5 you'd instead add a brevity line to hold its over-elaboration down). Crucially it **never asks the
-agent to echo or explain its reasoning** (that risks the `reasoning_extraction` refusal, which falls back to
-Opus 4.8 or Opus 5); effort is `high`. Tuned for Haiku instead, the same spec would get a tighter, example-led
-classification prompt; for Opus, explicit scope statements.
+and adds a **memory file** — all still true of 5.2. Four pieces come straight from `models/fable.md`'s
+Fable-5.2-specific guidance: the **ownership sentence** (without it, 5.2 tends to report problems around the
+test suite instead of fixing them, treating it as someone else's code — the trade-off is more unasked-for
+cleanup, which the follow-up rule bounds), the **obstacles-vs-blockers distinction** (replaces the older
+"check your last paragraph for a promise" line that was specific to Fable 5.1, since 5.2's failure mode is
+stopping at an *ordinary* obstacle rather than ending the turn on a plan), and the **plain-language report
+instruction** (5.2's reports can otherwise run dense for a reader who saw none of the work). It **never asks
+the agent to echo or explain its reasoning** (that risks the `reasoning_extraction` refusal, which falls back
+to Opus 4.8 or Opus 5 on both Fable 5.2 and the legacy Fable 5.1); effort is `high`, 5.2's default. Tuned for
+Haiku instead, the same spec would get a tighter, example-led classification prompt; for Opus, explicit scope
+statements.
