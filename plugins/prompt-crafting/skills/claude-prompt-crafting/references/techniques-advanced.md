@@ -1,5 +1,5 @@
 <!--
-last-verified: 2026-10-12
+last-verified: 2026-11-16
 sources: see _sources.md (official Anthropic prompt-engineering docs)
 scope: DEEP APPENDIX — load only for agentic / tool-use / long-context / RAG / multi-agent /
 eval prompts, or under --deep. The lean core is in techniques.md.
@@ -41,14 +41,15 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 - **Parallel tool calls:** current models run independent tool calls in parallel by default. Push toward
   ~100% with a system-prompt line — *"if multiple tool calls are independent, make them all in parallel; never
   use placeholders or guess missing params; call sequentially only when one depends on another's output"* — or
-  add the opposite ("run operations sequentially") if parallel calls bottleneck the system. *(On Fable 5.1 in
-  long agent loops, send that instruction as a **turn-scoped system message** after each round of tool
-  results rather than once in the system prompt — see `models/fable.md`.)*
+  add the opposite ("run operations sequentially") if parallel calls bottleneck the system. *(On the legacy
+  Fable 5.1 in long agent loops, send that instruction as a **turn-scoped system message** after each round
+  of tool results rather than once in the system prompt — see `models/fable.md`. Not mentioned on the
+  current Fable 5.2's page — likely resolved; re-test before porting the workaround forward.)*
 - **Keep the history append-only.** Append each assistant turn exactly as returned, thinking blocks included.
   Rewriting `system`/`tools`, injecting-then-removing per-turn reminders, or summarizing older turns in place
-  breaks the prompt cache — and on Fable 5.1, Opus 5.5, Sonnet 5.5, and Haiku 5.5 invalidates every later
-  thinking block (a 400 for newer accounts). Put per-turn reminders in turn-scoped system messages and let
-  server-side compaction / context editing do the trimming.
+  breaks the prompt cache — and on Fable 5.2, Fable 5.1, Opus 5.5, Sonnet 5.5, and Haiku 5.5 invalidates every
+  later thinking block (a 400 for newer accounts). Put per-turn reminders in turn-scoped system messages and
+  let server-side compaction / context editing do the trimming.
 - **Never put user-authored text inside a `tool_result` block, and don't place harness reminders right after
   one on every turn.** On Sonnet 5.5 and Haiku 5.5, text that lands immediately after a tool result — a
   mid-task user message placed there, or a harness notice sent on every step (a token/budget countdown,
@@ -77,8 +78,8 @@ eval prompts, or under --deep. The lean core is in techniques.md.
   and it's Haiku's *first* generation with `effort` at all); **Opus 5** (previous Opus generation) also
   defaults to on, disable only at effort ≤ `high`; **Sonnet 5.5** (current Sonnet flagship) defaults to on
   with no `disabled` mode at all — its lowest setting is the distinct `thinking: {type: "between_tools"}`,
-  accepted only at effort ≤ `high`; **Opus 5.5** (current Opus flagship) and the Fable family (5.1 / 5,
-  Mythos 5.1 / 5) are adaptive-thinking-only with **no disable option at all**, regardless of effort; legacy
+  accepted only at effort ≤ `high`; **Opus 5.5** (current Opus flagship) and the Fable family (5.2 / 5.1 / 5,
+  Mythos 5.2 / 5.1 / 5) are adaptive-thinking-only with **no disable option at all**, regardless of effort; legacy
   Opus 4.8 / Sonnet 4.6 / Haiku 4.5 default to off (Haiku 4.5 via the now-deprecated `budget_tokens`, not
   `effort`). Confirm the model's default and disable mechanism in its `models/*.md` file before assuming
   either way — don't assume the previous and current generation of the same family agree.)*
@@ -96,7 +97,8 @@ eval prompts, or under --deep. The lean core is in techniques.md.
 ## Per-model tips → moved to references/models/
 Per-model tuning now lives in **one file per family**, loaded at craft time for the **target model only**:
 [models/opus.md](models/opus.md) · [models/sonnet.md](models/sonnet.md) · [models/haiku.md](models/haiku.md)
-· [models/fable.md](models/fable.md) (Fable 5.1 / Mythos 5.1 + the Fable 5 / Mythos 5 deltas). Load the one
+· [models/fable.md](models/fable.md) (Fable 5.2 / Mythos 5.2 + the legacy Fable 5.1 / Mythos 5.1 and
+Fable 5 / Mythos 5 deltas). Load the one
 matching the confirmed target model, in addition to the lean core. Each file is sourced + dated against its model's page (see `_sources.md`).
 
 ## Prompt-injection / untrusted input
