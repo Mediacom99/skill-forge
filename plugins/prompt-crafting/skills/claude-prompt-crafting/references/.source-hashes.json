@@ -1,13 +1,13 @@
 {
   "_comment": "Content snapshots for the check-sources.yml drift detector. Only the page's article body is hashed (see check_sources.py). hash=null means not yet captured; the workflow populates and commits real hashes on first run, then compares on each scheduled run. Null every value when normalize() changes, so the next run re-baselines instead of reporting drift on all of them.",
-  "last_updated": "2026-11-09",
+  "last_updated": "2026-11-16",
   "sources": {
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "51552e57ddb0e7e5e70c74bf15829718b0b4816385ec3ad6f8cd69ba47fbb71f",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "0928be602e362c8c0aebefd43514289214dd7dcc49860ebc80090f4d1666e0f7",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "5c42ff4436aabd012a9ba57478973fa60979baf174ebdcbdd07878c1b99ab64c",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "1aa59e740331b995addd27bc89890da3c2611e00dfe7e1910864078ee203880a",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5": "35aaf6e2fed693bbab7ebe21dff25ffa11a5dd3d9a58cff62010a799d4d7bb02",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5": "cac0034106f4015cf62847d23aa042998952b01ed2a0d3ab869b75567afc2ee1",
-    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1": "1b8b0f9047a3abef3d5f13e6a96f19b35d2605bc372115c7030763144a0883e7"
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview": "2d0c6d65abc57f474012200b63dc6534399d331618fa36d17b55f8cf1452897d",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices": "9067f14873221da50de182d87e2b9c4ac8864ae52736a8f794766945c547d716",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8": "3075c6f51962ff04004cb2a75458b4c3b08070b24cb2cec9150e51756f934f6d",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5": "4440c9b85e1b6641effd6e62cd7c27c4ecf70d1f7adeed7b727c9cb52a1b67da",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5": "1ffc4bcb6eb2b9c8ec7a107168b558fa697b7324a8e3a604db59c855ae19aeb2",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5": "2e8924c77420c554dba9cc3d02a8a5c186c56ff4b11f49e8d502e59ab464b0d4",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1": "044782e5a141aade87fcb9f772962cc22d4ee3a2597ff66745e606d4d02e1961"
   }
 }
